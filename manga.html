@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Manga | QuadraScans</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="icon" href="assets/images/logo.svg" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body { background: #121212; color: #fff; font-family: 'Poppins', sans-serif; padding: 20px; }
+    .cover-img { width: 100%; max-width: 300px; border-radius: 10px; }
+    .description { color: #ccc; margin: 15px 0; font-size: 0.95rem; }
+    .desc-toggle-btn { background: none; border: none; color: #00b7ff; cursor: pointer; font-size: 0.9rem; }
+    .chapter-link { display: block; margin: 10px 0; color: #eee; text-decoration: none; }
+    .chapter-link:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <h2 id="manga-title">Loading...</h2>
+  <img id="manga-cover" class="cover-img" alt="Manga Cover" />
+  <p id="manga-description" class="description"></p>
+  <button id="toggle-description" class="desc-toggle-btn">More...</button>
+
+  <h3>Chapters</h3>
+  <div id="chapter-list"></div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const mangaId = urlParams.get("id");
+
+    fetch("assets/data/mangas.json")
+      .then(res => res.json())
+      .then(mangas => {
+        const manga = mangas.find(m => m.id === mangaId);
+        if (!manga) return document.getElementById("manga-title").innerText = "Manga not found";
+
+        document.getElementById("manga-title").innerText = manga.title;
+        document.getElementById("manga-cover").src = manga.cover;
+
+        const fullDesc = manga.description;
+        const shortDesc = fullDesc.length > 200 ? fullDesc.substring(0, 200) + "..." : fullDesc;
+
+        const descElement = document.getElementById("manga-description");
+        const toggleBtn = document.getElementById("toggle-description");
+
+        descElement.innerText = shortDesc;
+        let isExpanded = false;
+
+        toggleBtn.addEventListener("click", () => {
+          descElement.innerText = isExpanded ? shortDesc : fullDesc;
+          toggleBtn.innerText = isExpanded ? "More..." : "Less";
+          isExpanded = !isExpanded;
+        });
+
+        fetch(`assets/data/chapters/${mangaId}.json`)
+          .then(res => res.json())
+          .then(chapters => {
+            const container = document.getElementById("chapter-list");
+            chapters.forEach(ch => {
+              const a = document.createElement("a");
+              a.href = `reader.html?id=${mangaId}&chapter=${ch.number}`;
+              a.textContent = `Chapter ${ch.number}: ${ch.title || ''}`;
+              a.className = "chapter-link";
+              container.appendChild(a);
+            });
+          })
+          .catch(() => {
+            document.getElementById("chapter-list").innerText = "Failed to load chapters.";
+          });
+      })
+      .catch(() => {
+        document.getElementById("manga-title").innerText = "Failed to load manga data.";
+      });
+  </script>
+</body>
+</html>

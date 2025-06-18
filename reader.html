@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chapter Reader | QuadraScans</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="icon" href="assets/images/logo.png" />
+  <style>
+    body {
+      background-color: #121212;
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      text-align: center;
+    }
+
+    .reader-img {
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
+      display: block;
+      border-radius: 0;
+      border: none;
+    }
+
+    .end-buttons {
+      margin: 30px auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      padding: 0 16px;
+      max-width: 400px;
+    }
+
+    .btn-nav {
+      width: 100%;
+      background: #1f2937;
+      color: #fff;
+      border: none;
+      padding: 14px;
+      font-size: 1rem;
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.3s ease;
+    }
+
+    .btn-nav:hover {
+      background: #374151;
+    }
+
+    .btn-nav:disabled {
+      background: #555;
+      cursor: not-allowed;
+    }
+
+    .spinner {
+      border: 4px solid #444;
+      border-top: 4px solid #00b7ff;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 40px auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div id="spinner" class="spinner"></div>
+    <div id="image-container" style="display: none;"></div>
+
+    <div class="end-buttons" id="end-buttons" style="display: none;">
+      <button class="btn-nav" onclick="goToChapters()">🏠 Home</button>
+      <button class="btn-nav" id="next-btn">Next ➡️</button>
+    </div>
+  </main>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const mangaId = urlParams.get('id');
+    const chapterNum = parseInt(urlParams.get('chapter'), 10);
+    const imageContainer = document.getElementById('image-container');
+    const spinner = document.getElementById('spinner');
+
+    const chapterPath = `assets/data/${mangaId}/chapter-${chapterNum}/1.json`;
+
+    fetch(chapterPath)
+      .then(res => res.json())
+      .then(images => {
+        spinner.style.display = 'none';
+        imageContainer.style.display = 'block';
+        imageContainer.innerHTML = '';
+
+        images.forEach(filename => {
+          const img = document.createElement('img');
+          img.src = `assets/data/${mangaId}/chapter-${chapterNum}/${filename}`;
+          img.className = 'reader-img';
+          imageContainer.appendChild(img);
+        });
+
+        // Show buttons
+        document.getElementById('end-buttons').style.display = 'flex';
+
+        // Check next chapter
+        const nextChapterPath = `assets/data/${mangaId}/chapter-${chapterNum + 1}/1.json`;
+        fetch(nextChapterPath)
+          .then(res => {
+            if (!res.ok) throw new Error();
+            document.getElementById('next-btn').onclick = () => {
+              window.location.href = `reader.html?id=${mangaId}&chapter=${chapterNum + 1}`;
+            };
+          })
+          .catch(() => {
+            document.getElementById('next-btn').style.display = 'none';
+          });
+      })
+      .catch(() => {
+        spinner.style.display = 'none';
+        imageContainer.style.display = 'block';
+        imageContainer.innerHTML = '<p>❌ Failed to load chapter.</p>';
+      });
+
+    function goToChapters() {
+      window.location.href = `manga.html?id=${mangaId}`;
+    }
+  </script>
+</body>
+</html>

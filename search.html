@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Search Manga | QuadraScans</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <style>
+    body {
+      background: #121212;
+      color: #eee;
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+    #searchInput {
+      width: 100%;
+      padding: 12px;
+      font-size: 1.1rem;
+      border-radius: 8px;
+      border: none;
+      margin-bottom: 20px;
+      outline: none;
+    }
+    .result-item {
+      padding: 10px;
+      border-bottom: 1px solid #333;
+      cursor: pointer;
+    }
+    .result-item:hover {
+      background: #333;
+    }
+    .no-results {
+      text-align: center;
+      margin-top: 30px;
+      font-style: italic;
+      color: #888;
+    }
+    h2 {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <input
+    type="text"
+    id="searchInput"
+    placeholder="Search manga..."
+    autocomplete="off"
+    autofocus
+  />
+
+  <div id="searchResults"></div>
+
+  <script>
+    const searchInput = document.getElementById('searchInput');
+    const searchResults = document.getElementById('searchResults');
+
+    let mangas = [];
+    let pastSearches = JSON.parse(localStorage.getItem('quadraPastSearches') || '[]');
+
+    // Function to render search results or past searches
+    function renderResults(results, isPast = false) {
+      searchResults.innerHTML = '';
+      if (results.length === 0) {
+        searchResults.innerHTML = `<p class="no-results">${isPast ? 'No past searches' : 'No manga found'}</p>`;
+        return;
+      }
+      results.forEach(manga => {
+        const div = document.createElement('div');
+        div.className = 'result-item';
+        div.textContent = manga.title;
+        div.addEventListener('click', () => {
+          // Save to past searches (avoid duplicates)
+          if (!pastSearches.includes(manga.title)) {
+            pastSearches.unshift(manga.title);
+            if (pastSearches.length > 10) pastSearches.pop(); // keep max 10
+            localStorage.setItem('quadraPastSearches', JSON.stringify(pastSearches));
+          }
+          // Redirect to manga page (assuming manga.id is used in URL)
+          window.location.href = `manga.html?id=${encodeURIComponent(manga.id)}`;
+        });
+        searchResults.appendChild(div);
+      });
+    }
+
+    // Load mangas.json
+    fetch('assets/data/mangas.json')
+      .then(res => res.json())
+      .then(data => {
+        mangas = data;
+
+        // On page load, show past searches as clickable list
+        const pastSearchResults = pastSearches
+          .map(title => mangas.find(m => m.title.toLowerCase() === title.toLowerCase()))
+          .filter(Boolean);
+
+        if (pastSearchResults.length > 0) {
+          renderResults(pastSearchResults, true);
+        } else {
+          searchResults.innerHTML = `<p class="no-results">No past searches</p>`;
+        }
+      })
+      .catch(() => {
+        searchResults.innerHTML = '<p class="no-results">Failed to load manga list.</p>';
+      });
+
+    // On input, filter mangas by title
+    searchInput.addEventListener('input', () => {
+      const query = searchInput.value.trim().toLowerCase();
+      if (query === '') {
+        // Show past searches again
+        const pastSearchResults = pastSearches
+          .map(title => mangas.find(m => m.title.toLowerCase() === title.toLowerCase()))
+          .filter(Boolean);
+        renderResults(pastSearchResults, true);
+        return;
+      }
+
+      const filtered = mangas.filter(m =>
+        m.title.toLowerCase().includes(query)
+      );
+      renderResults(filtered, false);
+    });
+  </script>
+</body>
+</html>

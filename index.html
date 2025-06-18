@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>QuadraScans</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="icon" href="assets/images/logo.svg" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body class="dark-theme">
+
+  <!-- Top Header -->
+  <header class="top-header">
+    <div class="logo-section">
+      <img src="assets/images/logo.png" alt="logo" class="logo-img" />
+      <h1>QuadraScans</h1>
+    </div>
+    <div class="icon-section">
+      <button class="header-icon" id="searchBtn">🔍</button>
+    </div>
+  </header>
+
+  <!-- Hidden Search (Handled in search.html) -->
+  <div class="search-overlay hidden" id="searchContainer">
+    <input type="text" id="searchInput" placeholder="Search manga..." />
+  </div>
+
+  <!-- Main Content -->
+  <main class="main-content" id="mainContent">
+    <section class="notice">
+      <p>Join <a href="#">/r/quadrascans</a> or <a href="#">Discord</a> for support and discussion.</p>
+    </section>
+
+    <!-- Continue Reading -->
+    <section class="reading-history">
+      <h3>Continue Reading</h3>
+      <div class="manga-scroll">
+        <a href="manga.html?id=solo-leveling" class="manga-card">
+          <img src="assets/images/solo-leveling/cover-image.jpg" alt="Solo Leveling" />
+          <span>Solo Leveling</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- New Mangas -->
+    <section class="new-mangas">
+      <h3>New Mangas</h3>
+      <div class="manga-scroll">
+        <a href="manga.html?id=solo-leveling" class="manga-card">
+          <img src="assets/images/solo-leveling/cover-image.jpg" alt="Solo Leveling" />
+          <span>Solo Leveling</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- New Chapters -->
+    <section class="new-chapters">
+      <h3>New Chapters</h3>
+      <div class="manga-scroll">
+        <a href="manga.html?id=solo-leveling" class="manga-card">
+          <img src="assets/images/solo-leveling/cover-image.jpg" alt="Solo Leveling" />
+          <span>Solo Leveling</span>
+        </a>
+      </div>
+    </section>
+  </main>
+
+
+  <!-- JS -->
+  <script>
+    document.getElementById("searchBtn").addEventListener("click", function () {
+      window.location.href = "search.html";
+    });
+  </script>
+</body>
+</html>
