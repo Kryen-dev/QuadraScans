@@ -92,7 +92,6 @@
     const spinner = document.getElementById('spinner');
     const titleElement = document.getElementById('chapter-title');
 
-    // Fetch chapter titles from chapter-name JSON
     fetch(`assets/data/chapters/${mangaId}.json`)
       .then(res => res.json())
       .then(data => {
@@ -105,10 +104,10 @@
         const nextBtn = document.getElementById('next-btn');
         const prevNum = document.getElementById('prev-num');
         const nextNum = document.getElementById('next-num');
-        const hasPrev = !!data[chapterNum - 1];
-        const hasNext = !!data[chapterNum + 1];
+        const hasPrev = data[chapterNum - 1] !== undefined;
+        const hasNext = data[chapterNum + 1] !== undefined;
 
-        if (hasPrev) {
+        if (chapterNum > 1 && hasPrev) {
           prevBtn.style.display = 'inline-flex';
           prevNum.textContent = chapterNum - 1;
           prevBtn.onclick = () => {
@@ -131,7 +130,6 @@
         titleElement.style.display = 'block';
       });
 
-    // Load images
     const jsonPath = `assets/data/${mangaId}/chapter-${chapterNum}/${chapterNum}.json`;
 
     fetch(jsonPath)
@@ -148,7 +146,6 @@
           imageContainer.appendChild(img);
         });
 
-        // Save to localStorage for Continue Reading
         let reading = JSON.parse(localStorage.getItem("quadraReading") || "[]");
         if (!reading.includes(mangaId)) {
           reading.unshift(mangaId);
