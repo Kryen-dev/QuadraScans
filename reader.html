@@ -44,15 +44,19 @@
       color: #fff;
       border: none;
       padding: 12px 18px;
-      font-size: 0.95rem;
+      font-size: 1rem;
       border-radius: 10px;
       cursor: pointer;
       display: flex;
       align-items: center;
-      flex-direction: column;
-      gap: 4px;
-      width: 110px;
+      gap: 8px;
+      width: 160px;
       justify-content: center;
+    }
+
+    .btn-nav:disabled {
+      background: #555;
+      cursor: not-allowed;
     }
 
     .spinner {
@@ -78,9 +82,9 @@
     <div id="image-container" style="display: none;"></div>
 
     <div class="end-buttons" id="end-buttons" style="display: none;">
-      <button class="btn-nav" id="prev-btn" style="display: none;">◀ Prev<br>Ch. <span id="prev-num"></span></button>
-      <button class="btn-nav" onclick="goToChapters()">🏠<br>Home</button>
-      <button class="btn-nav" id="next-btn" style="display: none;">Next ▶<br>Ch. <span id="next-num"></span></button>
+      <button class="btn-nav" id="prev-btn" style="display: none;">⬅️ <span id="prev-num">Prev</span></button>
+      <button class="btn-nav" id="home-btn" style="display: none;">🏠 Home</button>
+      <button class="btn-nav" id="next-btn" style="display: none;"><span id="next-num">Next</span> ➡️</button>
     </div>
   </main>
 
@@ -92,22 +96,29 @@
     const spinner = document.getElementById('spinner');
     const titleElement = document.getElementById('chapter-title');
 
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const homeBtn = document.getElementById('home-btn');
+    const prevNum = document.getElementById('prev-num');
+    const nextNum = document.getElementById('next-num');
+
+    // Chapter Title
     fetch(`assets/data/chapters/${mangaId}.json`)
       .then(res => res.json())
       .then(data => {
         const chapter = data[chapterNum];
-        const title = chapter?.title || "";
-        titleElement.textContent = `Chapter ${chapterNum}: ${title}`;
+        if (chapter && chapter.title) {
+          titleElement.textContent = `Chapter ${chapterNum}: ${chapter.title}`;
+        } else {
+          titleElement.textContent = `Chapter ${chapterNum}`;
+        }
         titleElement.style.display = 'block';
 
-        const prevBtn = document.getElementById('prev-btn');
-        const nextBtn = document.getElementById('next-btn');
-        const prevNum = document.getElementById('prev-num');
-        const nextNum = document.getElementById('next-num');
-        const hasPrev = data[chapterNum - 1] !== undefined;
-        const hasNext = data[chapterNum + 1] !== undefined;
+        // Nav logic
+        const hasPrev = chapterNum > 1 && data[chapterNum - 1];
+        const hasNext = data[chapterNum + 1];
 
-        if (chapterNum > 1 && hasPrev) {
+        if (hasPrev) {
           prevBtn.style.display = 'inline-flex';
           prevNum.textContent = chapterNum - 1;
           prevBtn.onclick = () => {
@@ -123,13 +134,18 @@
           };
         }
 
-        document.getElementById('end-buttons').style.display = 'flex';
+        // Home always shows for middle/last
+        homeBtn.style.display = 'inline-flex';
+        homeBtn.onclick = () => {
+          window.location.href = `manga.html?id=${mangaId}`;
+        };
       })
       .catch(() => {
         titleElement.textContent = `Chapter ${chapterNum}`;
         titleElement.style.display = 'block';
       });
 
+    // Load Images
     const jsonPath = `assets/data/${mangaId}/chapter-${chapterNum}/${chapterNum}.json`;
 
     fetch(jsonPath)
@@ -146,21 +162,20 @@
           imageContainer.appendChild(img);
         });
 
+        // Save to localStorage
         let reading = JSON.parse(localStorage.getItem("quadraReading") || "[]");
         if (!reading.includes(mangaId)) {
           reading.unshift(mangaId);
           if (reading.length > 10) reading.pop();
           localStorage.setItem("quadraReading", JSON.stringify(reading));
         }
+
+        document.getElementById('end-buttons').style.display = 'flex';
       })
       .catch(() => {
         spinner.style.display = 'none';
         imageContainer.innerHTML = '<p>❌ Failed to load chapter.</p>';
       });
-
-    function goToChapters() {
-      window.location.href = `manga.html?id=${mangaId}`;
-    }
   </script>
 </body>
 </html>
