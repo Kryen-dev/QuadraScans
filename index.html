@@ -21,11 +21,6 @@
     </div>
   </header>
 
-  <!-- Hidden Search (Handled in search.html) -->
-  <div class="search-overlay hidden" id="searchContainer">
-    <input type="text" id="searchInput" placeholder="Search manga..." />
-  </div>
-
   <!-- Main Content -->
   <main class="main-content" id="mainContent">
     <section class="notice">
@@ -35,43 +30,96 @@
     <!-- Continue Reading -->
     <section class="reading-history">
       <h3>Continue Reading</h3>
-      <div class="manga-scroll">
-        <a href="manga.html?id=solo-leveling" class="manga-card">
-          <img src="assets/images/solo-leveling/cover-image.jpg" alt="Solo Leveling" />
-          <span>Solo Leveling</span>
-        </a>
-      </div>
-    </section>
-
-    <!-- New Mangas -->
-    <section class="new-mangas">
-      <h3>New Mangas</h3>
-      <div class="manga-scroll">
-        <a href="manga.html?id=solo-leveling" class="manga-card">
-          <img src="assets/images/solo-leveling/cover-image.jpg" alt="Solo Leveling" />
-          <span>Solo Leveling</span>
-        </a>
+      <div class="manga-scroll" id="continueReading">
+        <p class="no-results">No manga read yet.</p>
       </div>
     </section>
 
     <!-- New Chapters -->
     <section class="new-chapters">
       <h3>New Chapters</h3>
-      <div class="manga-scroll">
-        <a href="manga.html?id=solo-leveling" class="manga-card">
-          <img src="assets/images/solo-leveling/cover-image.jpg" alt="Solo Leveling" />
-          <span>Solo Leveling</span>
-        </a>
+      <div class="manga-scroll" id="newChapters">
+        <p class="no-results">No chapters found yet.</p>
       </div>
     </section>
   </main>
 
-
   <!-- JS -->
   <script>
-    document.getElementById("searchBtn").addEventListener("click", function () {
+    document.getElementById("searchBtn").addEventListener("click", () => {
       window.location.href = "search.html";
     });
+
+    const continueReadingContainer = document.getElementById('continueReading');
+    const newChaptersContainer = document.getElementById('newChapters');
+
+    const readProgress = JSON.parse(localStorage.getItem('readProgress') || '{}');
+
+    fetch('assets/data/mangas.json')
+      .then(res => res.json())
+      .then(mangas => {
+        let hasReading = false;
+
+        // Continue Reading
+        Object.keys(readProgress).forEach(id => {
+          const manga = mangas.find(m => m.id === id);
+          if (manga) {
+            hasReading = true;
+            const a = document.createElement('a');
+            a.href = `reader.html?id=${id}&chapter=${readProgress[id]}`;
+            a.className = 'manga-card';
+            a.innerHTML = `
+              <img src="${manga.cover}" alt="${manga.title}" />
+              <span>${manga.title} – Ch. ${readProgress[id]}</span>
+            `;
+            continueReadingContainer.appendChild(a);
+          }
+        });
+
+        if (hasReading) {
+          continueReadingContainer.querySelector('.no-results')?.remove();
+        }
+
+        // New Chapters
+        let hasNewChapters = false;
+
+        mangas.forEach(manga => {
+          const basePath = `assets/data/${manga.id}/`;
+          let latest = 0;
+          const checkChapters = Array.from({length: 50}, (_, i) => i + 1);
+
+          let checks = checkChapters.map(chNum => {
+            return fetch(`${basePath}chapter-${chNum}/1.json`)
+              .then(res => {
+                if (res.ok) latest = chNum;
+              })
+              .catch(() => {});
+          });
+
+          Promise.all(checks).then(() => {
+            if (latest > 0) {
+              hasNewChapters = true;
+              const a = document.createElement('a');
+              a.href = `reader.html?id=${manga.id}&chapter=${latest}`;
+              a.className = 'manga-card';
+              a.innerHTML = `
+                <img src="${manga.cover}" alt="${manga.title}" />
+                <span>${manga.title} – Chapter ${latest}</span>
+              `;
+              newChaptersContainer.appendChild(a);
+              newChaptersContainer.querySelector('.no-results')?.remove();
+            }
+          });
+        });
+      });
   </script>
+
+  <style>
+    .no-results {
+      color: #aaa;
+      font-style: italic;
+      margin: 10px 0 0 10px;
+    }
+  </style>
 </body>
 </html>
