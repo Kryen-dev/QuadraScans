@@ -15,6 +15,13 @@
       text-align: center;
     }
 
+    h2.chapter-title {
+      margin: 20px 0 10px;
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #fff;
+    }
+
     .reader-img {
       width: 100%;
       max-width: 800px;
@@ -22,12 +29,6 @@
       display: block;
       border-radius: 0;
       border: none;
-    }
-
-    .chapter-title {
-      font-size: 1.5rem;
-      margin: 20px 0;
-      font-weight: 600;
     }
 
     .end-buttons {
@@ -76,8 +77,8 @@
 </head>
 <body>
   <main>
-    <h2 class="chapter-title" id="chapterTitle">Loading...</h2>
     <div id="spinner" class="spinner"></div>
+    <h2 id="chapter-title" class="chapter-title" style="display: none;"></h2>
     <div id="image-container" style="display: none;"></div>
 
     <div class="end-buttons" id="end-buttons" style="display: none;">
@@ -92,19 +93,26 @@
     const chapterNum = parseInt(urlParams.get('chapter'), 10);
     const imageContainer = document.getElementById('image-container');
     const spinner = document.getElementById('spinner');
-    const titleElement = document.getElementById('chapterTitle');
+    const titleElement = document.getElementById('chapter-title');
 
-    // ✅ Load chapter title from chapters/<mangaId>.json
+    // Show title from chapters JSON
     fetch(`assets/data/chapters/${mangaId}.json`)
       .then(res => res.json())
       .then(data => {
-        const title = data[chapterNum];
-        titleElement.textContent = title || `Chapter ${chapterNum}`;
+        const chapter = data[chapterNum];
+        if (chapter && chapter.title) {
+          titleElement.textContent = `Chapter ${chapterNum}: ${chapter.title}`;
+        } else {
+          titleElement.textContent = `Chapter ${chapterNum}`;
+        }
+        titleElement.style.display = 'block';
       })
       .catch(() => {
         titleElement.textContent = `Chapter ${chapterNum}`;
+        titleElement.style.display = 'block';
       });
 
+    // Load images
     const jsonPath = `assets/data/${mangaId}/chapter-${chapterNum}/${chapterNum}.json`;
 
     fetch(jsonPath)
@@ -121,7 +129,7 @@
           imageContainer.appendChild(img);
         });
 
-        // ✅ Save to localStorage for Continue Reading
+        // ✅ Save to localStorage for "Continue Reading"
         let reading = JSON.parse(localStorage.getItem("quadraReading") || "[]");
         if (!reading.includes(mangaId)) {
           reading.unshift(mangaId);
@@ -131,7 +139,7 @@
 
         document.getElementById('end-buttons').style.display = 'flex';
 
-        // Check if next chapter exists
+        // Next chapter check
         const nextJson = `assets/data/${mangaId}/chapter-${chapterNum + 1}/${chapterNum + 1}.json`;
         fetch(nextJson)
           .then(res => {
