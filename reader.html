@@ -15,6 +15,48 @@
       text-align: center;
     }
 
+    .chapter-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      background: #1f1f1f;
+    }
+
+    .chapter-header .left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .chapter-header select {
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: none;
+      font-size: 1rem;
+    }
+
+    .lang-pill {
+      background: #00b7ff;
+      color: white;
+      font-size: 0.8rem;
+      padding: 4px 10px;
+      border-radius: 100px;
+    }
+
+    .chapter-header .right img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .chapter-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      padding: 10px 16px;
+    }
+
     .reader-img {
       width: 100%;
       max-width: 800px;
@@ -69,17 +111,27 @@
   </style>
 </head>
 <body>
+
+  <!-- Chapter Header -->
+  <div class="chapter-header">
+    <div class="left">
+      <select id="chapterSelect"></select>
+      <span class="lang-pill">Hinglish</span>
+    </div>
+    <div class="right">
+      <img id="coverImage" src="" alt="Cover" />
+    </div>
+  </div>
+
+  <h2 class="chapter-title" id="chapterTitle">Loading...</h2>
+
   <main>
     <div id="spinner" class="spinner"></div>
     <div id="image-container" style="display: none;"></div>
 
     <div class="end-buttons" id="end-buttons" style="display: none;">
-      <button class="btn-nav" onclick="goToChapters()">
-        🏠 Home
-      </button>
-      <button class="btn-nav" id="next-btn">
-        Next ➡️
-      </button>
+      <button class="btn-nav" onclick="goToChapters()">🏠 Home</button>
+      <button class="btn-nav" id="next-btn">Next ➡️</button>
     </div>
   </main>
 
@@ -91,7 +143,9 @@
     const spinner = document.getElementById('spinner');
 
     const jsonPath = `assets/data/${mangaId}/chapter-${chapterNum}/${chapterNum}.json`;
+    const metaPath = `assets/data/${mangaId}/${mangaId}.json`;
 
+    // Fetch image data
     fetch(jsonPath)
       .then(res => res.json())
       .then(images => {
@@ -106,17 +160,8 @@
           imageContainer.appendChild(img);
         });
 
-        // ✅ Save to localStorage for "Continue Reading"
-        let reading = JSON.parse(localStorage.getItem("quadraReading") || "[]");
-        if (!reading.includes(mangaId)) {
-          reading.unshift(mangaId);
-          if (reading.length > 10) reading.pop();
-          localStorage.setItem("quadraReading", JSON.stringify(reading));
-        }
-
         document.getElementById('end-buttons').style.display = 'flex';
 
-        // Check if next chapter exists
         const nextJson = `assets/data/${mangaId}/chapter-${chapterNum + 1}/${chapterNum + 1}.json`;
         fetch(nextJson)
           .then(res => {
@@ -128,10 +173,40 @@
           .catch(() => {
             document.getElementById('next-btn').style.display = 'none';
           });
+
+        // Continue Reading tracking
+        let reading = JSON.parse(localStorage.getItem("quadraReading") || "[]");
+        if (!reading.includes(mangaId)) {
+          reading.unshift(mangaId);
+          if (reading.length > 10) reading.pop();
+          localStorage.setItem("quadraReading", JSON.stringify(reading));
+        }
       })
       .catch(() => {
         spinner.style.display = 'none';
         imageContainer.innerHTML = '<p>❌ Failed to load chapter.</p>';
+      });
+
+    // Fetch chapter info and populate dropdown, title, cover
+    fetch(metaPath)
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("coverImage").src = data.cover;
+        const select = document.getElementById("chapterSelect");
+        const current = data.chapters.find(ch => ch.number === chapterNum);
+        document.getElementById("chapterTitle").textContent = `${data.title} - Ch ${current.number}: ${current.name}`;
+
+        data.chapters.forEach(ch => {
+          const opt = document.createElement("option");
+          opt.value = ch.number;
+          opt.textContent = `Chapter ${ch.number}: ${ch.name}`;
+          if (ch.number === chapterNum) opt.selected = true;
+          select.appendChild(opt);
+        });
+
+        select.addEventListener("change", () => {
+          window.location.href = `reader.html?id=${mangaId}&chapter=${select.value}`;
+        });
       });
 
     function goToChapters() {
@@ -139,4 +214,4 @@
     }
   </script>
 </body>
-</html>
+      </html>
