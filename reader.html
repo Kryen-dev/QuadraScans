@@ -106,6 +106,14 @@
           imageContainer.appendChild(img);
         });
 
+        // ✅ Save to localStorage for "Continue Reading"
+        let reading = JSON.parse(localStorage.getItem("quadraReading") || "[]");
+        if (!reading.includes(mangaId)) {
+          reading.unshift(mangaId);
+          if (reading.length > 10) reading.pop();
+          localStorage.setItem("quadraReading", JSON.stringify(reading));
+        }
+
         document.getElementById('end-buttons').style.display = 'flex';
 
         // Check if next chapter exists
