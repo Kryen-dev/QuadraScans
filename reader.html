@@ -44,19 +44,15 @@
       color: #fff;
       border: none;
       padding: 12px 18px;
-      font-size: 1rem;
+      font-size: 0.95rem;
       border-radius: 10px;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 8px;
-      width: 160px;
+      flex-direction: column;
+      gap: 4px;
+      width: 110px;
       justify-content: center;
-    }
-
-    .btn-nav:disabled {
-      background: #555;
-      cursor: not-allowed;
     }
 
     .spinner {
@@ -82,9 +78,9 @@
     <div id="image-container" style="display: none;"></div>
 
     <div class="end-buttons" id="end-buttons" style="display: none;">
-      <button class="btn-nav" id="prev-btn" style="display: none;">◀ Prev</button>
-      <button class="btn-nav" id="home-btn" onclick="goToChapters()" style="display: none;">🏠 Home</button>
-      <button class="btn-nav" id="next-btn" style="display: none;">Next ▶</button>
+      <button class="btn-nav" id="prev-btn" style="display: none;">◀ Prev<br>Ch. <span id="prev-num"></span></button>
+      <button class="btn-nav" onclick="goToChapters()">🏠<br>Home</button>
+      <button class="btn-nav" id="next-btn" style="display: none;">Next ▶<br>Ch. <span id="next-num"></span></button>
     </div>
   </main>
 
@@ -96,42 +92,43 @@
     const spinner = document.getElementById('spinner');
     const titleElement = document.getElementById('chapter-title');
 
-    // Set title from chapters JSON
+    // Fetch chapter titles from chapter-name JSON
     fetch(`assets/data/chapters/${mangaId}.json`)
       .then(res => res.json())
       .then(data => {
         const chapter = data[chapterNum];
-        titleElement.textContent = chapter?.title
-          ? `Chapter ${chapterNum}: ${chapter.title}`
-          : `Chapter ${chapterNum}`;
+        const title = chapter?.title || "";
+        titleElement.textContent = `Chapter ${chapterNum}: ${title}`;
         titleElement.style.display = 'block';
 
-        // Show proper nav buttons
-        document.getElementById('end-buttons').style.display = 'flex';
-        if (chapterNum > 1) {
-          const prevBtn = document.getElementById('prev-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const prevNum = document.getElementById('prev-num');
+        const nextNum = document.getElementById('next-num');
+        const hasPrev = !!data[chapterNum - 1];
+        const hasNext = !!data[chapterNum + 1];
+
+        if (hasPrev) {
           prevBtn.style.display = 'inline-flex';
+          prevNum.textContent = chapterNum - 1;
           prevBtn.onclick = () => {
             window.location.href = `reader.html?id=${mangaId}&chapter=${chapterNum - 1}`;
           };
-        } else {
-          document.getElementById('home-btn').style.display = 'inline-flex';
         }
 
-        if (data[chapterNum + 1]) {
-          const nextBtn = document.getElementById('next-btn');
+        if (hasNext) {
           nextBtn.style.display = 'inline-flex';
+          nextNum.textContent = chapterNum + 1;
           nextBtn.onclick = () => {
             window.location.href = `reader.html?id=${mangaId}&chapter=${chapterNum + 1}`;
           };
-        } else {
-          document.getElementById('home-btn').style.display = 'inline-flex';
         }
+
+        document.getElementById('end-buttons').style.display = 'flex';
       })
       .catch(() => {
         titleElement.textContent = `Chapter ${chapterNum}`;
         titleElement.style.display = 'block';
-        document.getElementById('home-btn').style.display = 'inline-flex';
       });
 
     // Load images
@@ -151,7 +148,7 @@
           imageContainer.appendChild(img);
         });
 
-        // Save to localStorage
+        // Save to localStorage for Continue Reading
         let reading = JSON.parse(localStorage.getItem("quadraReading") || "[]");
         if (!reading.includes(mangaId)) {
           reading.unshift(mangaId);
