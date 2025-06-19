@@ -82,8 +82,9 @@
     <div id="image-container" style="display: none;"></div>
 
     <div class="end-buttons" id="end-buttons" style="display: none;">
-      <button class="btn-nav" onclick="goToChapters()">🏠 Home</button>
-      <button class="btn-nav" id="next-btn">Next ➡️</button>
+      <button class="btn-nav" id="prev-btn" style="display: none;">◀ Prev</button>
+      <button class="btn-nav" id="home-btn" onclick="goToChapters()" style="display: none;">🏠 Home</button>
+      <button class="btn-nav" id="next-btn" style="display: none;">Next ▶</button>
     </div>
   </main>
 
@@ -95,16 +96,14 @@
     const spinner = document.getElementById('spinner');
     const titleElement = document.getElementById('chapter-title');
 
-    // Show title from chapters JSON
+    // Chapter title fetch
     fetch(`assets/data/chapters/${mangaId}.json`)
       .then(res => res.json())
       .then(data => {
         const chapter = data[chapterNum];
-        if (chapter && chapter.title) {
-          titleElement.textContent = `Chapter ${chapterNum}: ${chapter.title}`;
-        } else {
-          titleElement.textContent = `Chapter ${chapterNum}`;
-        }
+        titleElement.textContent = chapter && chapter.title
+          ? `Chapter ${chapterNum}: ${chapter.title}`
+          : `Chapter ${chapterNum}`;
         titleElement.style.display = 'block';
       })
       .catch(() => {
@@ -129,7 +128,7 @@
           imageContainer.appendChild(img);
         });
 
-        // ✅ Save to localStorage for "Continue Reading"
+        // Save to localStorage
         let reading = JSON.parse(localStorage.getItem("quadraReading") || "[]");
         if (!reading.includes(mangaId)) {
           reading.unshift(mangaId);
@@ -139,17 +138,31 @@
 
         document.getElementById('end-buttons').style.display = 'flex';
 
-        // Next chapter check
-        const nextJson = `assets/data/${mangaId}/chapter-${chapterNum + 1}/${chapterNum + 1}.json`;
-        fetch(nextJson)
-          .then(res => {
-            if (!res.ok) throw new Error();
-            document.getElementById('next-btn').onclick = () => {
-              window.location.href = `reader.html?id=${mangaId}&chapter=${chapterNum + 1}`;
-            };
-          })
-          .catch(() => {
-            document.getElementById('next-btn').style.display = 'none';
+        // Chapter Navigation Logic
+        fetch(`assets/data/${mangaId}/${mangaId}.json`)
+          .then(res => res.json())
+          .then(chapters => {
+            const totalChapters = chapters.length;
+
+            if (chapterNum > 1) {
+              const prevBtn = document.getElementById("prev-btn");
+              prevBtn.style.display = "inline-flex";
+              prevBtn.onclick = () => {
+                window.location.href = `reader.html?id=${mangaId}&chapter=${chapterNum - 1}`;
+              };
+            } else {
+              document.getElementById("home-btn").style.display = "inline-flex";
+            }
+
+            if (chapterNum < totalChapters) {
+              const nextBtn = document.getElementById("next-btn");
+              nextBtn.style.display = "inline-flex";
+              nextBtn.onclick = () => {
+                window.location.href = `reader.html?id=${mangaId}&chapter=${chapterNum + 1}`;
+              };
+            } else {
+              document.getElementById("home-btn").style.display = "inline-flex";
+            }
           });
       })
       .catch(() => {
