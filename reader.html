@@ -96,19 +96,42 @@
     const spinner = document.getElementById('spinner');
     const titleElement = document.getElementById('chapter-title');
 
-    // Chapter title fetch
+    // Set title from chapters JSON
     fetch(`assets/data/chapters/${mangaId}.json`)
       .then(res => res.json())
       .then(data => {
         const chapter = data[chapterNum];
-        titleElement.textContent = chapter && chapter.title
+        titleElement.textContent = chapter?.title
           ? `Chapter ${chapterNum}: ${chapter.title}`
           : `Chapter ${chapterNum}`;
         titleElement.style.display = 'block';
+
+        // Show proper nav buttons
+        document.getElementById('end-buttons').style.display = 'flex';
+        if (chapterNum > 1) {
+          const prevBtn = document.getElementById('prev-btn');
+          prevBtn.style.display = 'inline-flex';
+          prevBtn.onclick = () => {
+            window.location.href = `reader.html?id=${mangaId}&chapter=${chapterNum - 1}`;
+          };
+        } else {
+          document.getElementById('home-btn').style.display = 'inline-flex';
+        }
+
+        if (data[chapterNum + 1]) {
+          const nextBtn = document.getElementById('next-btn');
+          nextBtn.style.display = 'inline-flex';
+          nextBtn.onclick = () => {
+            window.location.href = `reader.html?id=${mangaId}&chapter=${chapterNum + 1}`;
+          };
+        } else {
+          document.getElementById('home-btn').style.display = 'inline-flex';
+        }
       })
       .catch(() => {
         titleElement.textContent = `Chapter ${chapterNum}`;
         titleElement.style.display = 'block';
+        document.getElementById('home-btn').style.display = 'inline-flex';
       });
 
     // Load images
@@ -135,35 +158,6 @@
           if (reading.length > 10) reading.pop();
           localStorage.setItem("quadraReading", JSON.stringify(reading));
         }
-
-        document.getElementById('end-buttons').style.display = 'flex';
-
-        // Chapter Navigation Logic
-        fetch(`assets/data/${mangaId}/${mangaId}.json`)
-          .then(res => res.json())
-          .then(chapters => {
-            const totalChapters = chapters.length;
-
-            if (chapterNum > 1) {
-              const prevBtn = document.getElementById("prev-btn");
-              prevBtn.style.display = "inline-flex";
-              prevBtn.onclick = () => {
-                window.location.href = `reader.html?id=${mangaId}&chapter=${chapterNum - 1}`;
-              };
-            } else {
-              document.getElementById("home-btn").style.display = "inline-flex";
-            }
-
-            if (chapterNum < totalChapters) {
-              const nextBtn = document.getElementById("next-btn");
-              nextBtn.style.display = "inline-flex";
-              nextBtn.onclick = () => {
-                window.location.href = `reader.html?id=${mangaId}&chapter=${chapterNum + 1}`;
-              };
-            } else {
-              document.getElementById("home-btn").style.display = "inline-flex";
-            }
-          });
       })
       .catch(() => {
         spinner.style.display = 'none';
