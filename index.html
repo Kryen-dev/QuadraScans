@@ -8,32 +8,75 @@
   <link rel="icon" href="assets/images/logo.svg" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
+    body.dark-theme {
+      background-color: #121212;
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+    }
+
     .manga-card {
       text-align: center;
       margin-right: 15px;
       color: #fff;
       text-decoration: none;
     }
+
     .manga-card img {
       width: 120px;
       border-radius: 8px;
     }
+
     .manga-scroll {
       display: flex;
       overflow-x: auto;
       padding-bottom: 10px;
     }
+
     .manga-scroll::-webkit-scrollbar {
       height: 6px;
     }
+
     .manga-scroll::-webkit-scrollbar-thumb {
       background: #555;
       border-radius: 3px;
     }
+
     .no-results {
       color: #888;
       margin-left: 10px;
       font-style: italic;
+    }
+
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: #1a1a1a;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      border-top: 1px solid #333;
+      z-index: 999;
+    }
+
+    .bottom-nav button {
+      background: none;
+      border: none;
+      color: #ccc;
+      font-size: 1.3rem;
+      cursor: pointer;
+    }
+
+    .bottom-nav button.active {
+      color: #00b7ff;
+      font-weight: bold;
+    }
+
+    body {
+      padding-bottom: 80px;
     }
   </style>
 </head>
@@ -50,7 +93,7 @@
     </div>
   </header>
 
-  <!-- Hidden Search (Handled in search.html) -->
+  <!-- Hidden Search -->
   <div class="search-overlay hidden" id="searchContainer">
     <input type="text" id="searchInput" placeholder="Search manga..." />
   </div>
@@ -61,7 +104,6 @@
       <p>Join <a href="#">/r/quadrascans</a> or <a href="#">Discord</a> for support and discussion.</p>
     </section>
 
-    <!-- Continue Reading -->
     <section class="reading-history">
       <h3>Continue Reading</h3>
       <div class="manga-scroll" id="continueReadingContainer">
@@ -69,7 +111,6 @@
       </div>
     </section>
 
-    <!-- New Mangas -->
     <section class="new-mangas">
       <h3>New Mangas</h3>
       <div class="manga-scroll" id="newMangasContainer">
@@ -77,7 +118,6 @@
       </div>
     </section>
 
-    <!-- New Chapters -->
     <section class="new-chapters">
       <h3>New Chapters</h3>
       <div class="manga-scroll" id="newChaptersContainer">
@@ -86,22 +126,27 @@
     </section>
   </main>
 
-  <!-- JS -->
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <button id="tab-home">🏠</button>
+    <button id="tab-favorites">❤️</button>
+    <button id="tab-profile">👤</button>
+  </nav>
+
+  <!-- JavaScript -->
   <script>
     document.getElementById("searchBtn").addEventListener("click", () => {
       window.location.href = "search.html";
     });
 
+    const readingHistory = JSON.parse(localStorage.getItem("quadraReading") || "[]");
     const continueReadingContainer = document.getElementById("continueReadingContainer");
     const newChaptersContainer = document.getElementById("newChaptersContainer");
     const newMangasContainer = document.getElementById("newMangasContainer");
 
-    const readingHistory = JSON.parse(localStorage.getItem("quadraReading") || "[]");
-
     fetch("assets/data/mangas.json")
       .then(res => res.json())
       .then(mangas => {
-        // Continue Reading Section
         const historyMangas = readingHistory
           .map(title => mangas.find(m => m.id === title))
           .filter(Boolean);
@@ -117,7 +162,6 @@
           });
         }
 
-        // New Mangas Section
         mangas.forEach(manga => {
           const a = document.createElement("a");
           a.href = `manga.html?id=${manga.id}`;
@@ -127,7 +171,6 @@
         });
         newMangasContainer.querySelector('.no-results')?.remove();
 
-        // New Chapters Section
         let foundNew = false;
         mangas.forEach(manga => {
           if (manga.latestChapter) {
@@ -147,6 +190,20 @@
       .catch(() => {
         newChaptersContainer.innerHTML = '<p class="no-results">Failed to load mangas.json</p>';
       });
+
+    // Bottom Nav Tab Storage
+    const allTabs = ['tab-home', 'tab-favorites', 'tab-profile'];
+    const savedTab = localStorage.getItem('activeTab') || 'tab-home';
+
+    document.getElementById(savedTab)?.classList.add('active');
+
+    allTabs.forEach(tabId => {
+      document.getElementById(tabId).addEventListener('click', () => {
+        allTabs.forEach(id => document.getElementById(id).classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        localStorage.setItem('activeTab', tabId);
+      });
+    });
   </script>
 </body>
 </html>
