@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>QuadraScans</title>
   <link rel="stylesheet" href="assets/css/style.css" />
   <link rel="icon" href="assets/images/logo.svg" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <script src="https://kit.fontawesome.com/yourkit.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
 <body class="dark-theme">
 
@@ -19,7 +19,7 @@
     </div>
     <div class="icon-section">
       <button class="header-icon" id="searchBtn"><i class="fas fa-search"></i></button>
-      <button class="header-icon" id="profileBtn"><i class="fas fa-user"></i></button>
+      <button class="header-icon"><i class="fas fa-user"></i></button>
     </div>
   </header>
 
@@ -28,150 +28,115 @@
     <input type="text" id="searchInput" placeholder="Search manga..." />
   </div>
 
-  <!-- Main Sections -->
-  <main class="main-content fade" id="mainContent">
-    <section id="homeTab">
-      <section class="notice">
-        <p>Join <a href="#">/r/quadrascans</a> or <a href="#">Discord</a> for support and discussion.</p>
-      </section>
-
-      <section class="reading-history">
-        <h3>Continue Reading</h3>
-        <div class="manga-scroll" id="continueReadingContainer">
-          <p class="no-results">No reading history yet.</p>
-        </div>
-      </section>
-
-      <section class="new-mangas">
-        <h3>New Mangas</h3>
-        <div class="manga-scroll" id="newMangasContainer">
-          <p class="no-results">No new mangas found.</p>
-        </div>
-      </section>
-
-      <section class="new-chapters">
-        <h3>New Chapters</h3>
-        <div class="manga-scroll" id="newChaptersContainer">
-          <p class="no-results">No new chapters found.</p>
-        </div>
-      </section>
+  <!-- Main Content -->
+  <main class="main-content" id="mainContent">
+    <section class="notice">
+      <p>Join <a href="#">/r/quadrascans</a> or <a href="#">Discord</a> for support and discussion.</p>
     </section>
 
-    <section id="favoritesTab" class="hidden">
-      <h3>Favorites</h3>
-      <div class="manga-scroll" id="favoritesContainer">
-        <p class="no-results">No favorites yet.</p>
+    <section class="reading-history">
+      <h3>Continue Reading</h3>
+      <div class="manga-scroll" id="continueReadingContainer">
+        <p class="no-results">No reading history yet.</p>
       </div>
     </section>
 
-    <section id="badgesTab" class="hidden">
-      <h3>Badges</h3>
-      <p>🏅 You haven’t earned any badges yet.</p>
+    <section class="new-mangas">
+      <h3>New Mangas</h3>
+      <div class="manga-scroll" id="newMangasContainer">
+        <p class="no-results">No new mangas found.</p>
+      </div>
     </section>
 
-    <section id="settingsTab" class="hidden">
-      <h3>Settings</h3>
-      <p>Theme toggle, reset progress, etc. coming soon.</p>
+    <section class="new-chapters">
+      <h3>New Chapters</h3>
+      <div class="manga-scroll" id="newChaptersContainer">
+        <p class="no-results">No new chapters found.</p>
+      </div>
     </section>
   </main>
 
   <!-- Bottom Navigation -->
   <nav class="bottom-nav">
-    <button id="tab-home" class="tab active"><i class="fas fa-home"></i><span>Home</span></button>
-    <button id="tab-favorites" class="tab"><i class="fas fa-heart"></i><span>Fav</span></button>
-    <button id="tab-badges" class="tab"><i class="fas fa-medal"></i><span>Badges</span></button>
-    <button id="tab-settings" class="tab"><i class="fas fa-cog"></i><span>Settings</span></button>
+    <button id="tab-home"><i class="fas fa-home"></i></button>
+    <button id="tab-favorites"><i class="fas fa-heart"></i></button>
+    <button id="tab-badges"><i class="fas fa-award"></i></button>
+    <button id="tab-settings"><i class="fas fa-cog"></i></button>
   </nav>
 
+  <!-- JavaScript -->
   <script>
-    // Tab switching
-    const tabs = {
-      'tab-home': 'homeTab',
-      'tab-favorites': 'favoritesTab',
-      'tab-badges': 'badgesTab',
-      'tab-settings': 'settingsTab'
-    };
-
-    const showTab = (tabId) => {
-      Object.values(tabs).forEach(id => document.getElementById(id).classList.add('hidden'));
-      Object.keys(tabs).forEach(id => document.getElementById(id).classList.remove('active'));
-      document.getElementById(tabs[tabId]).classList.remove('hidden');
-      document.getElementById(tabId).classList.add('active');
-      localStorage.setItem('activeTab', tabId);
-    };
-
-    Object.keys(tabs).forEach(tabId => {
-      document.getElementById(tabId).addEventListener('click', () => showTab(tabId));
-    });
-
-    // Set default tab from localStorage
-    const activeTab = localStorage.getItem('activeTab') || 'tab-home';
-    showTab(activeTab);
-
-    // Search button
+    // Toggle search bar
     document.getElementById("searchBtn").addEventListener("click", () => {
-      document.getElementById("searchContainer").classList.toggle("hidden");
+      const container = document.getElementById("searchContainer");
+      container.classList.toggle("hidden");
     });
 
-    // Fetch and populate manga
     const readingHistory = JSON.parse(localStorage.getItem("quadraReading") || "[]");
+    const continueReadingContainer = document.getElementById("continueReadingContainer");
+    const newChaptersContainer = document.getElementById("newChaptersContainer");
+    const newMangasContainer = document.getElementById("newMangasContainer");
+
     fetch("assets/data/mangas.json")
       .then(res => res.json())
       .then(mangas => {
-        const continueReading = document.getElementById("continueReadingContainer");
-        const newChapters = document.getElementById("newChaptersContainer");
-        const newMangas = document.getElementById("newMangasContainer");
-        const favoritesContainer = document.getElementById("favoritesContainer");
+        const historyMangas = readingHistory
+          .map(title => mangas.find(m => m.id === title))
+          .filter(Boolean);
 
-        // Continue Reading
-        const historyMangas = readingHistory.map(id => mangas.find(m => m.id === id)).filter(Boolean);
-        if (historyMangas.length) {
-          continueReading.innerHTML = '';
-          historyMangas.forEach(m => {
+        if (historyMangas.length > 0) {
+          continueReadingContainer.innerHTML = '';
+          historyMangas.forEach(manga => {
             const a = document.createElement("a");
-            a.href = `manga.html?id=${m.id}`;
+            a.href = `manga.html?id=${manga.id}`;
             a.className = "manga-card";
-            a.innerHTML = `<img src="${m.cover}" alt="${m.title}" /><span>${m.title}</span>`;
-            continueReading.appendChild(a);
+            a.innerHTML = `<img src="${manga.cover}" alt="${manga.title}" /><span>${manga.title}</span>`;
+            continueReadingContainer.appendChild(a);
           });
         }
 
-        // New Mangas
-        newMangas.innerHTML = '';
-        mangas.forEach(m => {
+        mangas.forEach(manga => {
           const a = document.createElement("a");
-          a.href = `manga.html?id=${m.id}`;
+          a.href = `manga.html?id=${manga.id}`;
           a.className = "manga-card";
-          a.innerHTML = `<img src="${m.cover}" alt="${m.title}" /><span>${m.title}</span>`;
-          newMangas.appendChild(a);
+          a.innerHTML = `<img src="${manga.cover}" alt="${manga.title}" /><span>${manga.title}</span>`;
+          newMangasContainer.appendChild(a);
         });
+        newMangasContainer.querySelector('.no-results')?.remove();
 
-        // New Chapters
-        newChapters.innerHTML = '';
-        mangas.forEach(m => {
-          if (m.latestChapter) {
+        let foundNew = false;
+        mangas.forEach(manga => {
+          if (manga.latestChapter) {
+            foundNew = true;
             const a = document.createElement("a");
-            a.href = `reader.html?id=${m.id}&chapter=${m.latestChapter}`;
+            a.href = `reader.html?id=${manga.id}&chapter=${manga.latestChapter}`;
             a.className = "manga-card";
-            a.innerHTML = `<img src="${m.cover}" alt="${m.title}" /><span>${m.title} – Chapter ${m.latestChapter}</span>`;
-            newChapters.appendChild(a);
+            a.innerHTML = `<img src="${manga.cover}" alt="${manga.title}" /><span>${manga.title} – Chapter ${manga.latestChapter}</span>`;
+            newChaptersContainer.appendChild(a);
           }
         });
 
-        // Favorites (future)
-        const favorites = JSON.parse(localStorage.getItem("quadraFav") || "[]");
-        const favMangas = favorites.map(id => mangas.find(m => m.id === id)).filter(Boolean);
-        if (favMangas.length) {
-          favoritesContainer.innerHTML = '';
-          favMangas.forEach(m => {
-            const a = document.createElement("a");
-            a.href = `manga.html?id=${m.id}`;
-            a.className = "manga-card";
-            a.innerHTML = `<img src="${m.cover}" alt="${m.title}" /><span>${m.title}</span>`;
-            favoritesContainer.appendChild(a);
-          });
+        if (foundNew) {
+          newChaptersContainer.querySelector('.no-results')?.remove();
         }
+      })
+      .catch(() => {
+        newChaptersContainer.innerHTML = '<p class="no-results">Failed to load mangas.json</p>';
       });
+
+    // Bottom nav tab storage
+    const allTabs = ['tab-home', 'tab-favorites', 'tab-badges', 'tab-settings'];
+    const savedTab = localStorage.getItem('activeTab') || 'tab-home';
+
+    document.getElementById(savedTab)?.classList.add('active');
+
+    allTabs.forEach(tabId => {
+      document.getElementById(tabId).addEventListener('click', () => {
+        allTabs.forEach(id => document.getElementById(id).classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        localStorage.setItem('activeTab', tabId);
+      });
+    });
   </script>
 </body>
 </html>
