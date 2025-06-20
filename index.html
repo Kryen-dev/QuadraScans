@@ -6,8 +6,8 @@
   <title>QuadraScans</title>
   <link rel="stylesheet" href="assets/css/style.css" />
   <link rel="icon" href="assets/images/logo.svg" />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body class="dark-theme">
 
@@ -15,62 +15,82 @@
   <header class="top-header">
     <div class="logo-section">
       <img src="assets/images/logo.png" alt="logo" class="logo-img" />
-      <h1>QuadraScans</h1>
+      <h1 class="site-title">QuadraScans</h1>
     </div>
     <div class="icon-section">
-      <button class="header-icon" id="searchBtn"><i class="fas fa-search"></i></button>
+      <button class="header-icon" onclick="window.location.href='search.html'"><i class="fas fa-search"></i></button>
       <button class="header-icon"><i class="fas fa-user"></i></button>
     </div>
   </header>
 
-  <!-- Hidden Search -->
-  <div class="search-overlay hidden" id="searchContainer">
-    <input type="text" id="searchInput" placeholder="Search manga..." />
-  </div>
-
   <!-- Main Content -->
   <main class="main-content" id="mainContent">
-    <section class="notice">
-      <p>Join <a href="#">/r/quadrascans</a> or <a href="#">Discord</a> for support and discussion.</p>
+    <!-- Home -->
+    <section class="tab-page" id="tab-home">
+      <section class="notice"><p>Join <a href="#">/r/quadrascans</a> or <a href="#">Discord</a> for updates.</p></section>
+      <section class="reading-history">
+        <h3>Continue Reading</h3>
+        <div class="manga-scroll" id="continueReadingContainer"><p class="no-results">No reading history yet.</p></div>
+      </section>
+      <section class="new-mangas">
+        <h3>New Mangas</h3>
+        <div class="manga-scroll" id="newMangasContainer"><p class="no-results">No new mangas found.</p></div>
+      </section>
+      <section class="new-chapters">
+        <h3>New Chapters</h3>
+        <div class="manga-scroll" id="newChaptersContainer"><p class="no-results">No new chapters found.</p></div>
+      </section>
     </section>
 
-    <section class="reading-history">
-      <h3>Continue Reading</h3>
-      <div class="manga-scroll" id="continueReadingContainer">
-        <p class="no-results">No reading history yet.</p>
-      </div>
+    <!-- Favorites -->
+    <section class="tab-page" id="tab-favorites" style="display: none;">
+      <h3>Favorites</h3>
+      <p class="no-results">No favorites yet.</p>
     </section>
 
-    <section class="new-mangas">
-      <h3>New Mangas</h3>
-      <div class="manga-scroll" id="newMangasContainer">
-        <p class="no-results">No new mangas found.</p>
-      </div>
+    <!-- Badges -->
+    <section class="tab-page" id="tab-badges" style="display: none;">
+      <h3>Badges</h3>
+      <p>Collect badges by reading manga and achieving milestones!</p>
     </section>
 
-    <section class="new-chapters">
-      <h3>New Chapters</h3>
-      <div class="manga-scroll" id="newChaptersContainer">
-        <p class="no-results">No new chapters found.</p>
-      </div>
+    <!-- Settings -->
+    <section class="tab-page" id="tab-settings" style="display: none;">
+      <h3>Settings</h3>
+      <p>Settings section coming soon...</p>
     </section>
   </main>
 
   <!-- Bottom Navigation -->
   <nav class="bottom-nav">
-    <button id="tab-home"><i class="fas fa-home"></i></button>
-    <button id="tab-favorites"><i class="fas fa-heart"></i></button>
-    <button id="tab-badges"><i class="fas fa-award"></i></button>
-    <button id="tab-settings"><i class="fas fa-cog"></i></button>
+    <button data-tab="home" class="tab-btn active"><i class="fas fa-home"></i></button>
+    <button data-tab="badges" class="tab-btn"><i class="fas fa-award"></i></button>
+    <button data-tab="favorites" class="tab-btn"><i class="fas fa-heart"></i></button>
+    <button data-tab="settings" class="tab-btn"><i class="fas fa-cog"></i></button>
   </nav>
 
-  <!-- JavaScript -->
+  <!-- JS -->
   <script>
-    // Toggle search bar
-    document.getElementById("searchBtn").addEventListener("click", () => {
-      const container = document.getElementById("searchContainer");
-      container.classList.toggle("hidden");
+    const tabs = document.querySelectorAll('.tab-page');
+    const buttons = document.querySelectorAll('.tab-btn');
+
+    function showTab(name) {
+      tabs.forEach(tab => {
+        tab.style.display = tab.id === `tab-${name}` ? 'block' : 'none';
+      });
+
+      buttons.forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.tab === name);
+      });
+
+      localStorage.setItem('activeTab', name);
+    }
+
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => showTab(btn.dataset.tab));
     });
+
+    showTab(localStorage.getItem('activeTab') || 'home');
 
     const readingHistory = JSON.parse(localStorage.getItem("quadraReading") || "[]");
     const continueReadingContainer = document.getElementById("continueReadingContainer");
@@ -119,24 +139,7 @@
         if (foundNew) {
           newChaptersContainer.querySelector('.no-results')?.remove();
         }
-      })
-      .catch(() => {
-        newChaptersContainer.innerHTML = '<p class="no-results">Failed to load mangas.json</p>';
       });
-
-    // Bottom nav tab storage
-    const allTabs = ['tab-home', 'tab-favorites', 'tab-badges', 'tab-settings'];
-    const savedTab = localStorage.getItem('activeTab') || 'tab-home';
-
-    document.getElementById(savedTab)?.classList.add('active');
-
-    allTabs.forEach(tabId => {
-      document.getElementById(tabId).addEventListener('click', () => {
-        allTabs.forEach(id => document.getElementById(id).classList.remove('active'));
-        document.getElementById(tabId).classList.add('active');
-        localStorage.setItem('activeTab', tabId);
-      });
-    });
   </script>
 </body>
 </html>
