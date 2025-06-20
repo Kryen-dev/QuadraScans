@@ -100,12 +100,12 @@
     fetch(`assets/data/chapters/${mangaId}.json`)
       .then(res => res.json())
       .then(data => {
-        const chapter = data[chapterNum];
+        const chapter = data[chapterNum - 1];
         titleElement.textContent = chapter?.title ? `Chapter ${chapterNum}: ${chapter.title}` : `Chapter ${chapterNum}`;
         titleElement.style.display = 'block';
 
-        const hasPrev = data[chapterNum - 1];
-        const hasNext = data[chapterNum + 1];
+        const hasPrev = data[chapterNum - 2];
+        const hasNext = data[chapterNum];
 
         if (hasPrev) {
           prevBtn.style.display = 'inline-flex';
