@@ -46,3 +46,39 @@ a { color: #58a6ff; text-decoration: none; }
 
 .search-overlay input { width: 100%; padding: 10px; font-size: 16px; background: #111; color: white; border: none; border-radius: 6px; }
 
+.header-icon i {
+  font-size: 18px;
+  color: #fff;
+}
+
+/* Bottom Navigation */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: #1a1a1a;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border-top: 1px solid #333;
+  z-index: 999;
+}
+
+.bottom-nav button {
+  background: none;
+  border: none;
+  color: #ccc;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.bottom-nav button.active {
+  color: #00b7ff;
+}
+
+.bottom-nav button i {
+  font-size: 20px;
+                       }
