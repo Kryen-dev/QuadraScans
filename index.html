@@ -2,130 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>QuadraScans</title>
   <link rel="stylesheet" href="assets/css/style.css" />
   <link rel="icon" href="assets/images/logo.svg" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    body {
-      margin: 0;
-      padding: 80px 0 70px 0;
-      font-family: 'Poppins', sans-serif;
-      background-color: #121212;
-      color: #fff;
-      transition: background 0.3s ease, color 0.3s ease;
-    }
-
-    .top-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 16px;
-      background-color: #111;
-      border-bottom: 1px solid #333;
-    }
-
-    .logo-section {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .logo-img {
-      width: 32px;
-      height: 32px;
-    }
-
-    h1 {
-      font-size: 20px;
-      margin: 0;
-    }
-
-    .icon-section {
-      display: flex;
-      gap: 12px;
-    }
-
-    .header-icon {
-      font-size: 22px;
-      background: none;
-      border: none;
-      color: #eee;
-      cursor: pointer;
-      padding: 6px;
-      border-radius: 6px;
-      transition: background 0.2s ease;
-    }
-
-    .header-icon:hover {
-      background: #2a2a2a;
-    }
-
-    section {
-      padding: 16px;
-    }
-
-    .manga-scroll {
-      display: flex;
-      overflow-x: auto;
-      padding-bottom: 10px;
-    }
-
-    .manga-card {
-      text-align: center;
-      margin-right: 15px;
-      color: #fff;
-      text-decoration: none;
-      opacity: 0;
-      animation: fadeIn 0.3s ease forwards;
-    }
-
-    .manga-card img {
-      width: 120px;
-      border-radius: 8px;
-    }
-
-    .no-results {
-      color: #888;
-      font-style: italic;
-    }
-
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 60px;
-      background: #1a1a1a;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      border-top: 1px solid #333;
-      z-index: 999;
-    }
-
-    .bottom-nav button {
-      background: none;
-      border: none;
-      color: #ccc;
-      font-size: 1.3rem;
-      cursor: pointer;
-      transition: color 0.2s ease;
-    }
-
-    .bottom-nav button.active {
-      color: #00b7ff;
-      font-weight: bold;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  </style>
+  <script src="https://kit.fontawesome.com/yourkit.js" crossorigin="anonymous"></script>
 </head>
-<body>
+<body class="dark-theme">
 
   <!-- Top Header -->
   <header class="top-header">
@@ -134,119 +18,160 @@
       <h1>QuadraScans</h1>
     </div>
     <div class="icon-section">
-      <button class="header-icon" id="searchBtn">🔍</button>
-      <button class="header-icon" id="profileBtn">👤</button>
+      <button class="header-icon" id="searchBtn"><i class="fas fa-search"></i></button>
+      <button class="header-icon" id="profileBtn"><i class="fas fa-user"></i></button>
     </div>
   </header>
 
-  <!-- Main Content -->
-  <main class="main-content" id="mainContent">
-    <section class="notice">
-      <p>Join <a href="#">/r/quadrascans</a> or <a href="#">Discord</a> for support and discussion.</p>
+  <!-- Hidden Search -->
+  <div class="search-overlay hidden" id="searchContainer">
+    <input type="text" id="searchInput" placeholder="Search manga..." />
+  </div>
+
+  <!-- Main Sections -->
+  <main class="main-content fade" id="mainContent">
+    <section id="homeTab">
+      <section class="notice">
+        <p>Join <a href="#">/r/quadrascans</a> or <a href="#">Discord</a> for support and discussion.</p>
+      </section>
+
+      <section class="reading-history">
+        <h3>Continue Reading</h3>
+        <div class="manga-scroll" id="continueReadingContainer">
+          <p class="no-results">No reading history yet.</p>
+        </div>
+      </section>
+
+      <section class="new-mangas">
+        <h3>New Mangas</h3>
+        <div class="manga-scroll" id="newMangasContainer">
+          <p class="no-results">No new mangas found.</p>
+        </div>
+      </section>
+
+      <section class="new-chapters">
+        <h3>New Chapters</h3>
+        <div class="manga-scroll" id="newChaptersContainer">
+          <p class="no-results">No new chapters found.</p>
+        </div>
+      </section>
     </section>
 
-    <section class="reading-history">
-      <h3>Continue Reading</h3>
-      <div class="manga-scroll" id="continueReadingContainer">
-        <p class="no-results">No reading history yet.</p>
+    <section id="favoritesTab" class="hidden">
+      <h3>Favorites</h3>
+      <div class="manga-scroll" id="favoritesContainer">
+        <p class="no-results">No favorites yet.</p>
       </div>
     </section>
 
-    <section class="new-mangas">
-      <h3>New Mangas</h3>
-      <div class="manga-scroll" id="newMangasContainer">
-        <p class="no-results">No new mangas found.</p>
-      </div>
+    <section id="badgesTab" class="hidden">
+      <h3>Badges</h3>
+      <p>🏅 You haven’t earned any badges yet.</p>
     </section>
 
-    <section class="new-chapters">
-      <h3>New Chapters</h3>
-      <div class="manga-scroll" id="newChaptersContainer">
-        <p class="no-results">No new chapters found.</p>
-      </div>
+    <section id="settingsTab" class="hidden">
+      <h3>Settings</h3>
+      <p>Theme toggle, reset progress, etc. coming soon.</p>
     </section>
   </main>
 
   <!-- Bottom Navigation -->
   <nav class="bottom-nav">
-    <button id="tab-home" title="Home">🏠</button>
-    <button id="tab-badges" title="Badges">🏅</button>
-    <button id="tab-fav" title="Favourites">❤️</button>
-    <button id="tab-settings" title="Settings">⚙️</button>
+    <button id="tab-home" class="tab active"><i class="fas fa-home"></i><span>Home</span></button>
+    <button id="tab-favorites" class="tab"><i class="fas fa-heart"></i><span>Fav</span></button>
+    <button id="tab-badges" class="tab"><i class="fas fa-medal"></i><span>Badges</span></button>
+    <button id="tab-settings" class="tab"><i class="fas fa-cog"></i><span>Settings</span></button>
   </nav>
 
-  <!-- JS -->
   <script>
-    // Top buttons
+    // Tab switching
+    const tabs = {
+      'tab-home': 'homeTab',
+      'tab-favorites': 'favoritesTab',
+      'tab-badges': 'badgesTab',
+      'tab-settings': 'settingsTab'
+    };
+
+    const showTab = (tabId) => {
+      Object.values(tabs).forEach(id => document.getElementById(id).classList.add('hidden'));
+      Object.keys(tabs).forEach(id => document.getElementById(id).classList.remove('active'));
+      document.getElementById(tabs[tabId]).classList.remove('hidden');
+      document.getElementById(tabId).classList.add('active');
+      localStorage.setItem('activeTab', tabId);
+    };
+
+    Object.keys(tabs).forEach(tabId => {
+      document.getElementById(tabId).addEventListener('click', () => showTab(tabId));
+    });
+
+    // Set default tab from localStorage
+    const activeTab = localStorage.getItem('activeTab') || 'tab-home';
+    showTab(activeTab);
+
+    // Search button
     document.getElementById("searchBtn").addEventListener("click", () => {
-      window.location.href = "search.html";
-    });
-    document.getElementById("profileBtn").addEventListener("click", () => {
-      window.location.href = "profile.html";
+      document.getElementById("searchContainer").classList.toggle("hidden");
     });
 
-    // Load manga data
+    // Fetch and populate manga
     const readingHistory = JSON.parse(localStorage.getItem("quadraReading") || "[]");
-    const continueReadingContainer = document.getElementById("continueReadingContainer");
-    const newChaptersContainer = document.getElementById("newChaptersContainer");
-    const newMangasContainer = document.getElementById("newMangasContainer");
-
     fetch("assets/data/mangas.json")
       .then(res => res.json())
       .then(mangas => {
-        const historyMangas = readingHistory
-          .map(id => mangas.find(m => m.id === id))
-          .filter(Boolean);
+        const continueReading = document.getElementById("continueReadingContainer");
+        const newChapters = document.getElementById("newChaptersContainer");
+        const newMangas = document.getElementById("newMangasContainer");
+        const favoritesContainer = document.getElementById("favoritesContainer");
 
-        if (historyMangas.length > 0) {
-          continueReadingContainer.innerHTML = '';
-          historyMangas.forEach(manga => {
+        // Continue Reading
+        const historyMangas = readingHistory.map(id => mangas.find(m => m.id === id)).filter(Boolean);
+        if (historyMangas.length) {
+          continueReading.innerHTML = '';
+          historyMangas.forEach(m => {
             const a = document.createElement("a");
-            a.href = `manga.html?id=${manga.id}`;
+            a.href = `manga.html?id=${m.id}`;
             a.className = "manga-card";
-            a.innerHTML = `<img src="${manga.cover}" alt="${manga.title}" /><span>${manga.title}</span>`;
-            continueReadingContainer.appendChild(a);
+            a.innerHTML = `<img src="${m.cover}" alt="${m.title}" /><span>${m.title}</span>`;
+            continueReading.appendChild(a);
           });
         }
 
-        mangas.forEach(manga => {
+        // New Mangas
+        newMangas.innerHTML = '';
+        mangas.forEach(m => {
           const a = document.createElement("a");
-          a.href = `manga.html?id=${manga.id}`;
+          a.href = `manga.html?id=${m.id}`;
           a.className = "manga-card";
-          a.innerHTML = `<img src="${manga.cover}" alt="${manga.title}" /><span>${manga.title}</span>`;
-          newMangasContainer.appendChild(a);
+          a.innerHTML = `<img src="${m.cover}" alt="${m.title}" /><span>${m.title}</span>`;
+          newMangas.appendChild(a);
         });
-        newMangasContainer.querySelector('.no-results')?.remove();
 
-        let foundNew = false;
-        mangas.forEach(manga => {
-          if (manga.latestChapter) {
-            foundNew = true;
+        // New Chapters
+        newChapters.innerHTML = '';
+        mangas.forEach(m => {
+          if (m.latestChapter) {
             const a = document.createElement("a");
-            a.href = `reader.html?id=${manga.id}&chapter=${manga.latestChapter}`;
+            a.href = `reader.html?id=${m.id}&chapter=${m.latestChapter}`;
             a.className = "manga-card";
-            a.innerHTML = `<img src="${manga.cover}" alt="${manga.title}" /><span>${manga.title} – Chapter ${manga.latestChapter}</span>`;
-            newChaptersContainer.appendChild(a);
+            a.innerHTML = `<img src="${m.cover}" alt="${m.title}" /><span>${m.title} – Chapter ${m.latestChapter}</span>`;
+            newChapters.appendChild(a);
           }
         });
-        if (foundNew) {
-          newChaptersContainer.querySelector('.no-results')?.remove();
+
+        // Favorites (future)
+        const favorites = JSON.parse(localStorage.getItem("quadraFav") || "[]");
+        const favMangas = favorites.map(id => mangas.find(m => m.id === id)).filter(Boolean);
+        if (favMangas.length) {
+          favoritesContainer.innerHTML = '';
+          favMangas.forEach(m => {
+            const a = document.createElement("a");
+            a.href = `manga.html?id=${m.id}`;
+            a.className = "manga-card";
+            a.innerHTML = `<img src="${m.cover}" alt="${m.title}" /><span>${m.title}</span>`;
+            favoritesContainer.appendChild(a);
+          });
         }
       });
-
-    // Bottom nav tab logic
-    const tabIds = ['tab-home', 'tab-badges', 'tab-fav', 'tab-settings'];
-    const savedTab = localStorage.getItem('activeTab') || 'tab-home';
-    document.getElementById(savedTab)?.classList.add('active');
-
-    tabIds.forEach(id => {
-      document.getElementById(id).addEventListener('click', () => {
-        tabIds.forEach(t => document.getElementById(t).classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        localStorage.setItem('activeTab', id);
-        document.body.classList.add('fade');
-      });
-    });
   </script>
 </body>
 </html>
