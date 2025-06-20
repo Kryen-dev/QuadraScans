@@ -25,7 +25,7 @@
 
   <!-- Main Content -->
   <main class="main-content" id="mainContent">
-    <!-- Home -->
+    <!-- Home Tab -->
     <section class="tab-page" id="tab-home">
       <section class="notice"><p>Join <a href="#">/r/quadrascans</a> or <a href="#">Discord</a> for updates.</p></section>
       <section class="reading-history">
@@ -42,19 +42,20 @@
       </section>
     </section>
 
-    <!-- Favorites -->
+    <!-- Favorites Tab -->
     <section class="tab-page" id="tab-favorites" style="display: none;">
       <h3>Favorites</h3>
-      <p class="no-results">No favorites yet.</p>
+      <div class="manga-scroll" id="favoritesContainer"><p class="no-results">No favorites yet.</p></div>
     </section>
 
-    <!-- Badges -->
+    <!-- Badges Tab -->
     <section class="tab-page" id="tab-badges" style="display: none;">
       <h3>Badges</h3>
       <p>Collect badges by reading manga and achieving milestones!</p>
+      <div id="badge-unlocked" class="badge-popup hidden">🎉 New Badge Unlocked!</div>
     </section>
 
-    <!-- Settings -->
+    <!-- Settings Tab -->
     <section class="tab-page" id="tab-settings" style="display: none;">
       <h3>Settings</h3>
       <p>Settings section coming soon...</p>
@@ -73,6 +74,7 @@
   <script>
     const tabs = document.querySelectorAll('.tab-page');
     const buttons = document.querySelectorAll('.tab-btn');
+    const favoritesContainer = document.getElementById("favoritesContainer");
 
     function showTab(name) {
       tabs.forEach(tab => {
@@ -93,6 +95,7 @@
     showTab(localStorage.getItem('activeTab') || 'home');
 
     const readingHistory = JSON.parse(localStorage.getItem("quadraReading") || "[]");
+    const favorites = JSON.parse(localStorage.getItem("quadraFavs") || "[]");
     const continueReadingContainer = document.getElementById("continueReadingContainer");
     const newChaptersContainer = document.getElementById("newChaptersContainer");
     const newMangasContainer = document.getElementById("newMangasContainer");
@@ -100,6 +103,7 @@
     fetch("assets/data/mangas.json")
       .then(res => res.json())
       .then(mangas => {
+        // Continue Reading
         const historyMangas = readingHistory
           .map(title => mangas.find(m => m.id === title))
           .filter(Boolean);
@@ -115,6 +119,7 @@
           });
         }
 
+        // New Mangas
         mangas.forEach(manga => {
           const a = document.createElement("a");
           a.href = `manga.html?id=${manga.id}`;
@@ -124,6 +129,7 @@
         });
         newMangasContainer.querySelector('.no-results')?.remove();
 
+        // New Chapters
         let foundNew = false;
         mangas.forEach(manga => {
           if (manga.latestChapter) {
@@ -135,9 +141,36 @@
             newChaptersContainer.appendChild(a);
           }
         });
-
         if (foundNew) {
           newChaptersContainer.querySelector('.no-results')?.remove();
+        }
+
+        // Favorite Section
+        function renderFavorites() {
+          favoritesContainer.innerHTML = '';
+          const favMangas = mangas.filter(m => favorites.includes(m.id));
+          if (favMangas.length === 0) {
+            favoritesContainer.innerHTML = '<p class="no-results">No favorites yet.</p>';
+            return;
+          }
+          favMangas.forEach(manga => {
+            const a = document.createElement("a");
+            a.href = `manga.html?id=${manga.id}`;
+            a.className = "manga-card";
+            a.innerHTML = `<img src="${manga.cover}" alt="${manga.title}" /><span>${manga.title}</span>`;
+            favoritesContainer.appendChild(a);
+          });
+        }
+
+        renderFavorites();
+
+        // Simulate badge animation (e.g., when reading 3 manga)
+        if (readingHistory.length >= 3 && !localStorage.getItem('badgeShown')) {
+          const popup = document.getElementById('badge-unlocked');
+          popup.classList.remove('hidden');
+          popup.classList.add('animate');
+          setTimeout(() => popup.classList.add('hidden'), 3000);
+          localStorage.setItem('badgeShown', 'yes');
         }
       });
   </script>
