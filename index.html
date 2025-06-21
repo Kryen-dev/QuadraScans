@@ -31,11 +31,6 @@
       <section class="notice"><p>Join <a href="#">/r/quadrascans</a> or <a href="#">Discord</a> for updates.</p></section>
 
       <section class="reading-history">
-        <h3>Recently Read</h3>
-        <div class="manga-scroll" id="recentlyReadContainer"><p class="no-results">No recently read mangas yet.</p></div>
-      </section>
-
-      <section class="reading-history">
         <h3>Continue Reading</h3>
         <div class="manga-scroll" id="continueReadingContainer"><p class="no-results">No reading history yet.</p></div>
       </section>
@@ -60,7 +55,7 @@
     <!-- Badges -->
     <section class="tab-page" id="tab-badges" style="display: none;">
       <h3>Badges</h3>
-      <p>Coming soon: earn achievements for your manga reading journey!</p>
+      <p>Badges will be added soon!</p>
     </section>
 
     <!-- Settings -->
@@ -68,6 +63,7 @@
       <h3>Settings</h3>
       <p>Settings section coming soon...</p>
     </section>
+
   </main>
 
   <!-- Bottom Navigation -->
@@ -78,37 +74,27 @@
     <button data-tab="settings" class="tab-btn"><i class="fas fa-cog"></i></button>
   </nav>
 
-  <!-- JS -->
+  <!-- JavaScript -->
   <script>
     const tabs = document.querySelectorAll('.tab-page');
     const buttons = document.querySelectorAll('.tab-btn');
 
     function showTab(name) {
-      tabs.forEach(tab => {
-        tab.style.display = tab.id === `tab-${name}` ? 'block' : 'none';
-      });
-
-      buttons.forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.tab === name);
-      });
-
+      tabs.forEach(tab => tab.style.display = tab.id === `tab-${name}` ? 'block' : 'none');
+      buttons.forEach(btn => btn.classList.toggle('active', btn.dataset.tab === name));
       localStorage.setItem('activeTab', name);
       if (name === 'favorites') renderFavorites();
     }
 
-    buttons.forEach(btn => {
-      btn.addEventListener('click', () => showTab(btn.dataset.tab));
-    });
-
+    buttons.forEach(btn => btn.addEventListener('click', () => showTab(btn.dataset.tab)));
     showTab(localStorage.getItem('activeTab') || 'home');
 
     const continueReadingContainer = document.getElementById("continueReadingContainer");
     const newChaptersContainer = document.getElementById("newChaptersContainer");
     const newMangasContainer = document.getElementById("newMangasContainer");
     const favoritesContainer = document.getElementById("favoritesContainer");
-    const recentlyReadContainer = document.getElementById("recentlyReadContainer");
 
-    const readingHistory = JSON.parse(localStorage.getItem("quadraReading") || "[]");
+    const readingHistory = JSON.parse(localStorage.getItem("quadraReading") || "[]"); // [{id, chapter}]
     const favoriteIds = JSON.parse(localStorage.getItem("quadraFavs") || "[]");
 
     function renderFavorites() {
@@ -137,53 +123,25 @@
         });
     }
 
-    function renderRecentlyRead(mangas) {
-      recentlyReadContainer.innerHTML = '';
-
-      const seen = new Set();
-      const unique = [];
-
-      for (let i = readingHistory.length - 1; i >= 0; i--) {
-        const item = readingHistory[i];
-        if (!seen.has(item.id)) {
-          unique.push(item);
-          seen.add(item.id);
-        }
-      }
-
-      if (unique.length === 0) {
-        recentlyReadContainer.innerHTML = '<p class="no-results">No recently read mangas yet.</p>';
-        return;
-      }
-
-      unique.forEach(entry => {
-        const manga = mangas.find(m => m.id === entry.id);
-        if (!manga) return;
-
-        const a = document.createElement("a");
-        a.href = `reader.html?id=${entry.id}&chapter=${entry.chapter}`;
-        a.className = "manga-card";
-        a.innerHTML = `
-          <img src="${manga.cover}" alt="${manga.title}" />
-          <span>${manga.title}</span>
-          <small style="color: #aaa; font-size: 0.8rem;">Last read: Chapter ${entry.chapter}</small>
-        `;
-        recentlyReadContainer.appendChild(a);
-      });
-    }
-
     fetch("assets/data/mangas.json")
       .then(res => res.json())
       .then(mangas => {
-        // Continue Reading (to overview)
-        const historyMangas = readingHistory.map(r => mangas.find(m => m.id === r.id)).filter(Boolean);
-        if (historyMangas.length > 0) {
+        // Continue Reading
+        const continueList = readingHistory.map(entry => {
+          const found = mangas.find(m => m.id === entry.id);
+          if (found) return { ...found, lastChapter: entry.chapter };
+          return null;
+        }).filter(Boolean);
+
+        if (continueList.length > 0) {
           continueReadingContainer.innerHTML = '';
-          historyMangas.forEach(manga => {
+          continueList.forEach(manga => {
             const a = document.createElement("a");
-            a.href = `manga.html?id=${manga.id}`;
+            a.href = `reader.html?id=${manga.id}&chapter=${manga.lastChapter}`;
             a.className = "manga-card";
-            a.innerHTML = `<img src="${manga.cover}" alt="${manga.title}" /><span>${manga.title}</span>`;
+            a.innerHTML = `
+              <img src="${manga.cover}" alt="${manga.title}" />
+              <span>${manga.title}<br><small>Last read: Chapter ${manga.lastChapter}</small></span>`;
             continueReadingContainer.appendChild(a);
           });
         }
@@ -211,9 +169,6 @@
           }
         });
         if (foundNew) newChaptersContainer.querySelector('.no-results')?.remove();
-
-        // Recently Read
-        renderRecentlyRead(mangas);
       });
   </script>
 </body>
