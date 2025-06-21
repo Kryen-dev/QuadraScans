@@ -52,14 +52,10 @@
       <div class="manga-scroll" id="favoritesContainer"><p class="no-results">No favorites yet.</p></div>
     </section>
 
-    <!-- Badges -->
+    <!-- Recently Read -->
     <section class="tab-page" id="tab-badges" style="display: none;">
-      <h3>Badges</h3>
-      <div class="badge-container">
-        <div class="badge"><img src="assets/images/badges/start-reader.png" alt="Badge"><span>Start Reader</span></div>
-        <div class="badge"><img src="assets/images/badges/5-mangas.png" alt="Badge"><span>Read 5 Mangas</span></div>
-        <div class="badge"><img src="assets/images/badges/expert.png" alt="Badge"><span>Expert</span></div>
-      </div>
+      <h3>Recently Read</h3>
+      <div class="manga-scroll" id="recentlyReadContainer"><p class="no-results">No recently read mangas yet.</p></div>
     </section>
 
     <!-- Settings -->
@@ -72,7 +68,7 @@
   <!-- Bottom Navigation -->
   <nav class="bottom-nav">
     <button data-tab="home" class="tab-btn active"><i class="fas fa-home"></i></button>
-    <button data-tab="badges" class="tab-btn"><i class="fas fa-award"></i></button>
+    <button data-tab="badges" class="tab-btn"><i class="fas fa-clock"></i></button>
     <button data-tab="favorites" class="tab-btn"><i class="fas fa-heart"></i></button>
     <button data-tab="settings" class="tab-btn"><i class="fas fa-cog"></i></button>
   </nav>
@@ -135,6 +131,27 @@
         });
     }
 
+    function renderRecentlyRead(mangas) {
+      const container = document.getElementById("recentlyReadContainer");
+      if (!container) return;
+      container.innerHTML = '';
+      const uniqueMangaIds = [...new Set(readingHistory.reverse())]; // most recent first
+      const recent = uniqueMangaIds.map(id => mangas.find(m => m.id === id)).filter(Boolean);
+
+      if (recent.length === 0) {
+        container.innerHTML = '<p class="no-results">No recently read mangas yet.</p>';
+        return;
+      }
+
+      recent.forEach(manga => {
+        const a = document.createElement("a");
+        a.href = `manga.html?id=${manga.id}`;
+        a.className = "manga-card";
+        a.innerHTML = `<img src="${manga.cover}" alt="${manga.title}" /><span>${manga.title}</span>`;
+        container.appendChild(a);
+      });
+    }
+
     fetch("assets/data/mangas.json")
       .then(res => res.json())
       .then(mangas => {
@@ -174,6 +191,9 @@
           }
         });
         if (foundNew) newChaptersContainer.querySelector('.no-results')?.remove();
+
+        // Recently Read
+        renderRecentlyRead(mangas);
       });
   </script>
 </body>
