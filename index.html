@@ -19,7 +19,7 @@
     </div>
     <div class="icon-section">
       <button class="header-icon" onclick="window.location.href='search.html'"><i class="fas fa-search"></i></button>
-      <button class="header-icon"><i class="fas fa-user"></i></button>
+      <button class="header-icon" id="userBtn"><i class="fas fa-user"></i></button>
     </div>
   </header>
 
@@ -170,6 +170,22 @@
         });
         if (foundNew) newChaptersContainer.querySelector('.no-results')?.remove();
       });
+  </script>
+
+  <!-- Supabase Auth Check -->
+  <script type="module">
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js'
+
+    const supabase = createClient(
+      'https://qanielcwwcfbffyucytk.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhbmllbGN3d2NmYmZmeXVjeXRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1MjU0MDgsImV4cCI6MjA2NjEwMTQwOH0.7PIncqpt4KnPJv4EH00BRtPNE8ckLACo_DFNM40WCMo'
+    );
+
+    const userBtn = document.getElementById('userBtn');
+    userBtn.addEventListener('click', async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      window.location.href = user ? 'profile.html' : 'login.html';
+    });
   </script>
 </body>
 </html>
