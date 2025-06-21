@@ -1,3 +1,4 @@
+<!-- Save as manga.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,7 +16,6 @@
       background: #121212;
       color: #eee;
     }
-
     .back-arrow {
       position: fixed;
       top: 12px;
@@ -27,11 +27,7 @@
       z-index: 999;
       text-decoration: none;
     }
-
-    .back-arrow:hover {
-      background: #222;
-    }
-
+    .back-arrow:hover { background: #222; }
     .fav-btn {
       position: fixed;
       top: 12px;
@@ -43,37 +39,31 @@
       cursor: pointer;
       z-index: 999;
     }
-
     .container {
       display: flex;
       flex-wrap: wrap;
       gap: 20px;
       margin-top: 60px;
     }
-
     .left-side img {
       width: 100%;
       max-width: 260px;
       border-radius: 12px;
     }
-
     .right-side {
       flex: 1;
       min-width: 260px;
     }
-
     .genres, .status {
       font-size: 0.85rem;
       margin: 8px 0;
       color: #aaa;
     }
-
     .description {
       color: #ccc;
       margin: 10px 0;
       font-size: 0.95rem;
     }
-
     .desc-toggle-btn {
       background: none;
       border: none;
@@ -82,7 +72,6 @@
       font-size: 0.9rem;
       padding: 0;
     }
-
     .chapter-select {
       margin: 20px 0 10px;
       padding: 10px;
@@ -94,21 +83,17 @@
       width: 100%;
       max-width: 300px;
     }
-
     .chapter-link {
       display: block;
       margin: 8px 0;
       color: #eee;
       text-decoration: none;
     }
-
-    .chapter-link:hover {
-      text-decoration: underline;
-    }
+    .chapter-link:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
-  <!-- Back and Fav Buttons -->
+
   <a href="index.html" class="back-arrow" aria-label="Go back">
     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -117,7 +102,6 @@
 
   <button id="favBtn" class="fav-btn" title="Add to Favorites">🤍</button>
 
-  <!-- Manga Info Layout -->
   <div class="container">
     <div class="left-side">
       <img id="manga-cover" alt="Cover" />
@@ -131,32 +115,25 @@
     </div>
   </div>
 
-  <!-- Chapter Dropdown -->
   <select id="chapterDropdown" class="chapter-select">
     <option disabled selected>Select a Chapter</option>
   </select>
 
-  <!-- Chapters -->
   <h3>Chapters</h3>
   <div id="chapter-list"></div>
 
   <script>
     const urlParams = new URLSearchParams(window.location.search);
     const mangaId = urlParams.get("id");
-
     const favBtn = document.getElementById("favBtn");
 
-    // Load Manga Info
+    // Load manga data
     fetch("assets/data/mangas.json")
       .then(res => res.json())
       .then(mangas => {
         const manga = mangas.find(m => m.id === mangaId);
-        if (!manga) {
-          document.getElementById("manga-title").innerText = "Manga not found";
-          return;
-        }
+        if (!manga) return document.getElementById("manga-title").innerText = "Manga not found";
 
-        // Basic Info
         document.getElementById("manga-title").innerText = manga.title;
         document.getElementById("manga-cover").src = manga.cover;
         document.getElementById("manga-status").innerText = manga.status;
@@ -175,25 +152,32 @@
           toggleBtn.innerText = isExpanded ? "Less" : "More...";
         });
 
-        // Check Favorites
-        const favs = JSON.parse(localStorage.getItem("favorites") || "[]");
+        // Favorites logic
+        let favs = JSON.parse(localStorage.getItem("quadraFavs") || "[]");
         const isFav = favs.includes(mangaId);
         favBtn.textContent = isFav ? "❤️" : "🤍";
 
         favBtn.addEventListener("click", () => {
-          let updated = JSON.parse(localStorage.getItem("favorites") || "[]");
-          if (updated.includes(mangaId)) {
-            updated = updated.filter(id => id !== mangaId);
+          favs = JSON.parse(localStorage.getItem("quadraFavs") || "[]");
+          if (favs.includes(mangaId)) {
+            favs = favs.filter(id => id !== mangaId);
             favBtn.textContent = "🤍";
           } else {
-            updated.push(mangaId);
+            favs.push(mangaId);
             favBtn.textContent = "❤️";
           }
-          localStorage.setItem("favorites", JSON.stringify(updated));
+          localStorage.setItem("quadraFavs", JSON.stringify(favs));
         });
+
+        // Save to reading history
+        let reading = JSON.parse(localStorage.getItem("quadraReading") || "[]");
+        if (!reading.includes(mangaId)) {
+          reading.unshift(mangaId);
+          localStorage.setItem("quadraReading", JSON.stringify(reading.slice(0, 10)));
+        }
       });
 
-    // Load Chapters
+    // Load chapters
     fetch(`assets/data/chapters/${mangaId}.json`)
       .then(res => res.json())
       .then(chapters => {
@@ -203,23 +187,19 @@
         chapters.forEach(ch => {
           const link = `reader.html?id=${mangaId}&chapter=${ch.number}`;
 
-          // Chapter Link
           const a = document.createElement("a");
           a.href = link;
           a.textContent = `Chapter ${ch.number}: ${ch.title || ''}`;
           a.className = "chapter-link";
           container.appendChild(a);
 
-          // Dropdown Option
           const opt = document.createElement("option");
           opt.value = link;
           opt.text = `Chapter ${ch.number}: ${ch.title || ''}`;
           dropdown.appendChild(opt);
         });
 
-        dropdown.addEventListener("change", (e) => {
-          window.location.href = e.target.value;
-        });
+        dropdown.addEventListener("change", e => window.location.href = e.target.value);
       })
       .catch(() => {
         document.getElementById("chapter-list").innerText = "Failed to load chapters.";
