@@ -29,14 +29,17 @@
     <!-- Home -->
     <section class="tab-page" id="tab-home">
       <section class="notice"><p>Join <a href="#">/r/quadrascans</a> or <a href="#">Discord</a> for updates.</p></section>
+      
       <section class="reading-history">
         <h3>Continue Reading</h3>
         <div class="manga-scroll" id="continueReadingContainer"><p class="no-results">No reading history yet.</p></div>
       </section>
+
       <section class="new-mangas">
         <h3>New Mangas</h3>
         <div class="manga-scroll" id="newMangasContainer"><p class="no-results">No new mangas found.</p></div>
       </section>
+
       <section class="new-chapters">
         <h3>New Chapters</h3>
         <div class="manga-scroll" id="newChaptersContainer"><p class="no-results">No new chapters found.</p></div>
@@ -64,7 +67,6 @@
       <h3>Settings</h3>
       <p>Settings section coming soon...</p>
     </section>
-
   </main>
 
   <!-- Bottom Navigation -->
@@ -75,19 +77,27 @@
     <button data-tab="settings" class="tab-btn"><i class="fas fa-cog"></i></button>
   </nav>
 
-  <!-- JavaScript -->
+  <!-- JS -->
   <script>
     const tabs = document.querySelectorAll('.tab-page');
     const buttons = document.querySelectorAll('.tab-btn');
 
     function showTab(name) {
-      tabs.forEach(tab => tab.style.display = tab.id === `tab-${name}` ? 'block' : 'none');
-      buttons.forEach(btn => btn.classList.toggle('active', btn.dataset.tab === name));
+      tabs.forEach(tab => {
+        tab.style.display = tab.id === `tab-${name}` ? 'block' : 'none';
+      });
+
+      buttons.forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.tab === name);
+      });
+
       localStorage.setItem('activeTab', name);
       if (name === 'favorites') renderFavorites();
     }
 
-    buttons.forEach(btn => btn.addEventListener('click', () => showTab(btn.dataset.tab)));
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => showTab(btn.dataset.tab));
+    });
 
     showTab(localStorage.getItem('activeTab') || 'home');
 
@@ -110,6 +120,11 @@
         .then(res => res.json())
         .then(mangas => {
           const favs = mangas.filter(m => favoriteIds.includes(m.id));
+          if (favs.length === 0) {
+            favoritesContainer.innerHTML = '<p class="no-results">No favorites yet.</p>';
+            return;
+          }
+
           favs.forEach(manga => {
             const a = document.createElement("a");
             a.href = `manga.html?id=${manga.id}`;
@@ -123,6 +138,7 @@
     fetch("assets/data/mangas.json")
       .then(res => res.json())
       .then(mangas => {
+        // Reading History
         const historyMangas = readingHistory.map(id => mangas.find(m => m.id === id)).filter(Boolean);
         if (historyMangas.length > 0) {
           continueReadingContainer.innerHTML = '';
@@ -135,6 +151,7 @@
           });
         }
 
+        // New Mangas
         mangas.forEach(manga => {
           const a = document.createElement("a");
           a.href = `manga.html?id=${manga.id}`;
@@ -144,6 +161,7 @@
         });
         newMangasContainer.querySelector('.no-results')?.remove();
 
+        // New Chapters
         let foundNew = false;
         mangas.forEach(manga => {
           if (manga.latestChapter) {
