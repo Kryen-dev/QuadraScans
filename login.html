@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login – QuadraScans</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="dark-theme">
+  <div class="login-container">
+    <h1>Login to QuadraScans</h1>
+
+    <!-- Email Login -->
+    <form id="login-form">
+      <input type="email" id="email" placeholder="Enter your email" required />
+      <button type="submit">Login with Email</button>
+    </form>
+
+    <hr />
+
+    <!-- Google Login -->
+    <button id="google-login">Login with Google</button>
+  </div>
+
+  <script>
+    const supabase = supabase.createClient(
+      'https://qanielcwwcfbffyucytk.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhbmllbGN3d2NmYmZmeXVjeXRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1MjU0MDgsImV4cCI6MjA2NjEwMTQwOH0.7PIncqpt4KnPJv4EH00BRtPNE8ckLACo_DFNM40WCMo'
+    );
+
+    // Email OTP login
+    document.getElementById("login-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("email").value;
+      const { error } = await supabase.auth.signInWithOtp({ email });
+      if (error) {
+        alert("Login failed: " + error.message);
+      } else {
+        alert("Check your email for the login link!");
+      }
+    });
+
+    // Google login
+    document.getElementById("google-login").addEventListener("click", async () => {
+      await supabase.auth.signInWithOAuth({ provider: 'google' });
+    });
+  </script>
+</body>
+</html>
