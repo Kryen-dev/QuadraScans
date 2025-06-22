@@ -19,7 +19,7 @@
     </div>
     <div class="icon-section">
       <button class="header-icon" onclick="window.location.href='search.html'"><i class="fas fa-search"></i></button>
-      <!-- User icon removed -->
+      <button class="header-icon" id="userIcon"><i class="fas fa-user"></i></button>
     </div>
   </header>
 
@@ -70,7 +70,7 @@
     <button data-tab="settings" class="tab-btn"><i class="fas fa-cog"></i></button>
   </nav>
 
-  <!-- Tab Script -->
+  <!-- Tab and Manga Render Script -->
   <script>
     const tabs = document.querySelectorAll('.tab-page');
     const buttons = document.querySelectorAll('.tab-btn');
@@ -165,14 +165,23 @@
       });
   </script>
 
-  <!-- Supabase Auth Check - Safe version without userBtn -->
+  <!-- Supabase Auth Script to Handle User Icon Click -->
   <script type="module">
     import { createClient } from 'https://esm.sh/@supabase/supabase-js';
     const supabase = createClient(
       'https://qanielcwwcfbffyucytk.supabase.co',
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhbmllbGN3d2NmYmZmeXVjeXRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1MjU0MDgsImV4cCI6MjA2NjEwMTQwOH0.7PIncqpt4KnPJv4EH00BRtPNE8ckLACo_DFNM40WCMo'
     );
-    // userBtn was removed, no auth listener needed here
+
+    const userIcon = document.getElementById("userIcon");
+    userIcon.addEventListener("click", async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        window.location.href = "profile.html";
+      } else {
+        window.location.href = "signup.html";
+      }
+    });
   </script>
 </body>
 </html>
