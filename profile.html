@@ -10,156 +10,195 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
-      margin: 0;
       font-family: 'Poppins', sans-serif;
       background-color: #121212;
       color: #fff;
+      margin: 0;
+      padding: 0;
       display: flex;
       flex-direction: column;
       min-height: 100vh;
     }
 
     header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 20px;
       background-color: #1e1e1e;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
-    .logo-title {
+    header .logo {
       display: flex;
       align-items: center;
       gap: 10px;
     }
 
-    .logo-title img {
+    header img {
       height: 40px;
     }
 
-    .logo-title h1 {
-      font-size: 1.5rem;
+    header h1 {
+      font-size: 1.4rem;
       margin: 0;
     }
 
     main {
-      padding: 30px 20px;
       flex: 1;
-    }
-
-    .profile-card {
-      background-color: #1e1e1e;
-      border-radius: 16px;
-      padding: 2rem;
-      max-width: 500px;
-      margin: auto;
-      text-align: center;
-      box-shadow: 0 0 20px rgba(0,0,0,0.3);
-    }
-
-    .profile-card h2 {
-      margin: 0 0 0.5rem 0;
-      font-size: 1.6rem;
-    }
-
-    .profile-card p {
-      color: #aaa;
-      margin: 0.5rem 0;
-      font-size: 0.95rem;
-    }
-
-    .action-buttons {
-      margin-top: 2rem;
       display: flex;
-      gap: 10px;
-      flex-direction: column;
+      justify-content: center;
       align-items: center;
+      padding: 2rem;
     }
 
-    .action-buttons button {
-      background-color: #2a2a2a;
-      color: #fff;
-      border: none;
-      padding: 0.75rem 1.2rem;
-      border-radius: 8px;
+    .profile-box {
+      background-color: #1e1e1e;
+      padding: 2rem;
+      border-radius: 16px;
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .profile-box h2 {
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+    }
+
+    .profile-box p {
+      margin: 6px 0;
       font-size: 0.95rem;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
+      color: #ccc;
     }
 
-    .action-buttons button:hover {
-      background-color: #3a3a3a;
+    .username {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #fff;
+      margin-top: 12px;
     }
 
-    .subscription-info {
-      margin-top: 1.5rem;
-      background-color: #2a2a2a;
-      padding: 1rem;
+    .badge {
+      background-color: #ffd700;
+      color: #000;
+      display: inline-block;
+      font-size: 0.75rem;
+      padding: 4px 10px;
       border-radius: 12px;
-      font-size: 0.9rem;
+      margin-top: 6px;
+    }
+
+    .plan-status {
+      margin: 20px 0;
+      padding: 12px;
+      background-color: #2a2a2a;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      color: #eee;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background-color: #4eaaff;
+      color: #000;
+      font-weight: 600;
+      padding: 10px 16px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background 0.3s;
+      cursor: pointer;
+      margin: 10px 5px;
+    }
+
+    .btn:hover {
+      background-color: #74c4ff;
+    }
+
+    .logout {
+      background-color: transparent;
+      border: 1px solid #fff;
+      color: #fff;
+    }
+
+    .logout:hover {
+      background-color: #fff;
+      color: #121212;
     }
 
     footer {
-      padding: 1rem;
       text-align: center;
       font-size: 0.8rem;
+      padding: 1rem;
       color: #999;
+      background-color: #1e1e1e;
     }
   </style>
 </head>
 <body>
   <header>
-    <div class="logo-title">
+    <div class="logo">
       <img src="assets/images/logo.png" alt="QuadraScans Logo">
       <h1>QuadraScans</h1>
     </div>
-    <button onclick="logout()" style="background:none;border:none;color:#4eaaff;font-size:1rem;cursor:pointer;">
-      <i class="fas fa-sign-out-alt"></i> Logout
-    </button>
+    <button class="btn logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
   </header>
 
   <main>
-    <div class="profile-card">
-      <h2 id="userEmail">Loading...</h2>
-      <p>User Profile</p>
+    <div class="profile-box">
+      <h2>Welcome to QuadraScans</h2>
+      <p class="username" id="usernameDisplay">Username</p>
+      <p id="emailDisplay">email@example.com</p>
+      <span id="planBadge" class="badge">Free Plan</span>
 
-      <div class="subscription-info" id="subscriptionInfo">
-        <p>Subscription Status: <strong>Free Plan</strong></p>
-        <p>Upgrade to premium for ad-free reading and early access.</p>
+      <div class="plan-status">
+        Enjoy unlimited manga access with ads.<br>
+        Upgrade to get ad-free experience and early access!
       </div>
 
-      <div class="action-buttons">
-        <button onclick="window.location.href='subscribe.html'"><i class="fas fa-crown"></i> Upgrade Subscription</button>
-        <button onclick="window.location.href='index.html'"><i class="fas fa-home"></i> Go to Home</button>
-      </div>
+      <button class="btn" onclick="window.location.href='subscribe.html'">
+        <i class="fas fa-crown"></i> Upgrade to Premium
+      </button>
+      <button class="btn logout" onclick="logout()">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </button>
     </div>
   </main>
 
   <footer>
-    © 2025 QuadraScans. All rights reserved.
+    &copy; 2025 QuadraScans. All rights reserved.
   </footer>
 
   <script type="module">
-    import { createClient } from 'https://esm.sh/@supabase/supabase-js'
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js';
 
     const supabase = createClient(
       'https://qanielcwwcfbffyucytk.supabase.co',
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhbmllbGN3d2NmYmZmeXVjeXRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1MjU0MDgsImV4cCI6MjA2NjEwMTQwOH0.7PIncqpt4KnPJv4EH00BRtPNE8ckLACo_DFNM40WCMo'
-    )
-
-    const userEmail = document.getElementById("userEmail");
+    );
 
     const { data: { user }, error } = await supabase.auth.getUser();
 
     if (error || !user) {
-      window.location.href = "signup.html";
+      window.location.href = 'signup.html';
     } else {
-      userEmail.textContent = user.email;
+      const email = user.email;
+      const username = email.split('@')[0];
+      const isPremium = user.user_metadata?.plan === 'premium';
+
+      document.getElementById('emailDisplay').textContent = email;
+      document.getElementById('usernameDisplay').textContent = username;
+      const planBadge = document.getElementById('planBadge');
+      planBadge.textContent = isPremium ? 'Premium Plan' : 'Free Plan';
+      planBadge.style.backgroundColor = isPremium ? '#00e676' : '#ffd700';
     }
 
-    window.logout = async function() {
+    window.logout = async () => {
       await supabase.auth.signOut();
-      window.location.href = "login.html";
+      window.location.href = 'login.html';
     }
   </script>
 </body>
