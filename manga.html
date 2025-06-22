@@ -1,5 +1,4 @@
-<!-- Updated manga.html with new metadata fields and layout -->
-
+<!-- Updated manga.html with full metadata integration -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -56,6 +55,7 @@
     .manga-info p {
       font-size: 0.95rem;
       color: #bbb;
+      margin: 6px 0;
     }
     .desc-toggle {
       color: #4eaaff;
@@ -115,9 +115,8 @@
       cursor: pointer;
     }
     .pagination .active {
-      background: transparent;
-      color: white;
       font-weight: bold;
+      text-decoration: underline;
     }
   </style>
 </head>
@@ -148,7 +147,7 @@
   <div class="chapter-section">
     <div class="chapter-controls">
       <h3>Chapters</h3>
-      <input type="text" id="chapterSearch" placeholder="Search Chapter Number..."/>
+      <input type="text" id="chapterSearch" placeholder="Search Chapter Number..." />
     </div>
     <div class="chapter-list">
       <ul id="chapterList"><li>Loading chapters...</li></ul>
@@ -229,12 +228,12 @@
         const manga = data.find(m => m.id === mangaId);
         if (!manga) return;
         document.getElementById("mangaTitle").textContent = manga.title;
-        document.getElementById("mangaStatus").textContent = manga.status;
+        document.getElementById("mangaStatus").textContent = manga.status || "-";
         document.getElementById("altNames").textContent = manga.alt_names || "-";
         document.getElementById("published").textContent = manga.published || "-";
         document.getElementById("genre").textContent = manga.genre || "-";
-        document.getElementById("language").textContent = manga.language || "-";
-        document.getElementById("finalChapter").textContent = manga.final_chapter || "-";
+        document.getElementById("language").textContent = manga.originalLanguage || "-";
+        document.getElementById("finalChapter").textContent = manga.finalChapter || "-";
         descElem.textContent = manga.description;
         document.getElementById("mangaCover").src = `assets/images/${manga.id}/cover-image.jpg`;
         updateFavButton();
