@@ -47,6 +47,21 @@
       margin-bottom: 1.5rem;
     }
 
+    .email-form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      margin-bottom: 1rem;
+    }
+
+    .email-form input {
+      padding: 0.7rem;
+      border: none;
+      border-radius: 8px;
+      background-color: #2a2a2a;
+      color: white;
+    }
+
     .login-btn {
       display: flex;
       align-items: center;
@@ -58,7 +73,6 @@
       color: #fff;
       font-weight: 500;
       font-size: 0.95rem;
-      margin-bottom: 1rem;
       cursor: pointer;
       transition: background-color 0.2s ease;
     }
@@ -72,19 +86,25 @@
       font-size: 1.2rem;
     }
 
-    .login-card .signup-link {
+    .signup-link {
       margin-top: 1rem;
       font-size: 0.875rem;
       color: #ccc;
     }
 
-    .login-card .signup-link a {
+    .signup-link a {
       color: #4eaaff;
       text-decoration: none;
     }
 
-    .login-card .signup-link a:hover {
+    .signup-link a:hover {
       text-decoration: underline;
+    }
+
+    .message {
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+      color: #ff6464;
     }
   </style>
 </head>
@@ -94,17 +114,17 @@
     <h2>Welcome back to QuadraScans</h2>
     <p>Login to continue reading epic manga</p>
 
-    <button class="login-btn" onclick="loginWithGoogle()">
-      <i class="fab fa-google"></i> Login with Google
-    </button>
-
-    <button class="login-btn" onclick="loginWithEmail()">
-      <i class="fas fa-envelope"></i> Login with Email
-    </button>
+    <form id="emailLogin" class="email-form">
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="password" id="password" placeholder="Password" required>
+      <button class="login-btn" type="submit"><i class="fas fa-sign-in-alt"></i> Login</button>
+    </form>
 
     <div class="signup-link">
       Don’t have an account? <a href="signup.html">Sign up</a>
     </div>
+
+    <div id="msg" class="message"></div>
   </div>
 
   <script type="module">
@@ -115,24 +135,24 @@
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhbmllbGN3d2NmYmZmeXVjeXRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1MjU0MDgsImV4cCI6MjA2NjEwMTQwOH0.7PIncqpt4KnPJv4EH00BRtPNE8ckLACo_DFNM40WCMo'
     )
 
-    async function loginWithGoogle() {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: window.location.origin + '/profile.html'
-        }
-      });
-      if (error) alert(error.message);
-    }
+    const form = document.getElementById('emailLogin');
+    const msg = document.getElementById('msg');
 
-    async function loginWithEmail() {
-      const email = prompt("Enter your email:");
-      if (!email) return;
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      msg.textContent = '';
 
-      const { error } = await supabase.auth.signInWithOtp({ email });
-      if (error) alert(error.message);
-      else alert('Check your email for the login link!');
-    }
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+
+      if (error) {
+        msg.textContent = error.message;
+      } else {
+        window.location.href = "index.html";
+      }
+    });
   </script>
 </body>
 </html>
