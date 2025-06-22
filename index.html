@@ -25,11 +25,9 @@
 
   <!-- Main Content -->
   <main class="main-content" id="mainContent">
-
-    <!-- Home -->
     <section class="tab-page" id="tab-home">
       <section class="notice"><p>Join <a href="#">/r/quadrascans</a> or <a href="#">Discord</a> for updates.</p></section>
-      
+
       <section class="reading-history">
         <h3>Continue Reading</h3>
         <div class="manga-scroll" id="continueReadingContainer"><p class="no-results">No reading history yet.</p></div>
@@ -46,13 +44,11 @@
       </section>
     </section>
 
-    <!-- Favorites -->
     <section class="tab-page" id="tab-favorites" style="display: none;">
       <h3>Favorites</h3>
       <div class="manga-scroll" id="favoritesContainer"><p class="no-results">No favorites yet.</p></div>
     </section>
 
-    <!-- Badges -->
     <section class="tab-page" id="tab-badges" style="display: none;">
       <h3>Badges</h3>
       <div class="badge-placeholder" style="text-align:center; padding: 40px 20px; color: #999; font-size: 1rem; background-color: #1e1e1e; border-radius: 12px;">
@@ -60,7 +56,6 @@
       </div>
     </section>
 
-    <!-- Settings -->
     <section class="tab-page" id="tab-settings" style="display: none;">
       <h3>Settings</h3>
       <p>Settings section coming soon...</p>
@@ -75,7 +70,7 @@
     <button data-tab="settings" class="tab-btn"><i class="fas fa-cog"></i></button>
   </nav>
 
-  <!-- JS -->
+  <!-- Tab Script -->
   <script>
     const tabs = document.querySelectorAll('.tab-page');
     const buttons = document.querySelectorAll('.tab-btn');
@@ -84,11 +79,9 @@
       tabs.forEach(tab => {
         tab.style.display = tab.id === `tab-${name}` ? 'block' : 'none';
       });
-
       buttons.forEach(btn => {
         btn.classList.toggle('active', btn.dataset.tab === name);
       });
-
       localStorage.setItem('activeTab', name);
       if (name === 'favorites') renderFavorites();
     }
@@ -174,15 +167,14 @@
 
   <!-- Supabase Auth Check -->
   <script type="module">
-    import { createClient } from 'https://esm.sh/@supabase/supabase-js'
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js';
 
     const supabase = createClient(
       'https://qanielcwwcfbffyucytk.supabase.co',
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhbmllbGN3d2NmYmZmeXVjeXRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1MjU0MDgsImV4cCI6MjA2NjEwMTQwOH0.7PIncqpt4KnPJv4EH00BRtPNE8ckLACo_DFNM40WCMo'
     );
 
-    const userBtn = document.getElementById('userBtn');
-    userBtn.addEventListener('click', async () => {
+    document.getElementById("userBtn").addEventListener("click", async () => {
       const { data: { user } } = await supabase.auth.getUser();
       window.location.href = user ? 'profile.html' : 'login.html';
     });
