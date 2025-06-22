@@ -3,131 +3,164 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Your Profile • QuadraScans</title>
+  <title>Profile - QuadraScans</title>
   <link rel="stylesheet" href="assets/css/style.css" />
   <link rel="icon" href="assets/images/logo.svg" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    .profile-wrapper {
-      max-width: 500px;
-      margin: 40px auto;
-      padding: 24px;
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background-color: #121212;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px;
+      background-color: #1e1e1e;
+    }
+
+    .logo-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-title img {
+      height: 40px;
+    }
+
+    .logo-title h1 {
+      font-size: 1.5rem;
+      margin: 0;
+    }
+
+    main {
+      padding: 30px 20px;
+      flex: 1;
+    }
+
+    .profile-card {
       background-color: #1e1e1e;
       border-radius: 16px;
-      box-shadow: 0 0 12px rgba(255,255,255,0.05);
+      padding: 2rem;
+      max-width: 500px;
+      margin: auto;
       text-align: center;
-      color: #fff;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
     }
-    .profile-avatar {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      object-fit: cover;
-      margin-bottom: 12px;
-      border: 2px solid #444;
+
+    .profile-card h2 {
+      margin: 0 0 0.5rem 0;
+      font-size: 1.6rem;
     }
-    .profile-email {
-      font-size: 1.1rem;
-      margin-bottom: 4px;
-      color: #ccc;
-    }
-    .profile-method {
-      font-size: 0.9rem;
-      margin-bottom: 24px;
-      color: #888;
-    }
-    .badge-box {
-      padding: 20px;
-      background-color: #292929;
-      border-radius: 12px;
-      margin-bottom: 24px;
-    }
-    .badge-box p {
-      font-size: 1rem;
+
+    .profile-card p {
       color: #aaa;
+      margin: 0.5rem 0;
+      font-size: 0.95rem;
     }
-    .profile-btn {
-      display: inline-block;
-      margin: 8px;
-      padding: 10px 20px;
-      background-color: #ff5757;
-      color: white;
-      font-weight: bold;
+
+    .action-buttons {
+      margin-top: 2rem;
+      display: flex;
+      gap: 10px;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .action-buttons button {
+      background-color: #2a2a2a;
+      color: #fff;
       border: none;
+      padding: 0.75rem 1.2rem;
       border-radius: 8px;
+      font-size: 0.95rem;
       cursor: pointer;
-      transition: background 0.3s;
+      transition: background-color 0.2s ease;
     }
-    .profile-btn:hover {
-      background-color: #e24444;
+
+    .action-buttons button:hover {
+      background-color: #3a3a3a;
     }
-    .settings-card {
-      padding: 16px;
-      border: 1px solid #444;
-      background-color: #2d2d2d;
+
+    .subscription-info {
+      margin-top: 1.5rem;
+      background-color: #2a2a2a;
+      padding: 1rem;
       border-radius: 12px;
-      margin-bottom: 24px;
+      font-size: 0.9rem;
+    }
+
+    footer {
+      padding: 1rem;
+      text-align: center;
+      font-size: 0.8rem;
+      color: #999;
     }
   </style>
 </head>
-<body class="dark-theme">
-
-  <div class="profile-wrapper">
-    <img src="assets/images/logo.png" alt="Avatar" class="profile-avatar" id="userAvatar">
-    <h2 class="site-title">Welcome to QuadraScans</h2>
-    <div class="profile-email" id="userEmail">Loading email...</div>
-    <div class="profile-method" id="userMethod">Checking login method...</div>
-
-    <div class="badge-box">
-      <h3>🏅 Badges</h3>
-      <p>Badge system coming soon. Stay tuned!</p>
+<body>
+  <header>
+    <div class="logo-title">
+      <img src="assets/images/logo.png" alt="QuadraScans Logo">
+      <h1>QuadraScans</h1>
     </div>
+    <button onclick="logout()" style="background:none;border:none;color:#4eaaff;font-size:1rem;cursor:pointer;">
+      <i class="fas fa-sign-out-alt"></i> Logout
+    </button>
+  </header>
 
-    <div class="settings-card">
-      <h3 style="margin-bottom: 8px;">⚙️ Settings</h3>
-      <p style="color:#aaa;">Settings options will appear here soon.</p>
+  <main>
+    <div class="profile-card">
+      <h2 id="userEmail">Loading...</h2>
+      <p>User Profile</p>
+
+      <div class="subscription-info" id="subscriptionInfo">
+        <p>Subscription Status: <strong>Free Plan</strong></p>
+        <p>Upgrade to premium for ad-free reading and early access.</p>
+      </div>
+
+      <div class="action-buttons">
+        <button onclick="window.location.href='subscribe.html'"><i class="fas fa-crown"></i> Upgrade Subscription</button>
+        <button onclick="window.location.href='index.html'"><i class="fas fa-home"></i> Go to Home</button>
+      </div>
     </div>
+  </main>
 
-    <button class="profile-btn" onclick="logout()">Logout</button>
-    <button class="profile-btn" onclick="deleteAccount()">Delete Account</button>
-  </div>
+  <footer>
+    © 2025 QuadraScans. All rights reserved.
+  </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-  <script>
-    const supabase = supabase.createClient(
-      "https://qanielcwwcfbffyucytk.supabase.co",
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhbmllbGN3d2NmYmZmeXVjeXRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1MjU0MDgsImV4cCI6MjA2NjEwMTQwOH0.7PIncqpt4KnPJv4EH00BRtPNE8ckLACo_DFNM40WCMo"
-    );
+  <script type="module">
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js'
 
-    async function checkLogin() {
-      const { data: { user }, error } = await supabase.auth.getUser();
+    const supabase = createClient(
+      'https://qanielcwwcfbffyucytk.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhbmllbGN3d2NmYmZmeXVjeXRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1MjU0MDgsImV4cCI6MjA2NjEwMTQwOH0.7PIncqpt4KnPJv4EH00BRtPNE8ckLACo_DFNM40WCMo'
+    )
 
-      if (!user) {
-        window.location.href = "login.html";
-      } else {
-        document.getElementById("userEmail").textContent = user.email;
-        document.getElementById("userMethod").textContent = "Signed in via " + (user.app_metadata?.provider || "email");
-        const avatar = document.getElementById("userAvatar");
-        if (user.user_metadata?.avatar_url) {
-          avatar.src = user.user_metadata.avatar_url;
-        }
-      }
+    const userEmail = document.getElementById("userEmail");
+
+    const { data: { user }, error } = await supabase.auth.getUser();
+
+    if (error || !user) {
+      window.location.href = "signup.html";
+    } else {
+      userEmail.textContent = user.email;
     }
 
-    async function logout() {
+    window.logout = async function() {
       await supabase.auth.signOut();
       window.location.href = "login.html";
     }
-
-    async function deleteAccount() {
-      const { error } = await supabase.auth.signOut();
-      localStorage.clear();
-      alert("Account deletion will be handled from your provider.");
-      window.location.href = "login.html";
-    }
-
-    checkLogin();
   </script>
 </body>
 </html>
