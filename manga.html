@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -69,12 +68,13 @@
       align-items: center;
       margin-bottom: 10px;
     }
-    .chapter-controls select {
+    .chapter-controls input {
       padding: 6px;
       background: #1e1e1e;
       color: #fff;
       border-radius: 6px;
       border: none;
+      width: 120px;
     }
     .chapter-list ul {
       list-style: none;
@@ -99,6 +99,7 @@
       justify-content: center;
       gap: 10px;
       margin-top: 20px;
+      flex-wrap: wrap;
     }
     .pagination button {
       padding: 6px 10px;
@@ -118,9 +119,7 @@
   <div class="top-controls">
     <button onclick="history.back()"><i class="fas fa-arrow-left"></i> Back</button>
     <button id="favBtn"><i class="fas fa-heart"></i> Favorite</button>
-  </div>
-
-  <div class="manga-container">
+  </div>  <div class="manga-container">
     <div class="manga-cover">
       <img id="mangaCover" src="" alt="Manga Cover" />
     </div>
@@ -133,20 +132,16 @@
       <p id="mangaDesc" style="max-height: 90px; overflow: hidden;"></p>
       <p class="desc-toggle" onclick="toggleDesc()">Show more</p>
     </div>
-  </div>
-
-  <div class="chapter-section">
+  </div>  <div class="chapter-section">
     <div class="chapter-controls">
       <h3>Chapters</h3>
-      <select id="chapterDropdown"></select>
+      <input type="number" id="chapterInput" placeholder="Go to chapter..."/>
     </div>
     <div class="chapter-list">
       <ul id="chapterList"><li>Loading chapters...</li></ul>
     </div>
     <div class="pagination" id="pagination"></div>
-  </div>
-
-  <script>
+  </div>  <script>
     const mangaId = new URLSearchParams(window.location.search).get("id") || "solo-leveling";
 
     const descElem = document.getElementById("mangaDesc");
@@ -163,11 +158,9 @@
     const favoriteIds = JSON.parse(localStorage.getItem("quadraFavs") || "[]");
 
     function updateFavButton() {
-      if (favoriteIds.includes(mangaId)) {
-        favBtn.innerHTML = '<i class="fas fa-heart"></i> Favorited';
-      } else {
-        favBtn.innerHTML = '<i class="far fa-heart"></i> Favorite';
-      }
+      favBtn.innerHTML = favoriteIds.includes(mangaId)
+        ? '<i class="fas fa-heart"></i> Favorited'
+        : '<i class="far fa-heart"></i> Favorite';
     }
 
     favBtn.addEventListener("click", () => {
@@ -223,15 +216,17 @@
 
       container.appendChild(btn("«First", 1));
       for (let i = 1; i <= totalPages; i++) {
-        container.appendChild(btn(i, i));
-        if (i === 3 && totalPages > 4) {
+        if (i <= 3 || i === totalPages || (i >= current - 1 && i <= current + 1)) {
+          container.appendChild(btn(i, i));
+        } else if (i === current - 2 || i === current + 2) {
           const dots = document.createElement("span");
           dots.textContent = "...";
           dots.style.padding = "6px";
           container.appendChild(dots);
-          container.appendChild(btn("Last»", totalPages));
-          break;
         }
+      }
+      if (current !== totalPages) {
+        container.appendChild(btn("Last»", totalPages));
       }
     }
 
@@ -239,22 +234,17 @@
       .then(res => res.json())
       .then(chapters => {
         chaptersData = chapters.reverse();
-        const dropdown = document.getElementById("chapterDropdown");
-        chapters.forEach(chap => {
-          const opt = document.createElement("option");
-          opt.value = chap.number;
-          opt.textContent = "Chapter " + chap.number;
-          dropdown.appendChild(opt);
-        });
-        dropdown.addEventListener("change", e => {
-          const val = e.target.value;
-          window.location.href = `reader.html?id=${mangaId}&chapter=${val}`;
-        });
         renderChapters();
       })
       .catch(() => {
         document.getElementById("chapterList").innerHTML = '<li>Error loading chapters.</li>';
       });
-  </script>
-</body>
+
+    document.getElementById("chapterInput").addEventListener("change", e => {
+      const chapter = parseInt(e.target.value);
+      if (!isNaN(chapter)) {
+        window.location.href = `reader.html?id=${mangaId}&chapter=${chapter}`;
+      }
+    });
+  </script></body>
 </html>
