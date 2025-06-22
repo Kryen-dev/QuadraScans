@@ -1,3 +1,8 @@
+<!-- The updated manga.html with:
+- Transparent pagination with white text
+- Font changed to Rubik
+- Chapter selector with type-to-filter functionality -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -142,7 +147,7 @@
   <div class="chapter-section">
     <div class="chapter-controls">
       <h3>Chapters</h3>
-      <input type="text" id="chapterSearch" placeholder="Search Chapter Number..." />
+      <input type="text" id="chapterSearch" placeholder="Search Chapter Number..."/>
     </div>
     <div class="chapter-list">
       <ul id="chapterList"><li>Loading chapters...</li></ul>
@@ -155,7 +160,6 @@
     const descElem = document.getElementById("mangaDesc");
     const toggleElem = document.querySelector(".desc-toggle");
     const favBtn = document.getElementById("favBtn");
-    const favoriteIds = JSON.parse(localStorage.getItem("quadraFavs") || "[]");
     const searchInput = document.getElementById("chapterSearch");
 
     let expanded = false;
@@ -169,23 +173,56 @@
       toggleElem.textContent = expanded ? "Show less" : "Show more";
     }
 
-    function updateFavButton() {
-      if (favoriteIds.includes(mangaId)) {
-        favBtn.innerHTML = '<i class="fas fa-heart"></i> Favorited';
-      } else {
-        favBtn.innerHTML = '<i class="far fa-heart"></i> Favorite';
-      }
-    }
-
     favBtn.addEventListener("click", () => {
-      const idx = favoriteIds.indexOf(mangaId);
-      if (idx > -1) favoriteIds.splice(idx, 1);
-      else favoriteIds.push(mangaId);
-      localStorage.setItem("quadraFavs", JSON.stringify(favoriteIds));
+      const favs = JSON.parse(localStorage.getItem("quadraFavs") || "[]");
+      const index = favs.indexOf(mangaId);
+      if (index > -1) favs.splice(index, 1);
+      else favs.push(mangaId);
+      localStorage.setItem("quadraFavs", JSON.stringify(favs));
       updateFavButton();
     });
 
-    fetch("assets/data/mangas.json")
+    function updateFavButton() {
+      const favs = JSON.parse(localStorage.getItem("quadraFavs") || "[]");
+      favBtn.innerHTML = favs.includes(mangaId)
+        ? '<i class="fas fa-heart"></i> Favorited'
+        : '<i class="far fa-heart"></i> Favorite';
+    }
+
+    function renderChapters(page = 1) {
+      const list = document.getElementById("chapterList");
+      const data = filteredChapters.length ? filteredChapters : chaptersData;
+      list.innerHTML = '';
+      const start = (page - 1) * chaptersPerPage;
+      const pageData = data.slice(start, start + chaptersPerPage);
+      pageData.forEach(chap => {
+        const li = document.createElement("li");
+        li.innerHTML = `<a href="reader.html?id=${mangaId}&chapter=${chap.number}">Chapter ${chap.number}</a>`;
+        list.appendChild(li);
+      });
+      renderPagination(page, data.length);
+    }
+
+    function renderPagination(current, total) {
+      const totalPages = Math.ceil(total / chaptersPerPage);
+      const container = document.getElementById("pagination");
+      container.innerHTML = '';
+      for (let i = 1; i <= totalPages; i++) {
+        const btn = document.createElement("button");
+        btn.textContent = i;
+        if (i === current) btn.classList.add("active");
+        btn.onclick = () => renderChapters(i);
+        container.appendChild(btn);
+      }
+    }
+
+    searchInput.addEventListener("input", () => {
+      const val = searchInput.value.trim();
+      filteredChapters = val ? chaptersData.filter(c => c.number.toString().startsWith(val)) : [];
+      renderChapters(1);
+    });
+
+    fetch(`assets/data/mangas.json`)
       .then(res => res.json())
       .then(data => {
         const manga = data.find(m => m.id === mangaId);
@@ -199,68 +236,11 @@
         updateFavButton();
       });
 
-    function renderChapters(page = 1) {
-      const list = document.getElementById("chapterList");
-      list.innerHTML = '';
-      const data = filteredChapters.length ? filteredChapters : chaptersData;
-      const start = (page - 1) * chaptersPerPage;
-      const pageChaps = data.slice(start, start + chaptersPerPage);
-      pageChaps.forEach(chap => {
-        const li = document.createElement("li");
-        li.innerHTML = `<a href="reader.html?id=${mangaId}&chapter=${chap.number}">Chapter ${chap.number}</a>`;
-        list.appendChild(li);
-      });
-      renderPagination(page, data.length);
-    }
-
-    function renderPagination(current, totalItems) {
-      const totalPages = Math.ceil(totalItems / chaptersPerPage);
-      const container = document.getElementById("pagination");
-      container.innerHTML = '';
-
-      const btn = (text, page) => {
-        const b = document.createElement("button");
-        b.textContent = text;
-        if (page === current) b.classList.add("active");
-        b.onclick = () => renderChapters(page);
-        return b;
-      };
-
-      if (totalPages > 1) {
-        container.appendChild(btn("«First", 1));
-        for (let i = 1; i <= totalPages; i++) {
-          container.appendChild(btn(i, i));
-          if (i === 3 && totalPages > 4) {
-            const dots = document.createElement("span");
-            dots.textContent = "...";
-            dots.style.color = "#999";
-            container.appendChild(dots);
-            container.appendChild(btn("Last»", totalPages));
-            break;
-          }
-        }
-      }
-    }
-
-    searchInput.addEventListener("input", () => {
-      const val = searchInput.value.trim();
-      if (!val) {
-        filteredChapters = [];
-        renderChapters(1);
-        return;
-      }
-      filteredChapters = chaptersData.filter(c => c.number.toString().startsWith(val));
-      renderChapters(1);
-    });
-
     fetch(`assets/data/chapters/${mangaId}.json`)
       .then(res => res.json())
-      .then(chapters => {
-        chaptersData = chapters.reverse();
+      .then(data => {
+        chaptersData = data.reverse();
         renderChapters();
-      })
-      .catch(() => {
-        document.getElementById("chapterList").innerHTML = '<li>Error loading chapters.</li>';
       });
   </script>
 </body>
