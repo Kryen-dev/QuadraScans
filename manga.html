@@ -1,7 +1,4 @@
-<!-- The updated manga.html with:
-- Transparent pagination with white text
-- Font changed to Rubik
-- Chapter selector with type-to-filter functionality -->
+<!-- Updated manga.html with new metadata fields and layout -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -120,6 +117,7 @@
     .pagination .active {
       background: transparent;
       color: white;
+      font-weight: bold;
     }
   </style>
 </head>
@@ -136,8 +134,11 @@
     <div class="manga-info">
       <h1 id="mangaTitle">Loading...</h1>
       <p><strong>Status:</strong> <span id="mangaStatus">-</span></p>
-      <p><strong>Chapters:</strong> <span id="chapterCount">-</span></p>
-      <p><strong>Rating:</strong> <span id="rating">-</span></p>
+      <p><strong>Alternative Names:</strong> <span id="altNames">-</span></p>
+      <p><strong>Published:</strong> <span id="published">-</span></p>
+      <p><strong>Genre:</strong> <span id="genre">-</span></p>
+      <p><strong>Original Language:</strong> <span id="language">-</span></p>
+      <p><strong>Final Chapter:</strong> <span id="finalChapter">-</span></p>
       <p><strong>Description:</strong></p>
       <p id="mangaDesc" style="max-height: 90px; overflow: hidden;"></p>
       <p class="desc-toggle" onclick="toggleDesc()">Show more</p>
@@ -229,8 +230,11 @@
         if (!manga) return;
         document.getElementById("mangaTitle").textContent = manga.title;
         document.getElementById("mangaStatus").textContent = manga.status;
-        document.getElementById("chapterCount").textContent = manga.chapters;
-        document.getElementById("rating").textContent = manga.rating;
+        document.getElementById("altNames").textContent = manga.alt_names || "-";
+        document.getElementById("published").textContent = manga.published || "-";
+        document.getElementById("genre").textContent = manga.genre || "-";
+        document.getElementById("language").textContent = manga.language || "-";
+        document.getElementById("finalChapter").textContent = manga.final_chapter || "-";
         descElem.textContent = manga.description;
         document.getElementById("mangaCover").src = `assets/images/${manga.id}/cover-image.jpg`;
         updateFavButton();
