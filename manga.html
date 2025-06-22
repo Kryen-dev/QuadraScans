@@ -1,4 +1,4 @@
-<!-- Updated manga.html with full metadata integration -->
+<!-- Updated manga.html with correct altNames and genres field usage -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -229,9 +229,9 @@
         if (!manga) return;
         document.getElementById("mangaTitle").textContent = manga.title;
         document.getElementById("mangaStatus").textContent = manga.status || "-";
-        document.getElementById("altNames").textContent = manga.alt_names || "-";
+        document.getElementById("altNames").textContent = manga.altNames || "-";
         document.getElementById("published").textContent = manga.published || "-";
-        document.getElementById("genre").textContent = manga.genre || "-";
+        document.getElementById("genre").textContent = Array.isArray(manga.genres) ? manga.genres.join(", ") : (manga.genres || "-");
         document.getElementById("language").textContent = manga.originalLanguage || "-";
         document.getElementById("finalChapter").textContent = manga.finalChapter || "-";
         descElem.textContent = manga.description;
