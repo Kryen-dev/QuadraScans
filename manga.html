@@ -1,208 +1,134 @@
-<!-- Save as manga.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Manga | QuadraScans</title>
+  <title>Manga - QuadraScans</title>
   <link rel="stylesheet" href="assets/css/style.css" />
   <link rel="icon" href="assets/images/logo.svg" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #121212;
+      color: #fff;
       margin: 0;
       padding: 20px;
-      font-family: 'Poppins', sans-serif;
-      background: #121212;
-      color: #eee;
     }
-    .back-arrow {
-      position: fixed;
-      top: 12px;
-      left: 12px;
-      background: transparent;
-      padding: 6px;
-      border-radius: 50%;
-      color: white;
-      z-index: 999;
-      text-decoration: none;
-    }
-    .back-arrow:hover { background: #222; }
-    .fav-btn {
-      position: fixed;
-      top: 12px;
-      right: 16px;
-      background: transparent;
-      border: none;
-      color: #ccc;
-      font-size: 22px;
-      cursor: pointer;
-      z-index: 999;
-    }
-    .container {
+    .manga-container {
       display: flex;
-      flex-wrap: wrap;
       gap: 20px;
-      margin-top: 60px;
+      flex-wrap: wrap;
     }
-    .left-side img {
-      width: 100%;
-      max-width: 260px;
-      border-radius: 12px;
-    }
-    .right-side {
-      flex: 1;
-      min-width: 260px;
-    }
-    .genres, .status {
-      font-size: 0.85rem;
-      margin: 8px 0;
-      color: #aaa;
-    }
-    .description {
-      color: #ccc;
-      margin: 10px 0;
-      font-size: 0.95rem;
-    }
-    .desc-toggle-btn {
-      background: none;
-      border: none;
-      color: #00b7ff;
-      cursor: pointer;
-      font-size: 0.9rem;
-      padding: 0;
-    }
-    .chapter-select {
-      margin: 20px 0 10px;
-      padding: 10px;
-      font-size: 1rem;
-      background: #1e1e1e;
-      color: #eee;
-      border: 1px solid #333;
-      border-radius: 6px;
-      width: 100%;
+    .manga-cover {
+      flex: 1 1 250px;
       max-width: 300px;
     }
-    .chapter-link {
-      display: block;
-      margin: 8px 0;
-      color: #eee;
+    .manga-cover img {
+      width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
+    }
+    .manga-info {
+      flex: 2 1 500px;
+    }
+    .manga-info h1 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+    .manga-info p, .manga-info li {
+      color: #bbb;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+    .chapter-list {
+      margin-top: 30px;
+    }
+    .chapter-list h3 {
+      margin-bottom: 10px;
+    }
+    .chapter-list ul {
+      list-style: none;
+      padding: 0;
+    }
+    .chapter-list li {
+      padding: 8px 12px;
+      background: #1e1e1e;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      transition: background 0.2s ease;
+    }
+    .chapter-list li:hover {
+      background: #292929;
+    }
+    .chapter-list a {
+      color: #4eaaff;
       text-decoration: none;
     }
-    .chapter-link:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
-
-  <a href="index.html" class="back-arrow" aria-label="Go back">
-    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-    </svg>
-  </a>
-
-  <button id="favBtn" class="fav-btn" title="Add to Favorites">🤍</button>
-
-  <div class="container">
-    <div class="left-side">
-      <img id="manga-cover" alt="Cover" />
+  <div class="manga-container">
+    <div class="manga-cover">
+      <img id="mangaCover" src="" alt="Manga Cover" />
     </div>
-    <div class="right-side">
-      <h2 id="manga-title">Loading...</h2>
-      <div class="status" id="manga-status"></div>
-      <div class="genres" id="manga-genres"></div>
-      <p id="manga-description" class="description"></p>
-      <button id="toggle-description" class="desc-toggle-btn">More...</button>
+    <div class="manga-info">
+      <h1 id="mangaTitle">Loading...</h1>
+      <p><strong>Status:</strong> <span id="mangaStatus">-</span></p>
+      <p><strong>Chapters:</strong> <span id="chapterCount">-</span></p>
+      <p><strong>Rating:</strong> <span id="rating">-</span></p>
+      <p><strong>Description:</strong></p>
+      <p id="mangaDesc">Loading description...</p>
     </div>
   </div>
 
-  <select id="chapterDropdown" class="chapter-select">
-    <option disabled selected>Select a Chapter</option>
-  </select>
-
-  <h3>Chapters</h3>
-  <div id="chapter-list"></div>
+  <div class="chapter-list">
+    <h3>Chapters</h3>
+    <ul id="chapterList">
+      <li>Loading chapters...</li>
+    </ul>
+  </div>
 
   <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const mangaId = urlParams.get("id");
-    const favBtn = document.getElementById("favBtn");
+    const params = new URLSearchParams(window.location.search);
+    const mangaId = params.get("id") || "solo-leveling";
 
-    // Load manga data
     fetch("assets/data/mangas.json")
       .then(res => res.json())
-      .then(mangas => {
-        const manga = mangas.find(m => m.id === mangaId);
-        if (!manga) return document.getElementById("manga-title").innerText = "Manga not found";
-
-        document.getElementById("manga-title").innerText = manga.title;
-        document.getElementById("manga-cover").src = manga.cover;
-        document.getElementById("manga-status").innerText = manga.status;
-        document.getElementById("manga-genres").innerText = manga.genres.join(", ");
-
-        const fullDesc = manga.description;
-        const shortDesc = fullDesc.length > 200 ? fullDesc.substring(0, 200) + "..." : fullDesc;
-        const descElement = document.getElementById("manga-description");
-        const toggleBtn = document.getElementById("toggle-description");
-
-        let isExpanded = false;
-        descElement.innerText = shortDesc;
-        toggleBtn.addEventListener("click", () => {
-          isExpanded = !isExpanded;
-          descElement.innerText = isExpanded ? fullDesc : shortDesc;
-          toggleBtn.innerText = isExpanded ? "Less" : "More...";
-        });
-
-        // Favorites logic
-        let favs = JSON.parse(localStorage.getItem("quadraFavs") || "[]");
-        const isFav = favs.includes(mangaId);
-        favBtn.textContent = isFav ? "❤️" : "🤍";
-
-        favBtn.addEventListener("click", () => {
-          favs = JSON.parse(localStorage.getItem("quadraFavs") || "[]");
-          if (favs.includes(mangaId)) {
-            favs = favs.filter(id => id !== mangaId);
-            favBtn.textContent = "🤍";
-          } else {
-            favs.push(mangaId);
-            favBtn.textContent = "❤️";
-          }
-          localStorage.setItem("quadraFavs", JSON.stringify(favs));
-        });
-
-        // Save to reading history
-        let reading = JSON.parse(localStorage.getItem("quadraReading") || "[]");
-        if (!reading.includes(mangaId)) {
-          reading.unshift(mangaId);
-          localStorage.setItem("quadraReading", JSON.stringify(reading.slice(0, 10)));
+      .then(data => {
+        const manga = data.find(m => m.id === mangaId);
+        if (!manga) {
+          document.getElementById("mangaTitle").textContent = "Manga Not Found";
+          return;
         }
+
+        document.getElementById("mangaTitle").textContent = manga.title;
+        document.getElementById("mangaStatus").textContent = manga.status;
+        document.getElementById("chapterCount").textContent = manga.chapters + " chapters";
+        document.getElementById("rating").textContent = manga.rating;
+        document.getElementById("mangaDesc").textContent = manga.description;
+        document.getElementById("mangaCover").src = `assets/images/${manga.id}/cover-image.jpg`;
       });
 
-    // Load chapters
     fetch(`assets/data/chapters/${mangaId}.json`)
       .then(res => res.json())
       .then(chapters => {
-        const container = document.getElementById("chapter-list");
-        const dropdown = document.getElementById("chapterDropdown");
+        const list = document.getElementById("chapterList");
+        list.innerHTML = '';
+        if (chapters.length === 0) {
+          list.innerHTML = '<li>No chapters yet.</li>';
+          return;
+        }
 
-        chapters.forEach(ch => {
-          const link = `reader.html?id=${mangaId}&chapter=${ch.number}`;
-
-          const a = document.createElement("a");
-          a.href = link;
-          a.textContent = `Chapter ${ch.number}: ${ch.title || ''}`;
-          a.className = "chapter-link";
-          container.appendChild(a);
-
-          const opt = document.createElement("option");
-          opt.value = link;
-          opt.text = `Chapter ${ch.number}: ${ch.title || ''}`;
-          dropdown.appendChild(opt);
+        chapters.reverse().forEach(chap => {
+          const li = document.createElement("li");
+          li.innerHTML = `<a href="reader.html?id=${mangaId}&chapter=${chap.number}">Chapter ${chap.number}</a>`;
+          list.appendChild(li);
         });
-
-        dropdown.addEventListener("change", e => window.location.href = e.target.value);
       })
       .catch(() => {
-        document.getElementById("chapter-list").innerText = "Failed to load chapters.";
+        document.getElementById("chapterList").innerHTML = '<li>Error loading chapters.</li>';
       });
   </script>
 </body>
