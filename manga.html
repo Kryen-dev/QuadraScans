@@ -10,251 +10,271 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: 'Poppins', sans-serif;
       background-color: #121212;
       color: #fff;
+      font-family: 'Poppins', sans-serif;
       margin: 0;
-      padding: 20px;
+      padding: 0;
     }
-    .top-controls {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 15px;
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 1rem;
     }
-    .top-controls button {
-      background-color: #1e1e1e;
-      color: #fff;
+
+    .back-btn {
+      background: none;
       border: none;
-      padding: 8px 12px;
-      border-radius: 8px;
+      color: #4eaaff;
+      font-size: 1rem;
       cursor: pointer;
-      font-size: 0.9rem;
+      margin-bottom: 1rem;
     }
-    .manga-container {
+
+    .cover {
       display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
+      gap: 1.5rem;
     }
-    .manga-cover {
-      flex: 1 1 250px;
-      max-width: 300px;
+
+    .cover img {
+      width: 200px;
+      border-radius: 10px;
     }
-    .manga-cover img {
-      width: 100%;
-      border-radius: 12px;
-      box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
+
+    .details {
+      flex: 1;
     }
-    .manga-info {
-      flex: 2 1 500px;
+
+    .details h1 {
+      margin: 0 0 0.5rem;
+      font-size: 1.8rem;
     }
-    .manga-info h1 {
-      font-size: 2rem;
-      margin-bottom: 10px;
+
+    .badge {
+      display: inline-block;
+      background-color: #2a2a2a;
+      padding: 0.2rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      margin-right: 0.5rem;
+      margin-bottom: 0.5rem;
     }
-    .manga-info p {
-      font-size: 0.95rem;
-      color: #bbb;
+
+    .description {
+      margin-top: 1rem;
+      color: #ccc;
     }
-    .desc-toggle {
+
+    .toggle-btn {
       color: #4eaaff;
       cursor: pointer;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
     }
-    .chapter-section {
-      margin-top: 30px;
-    }
+
     .chapter-controls {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
+      margin-top: 2rem;
     }
+
     .chapter-controls select {
-      padding: 6px;
       background: #1e1e1e;
       color: #fff;
+      border: 1px solid #444;
       border-radius: 6px;
+      padding: 0.4rem 0.6rem;
+    }
+
+    .chapter-controls button {
+      background-color: #4eaaff;
       border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
     }
-    .chapter-list ul {
-      list-style: none;
-      padding: 0;
+
+    .chapter-list {
+      margin-top: 2rem;
     }
-    .chapter-list li {
-      padding: 8px 12px;
+
+    .chapter-item {
+      padding: 0.75rem 1rem;
       background: #1e1e1e;
       border-radius: 8px;
-      margin-bottom: 8px;
-      transition: background 0.2s ease;
-    }
-    .chapter-list li:hover {
-      background: #292929;
-    }
-    .chapter-list a {
-      color: #4eaaff;
-      text-decoration: none;
-    }
-    .pagination {
+      margin-bottom: 0.5rem;
       display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-top: 20px;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
     }
-    .pagination button {
-      padding: 6px 10px;
-      background: #1e1e1e;
+
+    .chapter-pagination {
+      text-align: center;
+      margin: 2rem 0;
+    }
+
+    .chapter-pagination button {
+      background: #2a2a2a;
       border: none;
       color: #fff;
+      padding: 0.4rem 0.8rem;
+      margin: 0 0.25rem;
       border-radius: 6px;
       cursor: pointer;
     }
-    .pagination .active {
-      background: #4eaaff;
-      color: #000;
+
+    .favorite-btn {
+      background-color: transparent;
+      color: #ff5a5f;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      margin-top: 0.5rem;
     }
   </style>
 </head>
 <body>
-  <div class="top-controls">
-    <button onclick="history.back()"><i class="fas fa-arrow-left"></i> Back</button>
-    <button id="favBtn"><i class="fas fa-heart"></i> Favorite</button>
-  </div>
-
-  <div class="manga-container">
-    <div class="manga-cover">
-      <img id="mangaCover" src="" alt="Manga Cover" />
+  <div class="container">
+    <button class="back-btn" onclick="history.back()"><i class="fas fa-arrow-left"></i> Back</button>
+    <div class="cover">
+      <img id="mangaCover" src="" alt="Cover">
+      <div class="details">
+        <h1 id="mangaTitle">Loading...</h1>
+        <div id="mangaBadges"></div>
+        <p class="description" id="mangaDescription"></p>
+        <span class="toggle-btn" onclick="toggleDescription()">More</span>
+        <button class="favorite-btn" onclick="toggleFavorite()"><i class="fas fa-heart"></i> Favorite</button>
+      </div>
     </div>
-    <div class="manga-info">
-      <h1 id="mangaTitle">Loading...</h1>
-      <p><strong>Status:</strong> <span id="mangaStatus">-</span></p>
-      <p><strong>Chapters:</strong> <span id="chapterCount">-</span></p>
-      <p><strong>Rating:</strong> <span id="rating">-</span></p>
-      <p><strong>Description:</strong></p>
-      <p id="mangaDesc" style="max-height: 90px; overflow: hidden;"></p>
-      <p class="desc-toggle" onclick="toggleDesc()">Show more</p>
-    </div>
-  </div>
 
-  <div class="chapter-section">
     <div class="chapter-controls">
-      <h3>Chapters</h3>
-      <select id="chapterDropdown"></select>
+      <select id="chapterSelect"></select>
+      <button onclick="readSelectedChapter()">Read</button>
     </div>
-    <div class="chapter-list">
-      <ul id="chapterList"><li>Loading chapters...</li></ul>
+
+    <div class="chapter-list" id="chapterList"></div>
+
+    <div class="chapter-pagination" id="pagination">
+      <!-- Pagination buttons here -->
     </div>
-    <div class="pagination" id="pagination"></div>
   </div>
 
   <script>
-    const mangaId = new URLSearchParams(window.location.search).get("id") || "solo-leveling";
-
-    const descElem = document.getElementById("mangaDesc");
-    const toggleElem = document.querySelector(".desc-toggle");
-    let expanded = false;
-
-    function toggleDesc() {
-      expanded = !expanded;
-      descElem.style.maxHeight = expanded ? "none" : "90px";
-      toggleElem.textContent = expanded ? "Show less" : "Show more";
-    }
-
-    const favBtn = document.getElementById("favBtn");
-    const favoriteIds = JSON.parse(localStorage.getItem("quadraFavs") || "[]");
-
-    function updateFavButton() {
-      if (favoriteIds.includes(mangaId)) {
-        favBtn.innerHTML = '<i class="fas fa-heart"></i> Favorited';
-      } else {
-        favBtn.innerHTML = '<i class="far fa-heart"></i> Favorite';
-      }
-    }
-
-    favBtn.addEventListener("click", () => {
-      const idx = favoriteIds.indexOf(mangaId);
-      if (idx > -1) favoriteIds.splice(idx, 1);
-      else favoriteIds.push(mangaId);
-      localStorage.setItem("quadraFavs", JSON.stringify(favoriteIds));
-      updateFavButton();
-    });
-
-    fetch("assets/data/mangas.json")
-      .then(res => res.json())
-      .then(data => {
-        const manga = data.find(m => m.id === mangaId);
-        if (!manga) return;
-        document.getElementById("mangaTitle").textContent = manga.title;
-        document.getElementById("mangaStatus").textContent = manga.status;
-        document.getElementById("chapterCount").textContent = manga.chapters;
-        document.getElementById("rating").textContent = manga.rating;
-        descElem.textContent = manga.description;
-        document.getElementById("mangaCover").src = `assets/images/${manga.id}/cover-image.jpg`;
-        updateFavButton();
-      });
-
+    const urlParams = new URLSearchParams(window.location.search);
+    const mangaId = urlParams.get('id');
+    const descriptionElem = document.getElementById('mangaDescription');
+    let fullDescription = '';
+    let short = true;
+    let chapters = [];
+    let currentPage = 1;
     const chaptersPerPage = 10;
-    let chaptersData = [];
 
-    function renderChapters(page = 1) {
-      const list = document.getElementById("chapterList");
-      list.innerHTML = '';
-      const start = (page - 1) * chaptersPerPage;
-      const pageChaps = chaptersData.slice(start, start + chaptersPerPage);
-      pageChaps.forEach(chap => {
-        const li = document.createElement("li");
-        li.innerHTML = `<a href="reader.html?id=${mangaId}&chapter=${chap.number}">Chapter ${chap.number}</a>`;
-        list.appendChild(li);
-      });
-      renderPagination(page);
+    async function loadMangaInfo() {
+      const res = await fetch(`assets/data/chapters/${mangaId}.json`);
+      const data = await res.json();
+
+      document.getElementById('mangaTitle').innerText = data.title;
+      document.getElementById('mangaCover').src = data.cover;
+      fullDescription = data.description;
+      descriptionElem.innerText = fullDescription.slice(0, 150) + '...';
+
+      const badgesHTML = `
+        <span class="badge">${data.status}</span>
+        <span class="badge">Alt: ${data.altTitle}</span>
+      `;
+      document.getElementById('mangaBadges').innerHTML = badgesHTML;
     }
 
-    function renderPagination(current) {
-      const totalPages = Math.ceil(chaptersData.length / chaptersPerPage);
-      const container = document.getElementById("pagination");
-      container.innerHTML = '';
+    function toggleDescription() {
+      short = !short;
+      descriptionElem.innerText = short ? fullDescription.slice(0, 150) + '...' : fullDescription;
+      document.querySelector('.toggle-btn').innerText = short ? 'More' : 'Less';
+    }
 
-      const btn = (text, page) => {
-        const b = document.createElement("button");
-        b.textContent = text;
-        if (page === current) b.classList.add("active");
-        b.onclick = () => renderChapters(page);
-        return b;
+    async function loadChapters() {
+      const res = await fetch(`assets/data/${mangaId}/chapter-number/chapters.json`);
+      chapters = await res.json();
+      updateChapterSelect();
+      renderChapters();
+    }
+
+    function updateChapterSelect() {
+      const select = document.getElementById('chapterSelect');
+      select.innerHTML = '';
+      chapters.forEach(chap => {
+        const option = document.createElement('option');
+        option.value = chap.number;
+        option.innerText = `Chapter ${chap.number}`;
+        select.appendChild(option);
+      });
+    }
+
+    function readSelectedChapter() {
+      const chap = document.getElementById('chapterSelect').value;
+      window.location.href = `reader.html?id=${mangaId}&chapter=${chap}`;
+    }
+
+    function renderChapters() {
+      const list = document.getElementById('chapterList');
+      list.innerHTML = '';
+      const start = (currentPage - 1) * chaptersPerPage;
+      const pageChaps = chapters.slice(start, start + chaptersPerPage);
+
+      pageChaps.forEach(chap => {
+        const div = document.createElement('div');
+        div.className = 'chapter-item';
+        div.innerHTML = `<span>Chapter ${chap.number}: ${chap.title}</span><i class="fas fa-book-open"></i>`;
+        div.onclick = () => {
+          window.location.href = `reader.html?id=${mangaId}&chapter=${chap.number}`;
+        };
+        list.appendChild(div);
+      });
+
+      renderPagination();
+    }
+
+    function renderPagination() {
+      const pageCount = Math.ceil(chapters.length / chaptersPerPage);
+      const pagination = document.getElementById('pagination');
+      pagination.innerHTML = '';
+
+      const addBtn = (label, page) => {
+        const btn = document.createElement('button');
+        btn.innerText = label;
+        btn.onclick = () => {
+          currentPage = page;
+          renderChapters();
+        };
+        pagination.appendChild(btn);
       };
 
-      container.appendChild(btn("«First", 1));
-      for (let i = 1; i <= totalPages; i++) {
-        container.appendChild(btn(i, i));
-        if (i === 3 && totalPages > 4) {
-          const dots = document.createElement("span");
-          dots.textContent = "...";
-          dots.style.padding = "6px";
-          container.appendChild(dots);
-          container.appendChild(btn("Last»", totalPages));
-          break;
+      if (pageCount > 1) {
+        addBtn('« First', 1);
+        for (let i = 1; i <= pageCount; i++) {
+          addBtn(i, i);
         }
+        addBtn('Last »', pageCount);
       }
     }
 
-    fetch(`assets/data/chapters/${mangaId}.json`)
-      .then(res => res.json())
-      .then(chapters => {
-        chaptersData = chapters.reverse();
-        const dropdown = document.getElementById("chapterDropdown");
-        chapters.forEach(chap => {
-          const opt = document.createElement("option");
-          opt.value = chap.number;
-          opt.textContent = "Chapter " + chap.number;
-          dropdown.appendChild(opt);
-        });
-        dropdown.addEventListener("change", e => {
-          const val = e.target.value;
-          window.location.href = `reader.html?id=${mangaId}&chapter=${val}`;
-        });
-        renderChapters();
-      })
-      .catch(() => {
-        document.getElementById("chapterList").innerHTML = '<li>Error loading chapters.</li>';
-      });
+    function toggleFavorite() {
+      let favs = JSON.parse(localStorage.getItem('quadraFavs') || '[]');
+      if (favs.includes(mangaId)) {
+        favs = favs.filter(id => id !== mangaId);
+        alert('Removed from favorites');
+      } else {
+        favs.push(mangaId);
+        alert('Added to favorites');
+      }
+      localStorage.setItem('quadraFavs', JSON.stringify(favs));
+    }
+
+    loadMangaInfo();
+    loadChapters();
   </script>
 </body>
 </html>
