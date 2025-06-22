@@ -8,11 +8,6 @@
   <link rel="icon" href="assets/images/logo.svg" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    #userBtn {
-      display: none;
-    }
-  </style>
 </head>
 <body class="dark-theme">
 
@@ -24,7 +19,7 @@
     </div>
     <div class="icon-section">
       <button class="header-icon" onclick="window.location.href='search.html'"><i class="fas fa-search"></i></button>
-      <button class="header-icon" id="userBtn"><i class="fas fa-user"></i></button>
+      <!-- User icon removed -->
     </div>
   </header>
 
@@ -170,19 +165,14 @@
       });
   </script>
 
-  <!-- Supabase Auth Check -->
+  <!-- Supabase Auth Check - Safe version without userBtn -->
   <script type="module">
     import { createClient } from 'https://esm.sh/@supabase/supabase-js';
-
     const supabase = createClient(
       'https://qanielcwwcfbffyucytk.supabase.co',
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhbmllbGN3d2NmYmZmeXVjeXRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1MjU0MDgsImV4cCI6MjA2NjEwMTQwOH0.7PIncqpt4KnPJv4EH00BRtPNE8ckLACo_DFNM40WCMo'
     );
-
-    document.getElementById("userBtn").addEventListener("click", async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      window.location.href = user ? 'profile.html' : 'login.html';
-    });
+    // userBtn was removed, no auth listener needed here
   </script>
 </body>
 </html>
