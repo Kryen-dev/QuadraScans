@@ -3,157 +3,178 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sign Up – QuadraScans</title>
+  <title>Sign Up - QuadraScans</title>
   <link rel="stylesheet" href="assets/css/style.css" />
   <link rel="icon" href="assets/images/logo.svg" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
-      margin: 0;
       font-family: 'Poppins', sans-serif;
       background-color: #121212;
-      color: #f1f1f1;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .signup-card {
+      background: #1e1e1e;
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+      max-width: 350px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .signup-card img {
+      height: 60px;
+      margin-bottom: 1rem;
+    }
+
+    .signup-card h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .signup-card p {
+      font-size: 0.875rem;
+      color: #aaa;
+      margin-bottom: 1.5rem;
+    }
+
+    .signup-btn {
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 100vh;
-    }
-    .auth-container {
-      background: #1e1e1e;
-      padding: 2rem;
-      border-radius: 12px;
-      width: 90%;
-      max-width: 400px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.4);
-    }
-    .auth-container h2 {
-      text-align: center;
+      background-color: #2a2a2a;
+      border: none;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      color: #fff;
+      font-weight: 500;
+      font-size: 0.95rem;
       margin-bottom: 1rem;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
     }
-    .auth-form {
+
+    .signup-btn:hover {
+      background-color: #3a3a3a;
+    }
+
+    .signup-btn i {
+      margin-right: 0.6rem;
+      font-size: 1.2rem;
+    }
+
+    .signup-card .login-link {
+      margin-top: 1rem;
+      font-size: 0.875rem;
+      color: #ccc;
+    }
+
+    .signup-card .login-link a {
+      color: #4eaaff;
+      text-decoration: none;
+    }
+
+    .signup-card .login-link a:hover {
+      text-decoration: underline;
+    }
+
+    .email-form {
       display: flex;
       flex-direction: column;
-      gap: 1rem;
+      gap: 0.8rem;
+      margin-bottom: 1rem;
     }
-    .auth-form input {
-      padding: 0.8rem;
+
+    .email-form input {
+      padding: 0.7rem;
       border: none;
       border-radius: 8px;
-      font-size: 1rem;
       background-color: #2a2a2a;
       color: white;
     }
-    .auth-form button {
-      padding: 0.8rem;
-      background: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: 0.3s;
+
+    .message {
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+      color: #ff6464;
     }
-    .auth-form button:hover {
-      background-color: #45a049;
-    }
-    .divider {
-      text-align: center;
-      margin: 1rem 0;
-      color: #aaa;
-    }
-    .google-btn {
-      background: #ffffff;
-      color: #333;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .google-btn i {
-      margin-right: 10px;
-    }
-    .auth-switch {
-      text-align: center;
-      margin-top: 1rem;
-      font-size: 0.9rem;
-    }
-    .auth-switch a {
+
+    .message.success {
       color: #4CAF50;
-      text-decoration: none;
-    }
-    .error-msg {
-      color: red;
-      font-size: 0.9rem;
-      text-align: center;
-    }
-    .success-msg {
-      color: green;
-      font-size: 0.9rem;
-      text-align: center;
     }
   </style>
 </head>
 <body>
-  <div class="auth-container">
-    <h2>Sign Up to QuadraScans</h2>
-    <form class="auth-form" id="signupForm">
-      <input type="email" id="email" placeholder="Email address" required />
-      <input type="password" id="password" placeholder="Password" required />
-      <button type="submit">Create Account</button>
+  <div class="signup-card">
+    <img src="assets/images/logo.png" alt="QuadraScans Logo">
+    <h2>Join QuadraScans</h2>
+    <p>Create an account to read epic manga</p>
+
+    <form id="emailSignup" class="email-form">
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="password" id="password" placeholder="Password" required>
+      <button class="signup-btn" type="submit"><i class="fas fa-user-plus"></i> Sign Up with Email</button>
     </form>
 
-    <div class="divider">OR</div>
-
-    <button class="auth-form google-btn" id="googleSignup">
+    <button class="signup-btn" onclick="signupWithGoogle()">
       <i class="fab fa-google"></i> Sign Up with Google
     </button>
 
-    <p class="auth-switch">
+    <div class="login-link">
       Already have an account? <a href="login.html">Login</a>
-    </p>
-    <p id="msg" class="error-msg"></p>
+    </div>
+
+    <div id="msg" class="message"></div>
   </div>
 
-  <!-- Supabase -->
   <script type="module">
-    import { createClient } from 'https://esm.sh/@supabase/supabase-js';
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js'
 
     const supabase = createClient(
       'https://qanielcwwcfbffyucytk.supabase.co',
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhbmllbGN3d2NmYmZmeXVjeXRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1MjU0MDgsImV4cCI6MjA2NjEwMTQwOH0.7PIncqpt4KnPJv4EH00BRtPNE8ckLACo_DFNM40WCMo'
-    );
+    )
 
-    const form = document.getElementById('signupForm');
+    const form = document.getElementById('emailSignup');
     const msg = document.getElementById('msg');
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       msg.textContent = '';
+      msg.classList.remove('success');
+
       const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value.trim();
 
       const { error } = await supabase.auth.signUp({ email, password });
+
       if (error) {
         msg.textContent = error.message;
       } else {
-        msg.textContent = 'Signup successful! Please check your email to verify.';
-        msg.className = 'success-msg';
+        msg.textContent = 'Signup successful! Check your email to verify.';
+        msg.classList.add('success');
         form.reset();
       }
     });
 
-    const googleSignup = document.getElementById('googleSignup');
-    googleSignup.addEventListener('click', async () => {
+    async function signupWithGoogle() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: 'https://quadrascans.netlify.app/profile.html'
+          redirectTo: window.location.origin + '/profile.html'
         }
       });
-      if (error) {
-        msg.textContent = error.message;
-      }
-    });
+      if (error) alert(error.message);
+    }
   </script>
 </body>
 </html>
