@@ -16,6 +16,20 @@
       margin: 0;
       padding: 20px;
     }
+    .top-controls {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
+    }
+    .top-controls button {
+      background-color: #1e1e1e;
+      color: #fff;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
     .manga-container {
       display: flex;
       gap: 20px;
@@ -37,16 +51,30 @@
       font-size: 2rem;
       margin-bottom: 10px;
     }
-    .manga-info p, .manga-info li {
-      color: #bbb;
+    .manga-info p {
       font-size: 0.95rem;
-      line-height: 1.5;
+      color: #bbb;
     }
-    .chapter-list {
+    .desc-toggle {
+      color: #4eaaff;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    .chapter-section {
       margin-top: 30px;
     }
-    .chapter-list h3 {
+    .chapter-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       margin-bottom: 10px;
+    }
+    .chapter-controls select {
+      padding: 6px;
+      background: #1e1e1e;
+      color: #fff;
+      border-radius: 6px;
+      border: none;
     }
     .chapter-list ul {
       list-style: none;
@@ -66,9 +94,32 @@
       color: #4eaaff;
       text-decoration: none;
     }
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .pagination button {
+      padding: 6px 10px;
+      background: #1e1e1e;
+      border: none;
+      color: #fff;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .pagination .active {
+      background: #4eaaff;
+      color: #000;
+    }
   </style>
 </head>
 <body>
+  <div class="top-controls">
+    <button onclick="history.back()"><i class="fas fa-arrow-left"></i> Back</button>
+    <button id="favBtn"><i class="fas fa-heart"></i> Favorite</button>
+  </div>
+
   <div class="manga-container">
     <div class="manga-cover">
       <img id="mangaCover" src="" alt="Manga Cover" />
@@ -79,53 +130,127 @@
       <p><strong>Chapters:</strong> <span id="chapterCount">-</span></p>
       <p><strong>Rating:</strong> <span id="rating">-</span></p>
       <p><strong>Description:</strong></p>
-      <p id="mangaDesc">Loading description...</p>
+      <p id="mangaDesc" style="max-height: 90px; overflow: hidden;"></p>
+      <p class="desc-toggle" onclick="toggleDesc()">Show more</p>
     </div>
   </div>
 
-  <div class="chapter-list">
-    <h3>Chapters</h3>
-    <ul id="chapterList">
-      <li>Loading chapters...</li>
-    </ul>
+  <div class="chapter-section">
+    <div class="chapter-controls">
+      <h3>Chapters</h3>
+      <select id="chapterDropdown"></select>
+    </div>
+    <div class="chapter-list">
+      <ul id="chapterList"><li>Loading chapters...</li></ul>
+    </div>
+    <div class="pagination" id="pagination"></div>
   </div>
 
   <script>
-    const params = new URLSearchParams(window.location.search);
-    const mangaId = params.get("id") || "solo-leveling";
+    const mangaId = new URLSearchParams(window.location.search).get("id") || "solo-leveling";
+
+    const descElem = document.getElementById("mangaDesc");
+    const toggleElem = document.querySelector(".desc-toggle");
+    let expanded = false;
+
+    function toggleDesc() {
+      expanded = !expanded;
+      descElem.style.maxHeight = expanded ? "none" : "90px";
+      toggleElem.textContent = expanded ? "Show less" : "Show more";
+    }
+
+    const favBtn = document.getElementById("favBtn");
+    const favoriteIds = JSON.parse(localStorage.getItem("quadraFavs") || "[]");
+
+    function updateFavButton() {
+      if (favoriteIds.includes(mangaId)) {
+        favBtn.innerHTML = '<i class="fas fa-heart"></i> Favorited';
+      } else {
+        favBtn.innerHTML = '<i class="far fa-heart"></i> Favorite';
+      }
+    }
+
+    favBtn.addEventListener("click", () => {
+      const idx = favoriteIds.indexOf(mangaId);
+      if (idx > -1) favoriteIds.splice(idx, 1);
+      else favoriteIds.push(mangaId);
+      localStorage.setItem("quadraFavs", JSON.stringify(favoriteIds));
+      updateFavButton();
+    });
 
     fetch("assets/data/mangas.json")
       .then(res => res.json())
       .then(data => {
         const manga = data.find(m => m.id === mangaId);
-        if (!manga) {
-          document.getElementById("mangaTitle").textContent = "Manga Not Found";
-          return;
-        }
-
+        if (!manga) return;
         document.getElementById("mangaTitle").textContent = manga.title;
         document.getElementById("mangaStatus").textContent = manga.status;
-        document.getElementById("chapterCount").textContent = manga.chapters + " chapters";
+        document.getElementById("chapterCount").textContent = manga.chapters;
         document.getElementById("rating").textContent = manga.rating;
-        document.getElementById("mangaDesc").textContent = manga.description;
+        descElem.textContent = manga.description;
         document.getElementById("mangaCover").src = `assets/images/${manga.id}/cover-image.jpg`;
+        updateFavButton();
       });
+
+    const chaptersPerPage = 10;
+    let chaptersData = [];
+
+    function renderChapters(page = 1) {
+      const list = document.getElementById("chapterList");
+      list.innerHTML = '';
+      const start = (page - 1) * chaptersPerPage;
+      const pageChaps = chaptersData.slice(start, start + chaptersPerPage);
+      pageChaps.forEach(chap => {
+        const li = document.createElement("li");
+        li.innerHTML = `<a href="reader.html?id=${mangaId}&chapter=${chap.number}">Chapter ${chap.number}</a>`;
+        list.appendChild(li);
+      });
+      renderPagination(page);
+    }
+
+    function renderPagination(current) {
+      const totalPages = Math.ceil(chaptersData.length / chaptersPerPage);
+      const container = document.getElementById("pagination");
+      container.innerHTML = '';
+
+      const btn = (text, page) => {
+        const b = document.createElement("button");
+        b.textContent = text;
+        if (page === current) b.classList.add("active");
+        b.onclick = () => renderChapters(page);
+        return b;
+      };
+
+      container.appendChild(btn("«First", 1));
+      for (let i = 1; i <= totalPages; i++) {
+        container.appendChild(btn(i, i));
+        if (i === 3 && totalPages > 4) {
+          const dots = document.createElement("span");
+          dots.textContent = "...";
+          dots.style.padding = "6px";
+          container.appendChild(dots);
+          container.appendChild(btn("Last»", totalPages));
+          break;
+        }
+      }
+    }
 
     fetch(`assets/data/chapters/${mangaId}.json`)
       .then(res => res.json())
       .then(chapters => {
-        const list = document.getElementById("chapterList");
-        list.innerHTML = '';
-        if (chapters.length === 0) {
-          list.innerHTML = '<li>No chapters yet.</li>';
-          return;
-        }
-
-        chapters.reverse().forEach(chap => {
-          const li = document.createElement("li");
-          li.innerHTML = `<a href="reader.html?id=${mangaId}&chapter=${chap.number}">Chapter ${chap.number}</a>`;
-          list.appendChild(li);
+        chaptersData = chapters.reverse();
+        const dropdown = document.getElementById("chapterDropdown");
+        chapters.forEach(chap => {
+          const opt = document.createElement("option");
+          opt.value = chap.number;
+          opt.textContent = "Chapter " + chap.number;
+          dropdown.appendChild(opt);
         });
+        dropdown.addEventListener("change", e => {
+          const val = e.target.value;
+          window.location.href = `reader.html?id=${mangaId}&chapter=${val}`;
+        });
+        renderChapters();
       })
       .catch(() => {
         document.getElementById("chapterList").innerHTML = '<li>Error loading chapters.</li>';
