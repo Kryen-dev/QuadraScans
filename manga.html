@@ -223,9 +223,7 @@
 
       container.appendChild(btn("«First", 1));
       for (let i = 1; i <= totalPages; i++) {
-        if (i <= 3 || i === totalPages) {
-          container.appendChild(btn(i, i));
-        }
+        container.appendChild(btn(i, i));
         if (i === 3 && totalPages > 4) {
           const dots = document.createElement("span");
           dots.textContent = "...";
