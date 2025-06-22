@@ -1,4 +1,4 @@
-<!-- Updated manga.html with correct altNames and genres field usage -->
+<!-- Responsive manga layout with right-side info on desktop -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -33,20 +33,19 @@
     }
     .manga-container {
       display: flex;
+      flex-direction: column;
       gap: 20px;
-      flex-wrap: wrap;
     }
-    .manga-cover {
-      flex: 1 1 250px;
-      max-width: 300px;
+    .manga-flex {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
     }
     .manga-cover img {
       width: 100%;
       border-radius: 12px;
       box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
-    }
-    .manga-info {
-      flex: 2 1 500px;
+      max-width: 100%;
     }
     .manga-info h1 {
       font-size: 2rem;
@@ -62,6 +61,20 @@
       cursor: pointer;
       font-size: 0.9rem;
     }
+    @media (min-width: 768px) {
+      .manga-flex {
+        flex-direction: row;
+        align-items: flex-start;
+      }
+      .manga-cover {
+        flex: 0 0 300px;
+      }
+      .manga-info {
+        flex: 1;
+        padding-left: 20px;
+      }
+    }
+
     .chapter-section {
       margin-top: 30px;
     }
@@ -127,23 +140,26 @@
   </div>
 
   <div class="manga-container">
-    <div class="manga-cover">
-      <img id="mangaCover" src="" alt="Manga Cover" />
-    </div>
-    <div class="manga-info">
-      <h1 id="mangaTitle">Loading...</h1>
-      <p><strong>Status:</strong> <span id="mangaStatus">-</span></p>
-      <p><strong>Alternative Names:</strong> <span id="altNames">-</span></p>
-      <p><strong>Published:</strong> <span id="published">-</span></p>
-      <p><strong>Genre:</strong> <span id="genre">-</span></p>
-      <p><strong>Original Language:</strong> <span id="language">-</span></p>
-      <p><strong>Final Chapter:</strong> <span id="finalChapter">-</span></p>
-      <p><strong>Description:</strong></p>
-      <p id="mangaDesc" style="max-height: 90px; overflow: hidden;"></p>
-      <p class="desc-toggle" onclick="toggleDesc()">Show more</p>
+    <div class="manga-flex">
+      <div class="manga-cover">
+        <img id="mangaCover" src="" alt="Manga Cover" />
+      </div>
+      <div class="manga-info">
+        <h1 id="mangaTitle">Loading...</h1>
+        <p><strong>Status:</strong> <span id="mangaStatus">-</span></p>
+        <p><strong>Alternative Names:</strong> <span id="altNames">-</span></p>
+        <p><strong>Published:</strong> <span id="published">-</span></p>
+        <p><strong>Genre:</strong> <span id="genre">-</span></p>
+        <p><strong>Original Language:</strong> <span id="language">-</span></p>
+        <p><strong>Final Chapter:</strong> <span id="finalChapter">-</span></p>
+        <p><strong>Description:</strong></p>
+        <p id="mangaDesc" style="max-height: 90px; overflow: hidden;"></p>
+        <p class="desc-toggle" onclick="toggleDesc()">Show more</p>
+      </div>
     </div>
   </div>
 
+  <!-- Your chapter list and script below stays the same -->
   <div class="chapter-section">
     <div class="chapter-controls">
       <h3>Chapters</h3>
