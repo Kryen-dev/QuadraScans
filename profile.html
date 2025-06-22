@@ -3,97 +3,131 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Profile - QuadraScans</title>
+  <title>Your Profile • QuadraScans</title>
   <link rel="stylesheet" href="assets/css/style.css" />
   <link rel="icon" href="assets/images/logo.svg" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    body {
-      background-color: #121212;
-      color: #fff;
-      font-family: 'Poppins', sans-serif;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-    }
-
-    .profile-card {
-      background: #1e1e1e;
-      padding: 2rem;
+    .profile-wrapper {
+      max-width: 500px;
+      margin: 40px auto;
+      padding: 24px;
+      background-color: #1e1e1e;
       border-radius: 16px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+      box-shadow: 0 0 12px rgba(255,255,255,0.05);
       text-align: center;
-      max-width: 400px;
-      width: 90%;
-    }
-
-    .profile-card img {
-      width: 70px;
-      margin-bottom: 1rem;
-    }
-
-    .profile-card h2 {
-      margin-bottom: 0.5rem;
-      font-size: 1.4rem;
-    }
-
-    .profile-card p {
-      color: #aaa;
-      font-size: 0.9rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .logout-btn {
-      background-color: #e53935;
-      border: none;
       color: #fff;
-      padding: 0.7rem 1.5rem;
+    }
+    .profile-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 12px;
+      border: 2px solid #444;
+    }
+    .profile-email {
+      font-size: 1.1rem;
+      margin-bottom: 4px;
+      color: #ccc;
+    }
+    .profile-method {
+      font-size: 0.9rem;
+      margin-bottom: 24px;
+      color: #888;
+    }
+    .badge-box {
+      padding: 20px;
+      background-color: #292929;
+      border-radius: 12px;
+      margin-bottom: 24px;
+    }
+    .badge-box p {
+      font-size: 1rem;
+      color: #aaa;
+    }
+    .profile-btn {
+      display: inline-block;
+      margin: 8px;
+      padding: 10px 20px;
+      background-color: #ff5757;
+      color: white;
+      font-weight: bold;
+      border: none;
       border-radius: 8px;
       cursor: pointer;
-      font-size: 0.95rem;
-      font-weight: 500;
-      transition: background-color 0.2s ease;
+      transition: background 0.3s;
     }
-
-    .logout-btn:hover {
-      background-color: #d32f2f;
+    .profile-btn:hover {
+      background-color: #e24444;
+    }
+    .settings-card {
+      padding: 16px;
+      border: 1px solid #444;
+      background-color: #2d2d2d;
+      border-radius: 12px;
+      margin-bottom: 24px;
     }
   </style>
 </head>
-<body>
-  <div class="profile-card">
-    <img src="assets/images/logo.png" alt="QuadraScans Logo">
-    <h2 id="userName">Loading...</h2>
-    <p id="userEmail">Please wait while we fetch your profile</p>
-    <button class="logout-btn" onclick="logout()">Log out</button>
+<body class="dark-theme">
+
+  <div class="profile-wrapper">
+    <img src="assets/images/logo.png" alt="Avatar" class="profile-avatar" id="userAvatar">
+    <h2 class="site-title">Welcome to QuadraScans</h2>
+    <div class="profile-email" id="userEmail">Loading email...</div>
+    <div class="profile-method" id="userMethod">Checking login method...</div>
+
+    <div class="badge-box">
+      <h3>🏅 Badges</h3>
+      <p>Badge system coming soon. Stay tuned!</p>
+    </div>
+
+    <div class="settings-card">
+      <h3 style="margin-bottom: 8px;">⚙️ Settings</h3>
+      <p style="color:#aaa;">Settings options will appear here soon.</p>
+    </div>
+
+    <button class="profile-btn" onclick="logout()">Logout</button>
+    <button class="profile-btn" onclick="deleteAccount()">Delete Account</button>
   </div>
 
-  <script type="module">
-    import { createClient } from 'https://esm.sh/@supabase/supabase-js'
-
-    const supabase = createClient(
-      'https://qanielcwwcfbffyucytk.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhbmllbGN3d2NmYmZmeXVjeXRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1MjU0MDgsImV4cCI6MjA2NjEwMTQwOH0.7PIncqpt4KnPJv4EH00BRtPNE8ckLACo_DFNM40WCMo'
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script>
+    const supabase = supabase.createClient(
+      "https://qanielcwwcfbffyucytk.supabase.co",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhbmllbGN3d2NmYmZmeXVjeXRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1MjU0MDgsImV4cCI6MjA2NjEwMTQwOH0.7PIncqpt4KnPJv4EH00BRtPNE8ckLACo_DFNM40WCMo"
     );
 
-    const { data: { user } } = await supabase.auth.getUser();
+    async function checkLogin() {
+      const { data: { user }, error } = await supabase.auth.getUser();
 
-    if (!user) {
-      window.location.href = "login.html";
-    } else {
-      document.getElementById("userName").textContent = user.user_metadata.full_name || "Welcome!";
-      document.getElementById("userEmail").textContent = user.email;
+      if (!user) {
+        window.location.href = "login.html";
+      } else {
+        document.getElementById("userEmail").textContent = user.email;
+        document.getElementById("userMethod").textContent = "Signed in via " + (user.app_metadata?.provider || "email");
+        const avatar = document.getElementById("userAvatar");
+        if (user.user_metadata?.avatar_url) {
+          avatar.src = user.user_metadata.avatar_url;
+        }
+      }
     }
 
     async function logout() {
       await supabase.auth.signOut();
       window.location.href = "login.html";
     }
+
+    async function deleteAccount() {
+      const { error } = await supabase.auth.signOut();
+      localStorage.clear();
+      alert("Account deletion will be handled from your provider.");
+      window.location.href = "login.html";
+    }
+
+    checkLogin();
   </script>
 </body>
 </html>
