@@ -35,7 +35,7 @@
     }
 
     .profile-header {
-      padding: 60px 20px 20px; /* Top padding increased due to fixed button */
+      padding: 60px 20px 20px;
       text-align: center;
       border-bottom: 1px solid #333;
     }
@@ -43,10 +43,6 @@
     .profile-header h1 {
       color: orange;
       font-size: 2rem;
-    }
-
-    .profile-header p {
-      color: #ccc;
     }
 
     .profile-container {
@@ -152,8 +148,7 @@
   </div>
 
   <div class="profile-header">
-    <h1>Welcome to QuadraScans</h1>
-    <p id="userEmail">Loading...</p>
+    <h1 id="welcomeHeading">Welcome to QuadraScans</h1>
   </div>
 
   <div class="profile-container">
@@ -200,11 +195,16 @@
       const username = localStorage.getItem("quadraUsername") || "Not set";
       const joined = localStorage.getItem("quadraJoined") || new Date().toLocaleDateString();
 
-      document.getElementById("userEmail").textContent = email;
+      // Update welcome message
+      const welcomeHeading = document.getElementById("welcomeHeading");
+      welcomeHeading.textContent = `Welcome to QuadraScans, ${username}`;
+
+      // Update account info
       document.getElementById("emailInfo").textContent = email;
       document.getElementById("usernameInfo").textContent = username;
       document.getElementById("createdAtInfo").textContent = joined;
 
+      // Load reading history
       const history = JSON.parse(localStorage.getItem("quadraReading") || "[]");
       const historyContainer = document.getElementById("historySection");
 
