@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Subscribe - QuadraScans</title>
+  <title>Subscription - QuadraScans</title>
   <link rel="stylesheet" href="assets/css/style.css" />
   <link rel="icon" href="assets/images/logo.svg" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
@@ -47,93 +47,125 @@
       margin-bottom: 20px;
     }
 
-    .benefits {
-      background: #1e1e1e;
+    .plans {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .card {
+      background-color: #1e1e1e;
+      border: 1px solid #333;
       padding: 20px;
       border-radius: 12px;
-      margin-bottom: 30px;
+      box-shadow: 0 0 8px rgba(255, 165, 0, 0.1);
     }
 
-    .benefits ul {
+    .card h2 {
+      color: orange;
+      font-size: 1.3rem;
+      margin-bottom: 10px;
+    }
+
+    .price {
+      color: #ccc;
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+    }
+
+    .card ul {
       list-style: none;
       padding: 0;
+      color: #bbb;
     }
 
-    .benefits li {
-      margin-bottom: 10px;
-      padding-left: 20px;
-      position: relative;
+    .card ul li {
+      padding: 6px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    .benefits li::before {
-      content: "✓";
-      position: absolute;
-      left: 0;
+    .btn-select {
+      margin-top: 12px;
+      background-color: transparent;
       color: orange;
-    }
-
-    .qr-section {
-      text-align: center;
-    }
-
-    .qr-section img {
-      width: 200px;
-      height: 200px;
-      object-fit: contain;
-      margin: 10px;
-      border: 1px solid #444;
-      border-radius: 12px;
-      padding: 10px;
-      background: #1e1e1e;
-    }
-
-    .note {
-      color: #aaa;
-      font-size: 0.9rem;
-      margin-top: 10px;
-    }
-
-    .confirm-message {
-      margin-top: 30px;
-      padding: 16px;
-      background: rgba(255,165,0,0.1);
-      border-left: 4px solid orange;
+      border: 2px solid orange;
+      padding: 8px 14px;
       border-radius: 8px;
-      color: #ffcc80;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    .btn-select:hover {
+      background-color: rgba(255, 165, 0, 0.1);
+    }
+
+    @media (max-width: 600px) {
+      .plans {
+        gap: 16px;
+      }
     }
   </style>
 </head>
 <body>
-
+  <!-- Back Button -->
   <div class="top-controls">
     <button onclick="history.back()"><i class="fas fa-arrow-left"></i> Back</button>
   </div>
 
   <div class="container">
-    <h1>Upgrade to Premium</h1>
+    <h1>🛡️ Choose Your Plan</h1>
+    <div class="plans">
 
-    <div class="benefits">
-      <h3 style="color:white; margin-bottom: 12px;">Premium Benefits</h3>
-      <ul>
-        <li>No ads, faster loading</li>
-        <li>Early access to new chapters</li>
-        <li>Premium-only manga series</li>
-        <li>Support the developers</li>
-      </ul>
-    </div>
+      <!-- Free Plan -->
+      <div class="card">
+        <h2>✅ Free User (Default)</h2>
+        <p class="price">₹0/month</p>
+        <ul>
+          <li><i class="fas fa-book-open"></i> Access to all manga</li>
+          <li><i class="fas fa-clock"></i> Chapters released 3–7 days later</li>
+          <li><i class="fas fa-ad"></i> Ads are displayed</li>
+          <li><i class="fas fa-ban"></i> No downloads / offline access</li>
+        </ul>
+        <button class="btn-select" disabled>Current Plan</button>
+      </div>
 
-    <div class="qr-section">
-      <h3>Scan to Pay</h3>
-      <p style="color:#ccc;">₹49 one-time subscription</p>
-      <img src="assets/images/qr-googlepay.png" alt="Google Pay QR">
-      <img src="assets/images/qr-phonepe.png" alt="PhonePe QR">
-      <p class="note">Send screenshot of payment on our Instagram or email for manual activation.</p>
-    </div>
+      <!-- Tier 1 Plan -->
+      <div class="card">
+        <h2>💎 Tier 1: Ad-Free Reader</h2>
+        <p class="price">₹49/month</p>
+        <ul>
+          <li><i class="fas fa-check-circle"></i> No ads anywhere</li>
+          <li><i class="fas fa-headset"></i> Priority support</li>
+          <li><i class="fas fa-ban"></i> No early access</li>
+        </ul>
+        <button class="btn-select" onclick="subscribe(49)">Subscribe Now</button>
+      </div>
 
-    <div class="confirm-message">
-      After scanning and paying, please send proof to <strong>quadrascans@gmail.com</strong> or DM us on Instagram <strong>@quadrascans</strong>.
+      <!-- Tier 2 Plan -->
+      <div class="card">
+        <h2>🚀 Tier 2: Early Access + No Ads</h2>
+        <p class="price">₹99/month</p>
+        <ul>
+          <li><i class="fas fa-check-circle"></i> No ads anywhere</li>
+          <li><i class="fas fa-hourglass-start"></i> Chapters 7 days earlier</li>
+          <li><i class="fas fa-star"></i> Early Access Badge</li>
+          <li><i class="fas fa-headset"></i> Priority support</li>
+        </ul>
+        <button class="btn-select" onclick="subscribe(99)">Subscribe Now</button>
+      </div>
+
     </div>
   </div>
 
+  <script>
+    function subscribe(amount) {
+      alert(`Redirecting to payment for ₹${amount}/month...`);
+      // Redirect or trigger payment logic
+      // You could also use window.location.href = "payment.html";
+    }
+  </script>
 </body>
 </html>
