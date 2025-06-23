@@ -107,6 +107,7 @@
       border-radius: 8px;
       cursor: pointer;
       margin-top: 10px;
+      text-decoration: none;
     }
 
     .btn:hover, .logout-btn:hover {
@@ -131,6 +132,22 @@
       padding: 10px;
       border-bottom: 1px solid #333;
       color: #ddd;
+    }
+
+    .qr-section {
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    .qr-section img {
+      width: 200px;
+      height: 200px;
+      object-fit: contain;
+      margin: 10px;
+      border: 1px solid #444;
+      border-radius: 12px;
+      padding: 10px;
+      background: #1e1e1e;
     }
 
     @media (max-width: 600px) {
@@ -171,7 +188,7 @@
     <div class="info-block section">
       <h2>Subscription</h2>
       <p style="color:#ccc">Want early access and no ads?</p>
-      <button class="btn">Upgrade to Premium</button>
+      <a href="subscription.html" class="btn">Upgrade to Premium</a>
     </div>
 
     <div class="info-block section">
@@ -186,10 +203,15 @@
       </div>
     </div>
 
+    <div class="qr-section">
+      <h2>Scan to Pay</h2>
+      <p style="color:#ccc">Support us via UPI</p>
+      <img src="assets/images/qr-googlepay.png" alt="Google Pay QR">
+      <img src="assets/images/qr-phonepe.png" alt="PhonePe QR">
+    </div>
+
     <button class="logout-btn" onclick="logout()">Logout</button>
   </div>
-
-  <button class="btn" onclick="window.location.href='subscription.html'">Upgrade to Premium</button>
 
   <script>
     function loadProfile() {
@@ -197,16 +219,11 @@
       const username = localStorage.getItem("quadraUsername") || "Not set";
       const joined = localStorage.getItem("quadraJoined") || new Date().toLocaleDateString();
 
-      // Update welcome message
-      const welcomeHeading = document.getElementById("welcomeHeading");
-      welcomeHeading.textContent = `Welcome to QuadraScans, ${username}`;
-
-      // Update account info
+      document.getElementById("welcomeHeading").textContent = `Welcome to QuadraScans, ${username}`;
       document.getElementById("emailInfo").textContent = email;
       document.getElementById("usernameInfo").textContent = username;
       document.getElementById("createdAtInfo").textContent = joined;
 
-      // Load reading history
       const history = JSON.parse(localStorage.getItem("quadraReading") || "[]");
       const historyContainer = document.getElementById("historySection");
 
