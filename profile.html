@@ -1,4 +1,4 @@
-<!-- Profile Page with Working Pencil Button to Edit Username -->
+<!-- Profile Page with LocalStorage Username Editing -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -75,7 +75,7 @@
       background: transparent;
       border: none;
       border-bottom: 1px solid orange;
-      color: #fff;
+      color: #ccc;
       padding: 4px;
       width: 140px;
     }
@@ -132,23 +132,23 @@
 <body>
   <div class="profile-header">
     <h1>Welcome to QuadraScans</h1>
-    <p id="userEmail">Loading...</p>
+    <p id="userEmail">user@email.com</p>
   </div>
 
   <div class="profile-container">
     <div class="info-block">
       <h2>Account Info</h2>
       <ul class="info-list">
-        <li><span>Email:</span> <span id="emailInfo">-</span></li>
+        <li><span>Email:</span> <span id="emailInfo">user@email.com</span></li>
         <li>
           <span>Username:</span>
           <span id="usernameContainer" class="editable">
-            <span id="usernameInfo">-</span>
+            <span id="usernameInfo">Loading...</span>
             <i class="fas fa-pencil-alt" onclick="editUsername()"></i>
           </span>
         </li>
         <li><span>Plan:</span> <span id="planInfo">Free</span></li>
-        <li><span>Member Since:</span> <span id="createdAtInfo">-</span></li>
+        <li><span>Member Since:</span> <span id="createdAtInfo">2025-06-22</span></li>
       </ul>
     </div>
 
@@ -173,88 +173,40 @@
     <button class="logout-btn" onclick="logout()">Logout</button>
   </div>
 
-  <script type="module">
-    import { createClient } from 'https://esm.sh/@supabase/supabase-js';
-
-    const supabase = createClient(
-      'https://qanielcwwcfbffyucytk.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhbmllbGN3d2NmYmZmeXVjeXRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1MjU0MDgsImV4cCI6MjA2NjEwMTQwOH0.7PIncqpt4KnPJv4EH00BRtPNE8ckLACo_DFNM40WCMo'
-    );
-
-    let currentUser;
-
-    async function loadProfile() {
-      const { data: { user } } = await supabase.auth.getUser();
-
-      if (!user) {
-        window.location.href = 'signup.html';
-        return;
-      }
-
-      currentUser = user;
-
-      document.getElementById("userEmail").textContent = user.email;
-      document.getElementById("emailInfo").textContent = user.email;
-      document.getElementById("usernameInfo").textContent = user.user_metadata?.username || "Not set";
-      document.getElementById("createdAtInfo").textContent = new Date(user.created_at).toLocaleDateString();
-
-      const history = JSON.parse(localStorage.getItem("quadraReading") || "[]");
-      const historyContainer = document.getElementById("historySection");
-
-      if (history.length === 0) {
-        historyContainer.innerHTML = '<div class="history-item"><span>No history yet.</span></div>';
-      } else {
-        fetch("assets/data/mangas.json")
-          .then(res => res.json())
-          .then(mangas => {
-            historyContainer.innerHTML = "";
-            history.forEach(id => {
-              const manga = mangas.find(m => m.id === id);
-              if (manga) {
-                const item = document.createElement("div");
-                item.className = "history-item";
-                item.innerHTML = `<span>${manga.title}</span><span><a href="manga.html?id=${manga.id}" style="color:orange;text-decoration:none;">View</a></span>`;
-                historyContainer.appendChild(item);
-              }
-            });
-          });
-      }
+  <script>
+    function loadUsername() {
+      const saved = localStorage.getItem("quadraUsername") || "Not set";
+      const usernameContainer = document.getElementById("usernameContainer");
+      usernameContainer.innerHTML = `
+        <span id="usernameInfo">${saved}</span>
+        <i class="fas fa-pencil-alt" onclick="editUsername()"></i>
+      `;
     }
 
-    window.editUsername = function () {
-      const current = currentUser.user_metadata?.username || "";
+    function editUsername() {
+      const saved = localStorage.getItem("quadraUsername") || "";
       const container = document.getElementById("usernameContainer");
-
       container.innerHTML = `
-        <input id="newUsername" value="${current}" />
+        <input id="newUsername" value="${saved}" placeholder="Enter your username" />
         <i class="fas fa-check" onclick="saveUsername()"></i>
       `;
       document.getElementById("newUsername").focus();
     }
 
-    window.saveUsername = async function () {
+    function saveUsername() {
       const newUsername = document.getElementById("newUsername").value.trim();
-      if (!newUsername) return;
-
-      const { error } = await supabase.auth.updateUser({
-        data: { username: newUsername }
-      });
-
-      if (error) {
-        alert("Update failed: " + error.message);
-        return;
-      }
-
-      location.reload();
+      if (!newUsername) return alert("Username cannot be empty");
+      localStorage.setItem("quadraUsername", newUsername);
+      loadUsername();
     }
 
-    window.logout = async function () {
-      await supabase.auth.signOut();
+    function logout() {
       localStorage.clear();
       window.location.href = 'index.html';
     }
 
-    loadProfile();
+    // On load
+    loadUsername();
   </script>
 </body>
 </html>
