@@ -5,11 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Search Manga | QuadraScans</title>
   <link rel="stylesheet" href="assets/css/style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <style>
     body {
-      background: #141421;
+      background: #121212;
       color: #eee;
       font-family: 'Poppins', sans-serif;
       margin: 0;
@@ -19,22 +19,23 @@
     .search-bar {
       display: flex;
       align-items: center;
-      padding: 16px;
-      background-color: #141421;
+      padding: 14px;
+      gap: 12px;
+      background-color: #121212;
     }
 
     .search-container {
       flex: 1;
       display: flex;
       align-items: center;
-      background-color: #0e0e1a;
+      background-color: #1e1e1e;
       border-radius: 10px;
       padding: 10px 14px;
-      border: 2px solid #a08bff;
+      border: 2px solid orange;
     }
 
     .search-container i {
-      color: #a08bff;
+      color: orange;
       font-size: 1rem;
       margin-right: 10px;
     }
@@ -44,27 +45,32 @@
       background: transparent;
       border: none;
       outline: none;
-      font-size: 1.05rem;
-      color: #cbbfff;
-      font-weight: 500;
+      font-size: 1rem;
+      color: #fff;
     }
 
     .cancel-btn {
-      margin-left: 12px;
       font-size: 1rem;
-      color: #b8aaff;
+      color: orange;
       cursor: pointer;
-      font-weight: 500;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    #searchResults {
+      padding: 10px 14px;
     }
 
     .result-item {
-      padding: 12px 20px;
-      border-bottom: 1px solid #2d2d42;
+      padding: 12px 10px;
+      border-bottom: 1px solid #2d2d2d;
       cursor: pointer;
+      border-radius: 6px;
+      transition: background 0.2s ease;
     }
 
     .result-item:hover {
-      background: #2a2a3f;
+      background-color: #292929;
     }
 
     .no-results {
@@ -72,6 +78,24 @@
       margin-top: 30px;
       font-style: italic;
       color: #888;
+    }
+
+    @media (min-width: 600px) {
+      .search-bar {
+        padding: 20px 40px;
+      }
+
+      .cancel-btn {
+        font-size: 1.1rem;
+      }
+
+      .search-container input {
+        font-size: 1.1rem;
+      }
+
+      #searchResults {
+        padding: 20px 40px;
+      }
     }
   </style>
 </head>
@@ -83,7 +107,7 @@
       <input
         type="text"
         id="searchInput"
-        placeholder="Search"
+        placeholder="Search manga..."
         autocomplete="off"
         autofocus
       />
