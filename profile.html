@@ -17,8 +17,25 @@
       padding: 0;
     }
 
+    .top-controls {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      z-index: 999;
+    }
+
+    .top-controls button {
+      background-color: #1e1e1e;
+      color: #fff;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
     .profile-header {
-      padding: 20px;
+      padding: 60px 20px 20px; /* Top padding increased due to fixed button */
       text-align: center;
       border-bottom: 1px solid #333;
     }
@@ -129,6 +146,11 @@
   </style>
 </head>
 <body>
+  <!-- Back Button -->
+  <div class="top-controls">
+    <button onclick="history.back()"><i class="fas fa-arrow-left"></i> Back</button>
+  </div>
+
   <div class="profile-header">
     <h1>Welcome to QuadraScans</h1>
     <p id="userEmail">Loading...</p>
