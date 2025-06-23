@@ -10,76 +10,171 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
-      margin: 0;
       font-family: 'Poppins', sans-serif;
-      background: #121212;
+      background-color: #121212;
       color: #fff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      margin: 0;
+      padding: 0;
     }
 
-    .profile-card {
-      background-color: #1e1e1e;
-      padding: 2rem;
-      border-radius: 16px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.3);
-      width: 100%;
-      max-width: 400px;
+    .profile-header {
+      background: #1f1f1f;
+      padding: 20px;
       text-align: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
     }
 
-    .profile-card h2 {
-      margin: 0 0 10px;
-      font-size: 1.8rem;
+    .profile-header h1 {
+      font-size: 2rem;
+      margin-bottom: 8px;
     }
 
-    .profile-card p {
-      margin: 0.4rem 0;
-      font-size: 0.95rem;
+    .profile-header p {
+      font-size: 1rem;
+      color: #bbb;
+    }
+
+    .profile-container {
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 20px;
+      background: #1e1e1e;
+      border-radius: 16px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+
+    .info-block {
+      margin-bottom: 30px;
+    }
+
+    .info-block h2 {
+      font-size: 1.3rem;
+      margin-bottom: 12px;
+      color: #4eaaff;
+    }
+
+    .info-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .info-list li {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #2a2a2a;
+    }
+
+    .info-list li span:first-child {
       color: #ccc;
     }
 
-    .profile-info {
-      margin: 1.5rem 0;
-      border-top: 1px solid #333;
-      padding-top: 1rem;
+    .btn {
+      display: inline-block;
+      padding: 10px 16px;
+      background-color: #4eaaff;
+      border: none;
+      border-radius: 8px;
+      color: #000;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .btn:hover {
+      background-color: #68bbff;
+    }
+
+    .section {
+      margin-top: 40px;
+    }
+
+    .badges, .history {
+      background: #2a2a2a;
+      padding: 16px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+    }
+
+    .badges .badge {
+      display: inline-block;
+      background: #3a3a3a;
+      padding: 8px 12px;
+      margin: 5px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+
+    .history-item {
+      padding: 10px;
+      border-bottom: 1px solid #3a3a3a;
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
     }
 
     .logout-btn {
-      background: #e63946;
+      background: #ff6464;
       color: white;
-      padding: 10px 16px;
       border: none;
+      padding: 10px 16px;
       border-radius: 8px;
-      font-weight: 600;
+      margin-top: 20px;
       cursor: pointer;
-      transition: background 0.2s ease;
     }
 
     .logout-btn:hover {
-      background: #c5303a;
+      background: #ff4a4a;
     }
 
-    .plan-badge {
-      display: inline-block;
-      background: #2a2a2a;
-      padding: 6px 12px;
-      border-radius: 20px;
-      margin-top: 10px;
-      font-size: 0.85rem;
-      color: #4eaaff;
+    @media (max-width: 600px) {
+      .info-list li {
+        flex-direction: column;
+        align-items: flex-start;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="profile-card">
-    <h2>Welcome to QuadraScans</h2>
-    <div class="profile-info">
-      <p><strong>Email:</strong> <span id="userEmail">Loading...</span></p>
-      <p class="plan-badge" id="userPlan">Plan: Free</p>
+  <div class="profile-header">
+    <h1>Welcome to QuadraScans</h1>
+    <p id="userEmail">Loading...</p>
+  </div>
+
+  <div class="profile-container">
+    <div class="info-block">
+      <h2>Account Info</h2>
+      <ul class="info-list">
+        <li><span>Email:</span> <span id="emailInfo">-</span></li>
+        <li><span>Username:</span> <span id="usernameInfo">-</span></li>
+        <li><span>Plan:</span> <span id="planInfo">Free</span></li>
+        <li><span>Member Since:</span> <span id="createdAtInfo">-</span></li>
+      </ul>
     </div>
+
+    <div class="info-block section">
+      <h2>Subscription</h2>
+      <p>Want early access and no ads?</p>
+      <button class="btn" onclick="alert('Subscription upgrade coming soon!')">Upgrade to Premium</button>
+    </div>
+
+    <div class="info-block section">
+      <h2>Badges</h2>
+      <div class="badges">
+        <div class="badge">👶 Newbie</div>
+        <div class="badge">📚 Manga Reader</div>
+        <div class="badge">🔥 Active</div>
+      </div>
+    </div>
+
+    <div class="info-block section">
+      <h2>Reading History</h2>
+      <div class="history" id="historySection">
+        <div class="history-item"><span>No history yet.</span></div>
+      </div>
+    </div>
+
     <button class="logout-btn" onclick="logout()">Logout</button>
   </div>
 
@@ -91,20 +186,49 @@
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhbmllbGN3d2NmYmZmeXVjeXRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1MjU0MDgsImV4cCI6MjA2NjEwMTQwOH0.7PIncqpt4KnPJv4EH00BRtPNE8ckLACo_DFNM40WCMo'
     );
 
-    const { data: { user }, error } = await supabase.auth.getUser();
+    async function loadProfile() {
+      const { data: { user } } = await supabase.auth.getUser();
 
-    if (user) {
+      if (!user) {
+        window.location.href = 'signup.html';
+        return;
+      }
+
       document.getElementById("userEmail").textContent = user.email;
-      // Default to Free plan for now
-      document.getElementById("userPlan").textContent = "Plan: Free";
-    } else {
-      window.location.href = "signup.html";
+      document.getElementById("emailInfo").textContent = user.email;
+      document.getElementById("usernameInfo").textContent = user.user_metadata?.username || "Not set";
+      document.getElementById("createdAtInfo").textContent = new Date(user.created_at).toLocaleDateString();
+
+      const history = JSON.parse(localStorage.getItem("quadraReading") || "[]");
+      const historyContainer = document.getElementById("historySection");
+      if (history.length === 0) {
+        historyContainer.innerHTML = '<div class="history-item"><span>No history yet.</span></div>';
+      } else {
+        fetch("assets/data/mangas.json")
+          .then(res => res.json())
+          .then(mangas => {
+            historyContainer.innerHTML = "";
+            history.forEach(id => {
+              const manga = mangas.find(m => m.id === id);
+              if (manga) {
+                const item = document.createElement("div");
+                item.className = "history-item";
+                item.innerHTML = `<span>${manga.title}</span><span><a href="manga.html?id=${manga.id}" style="color:#4eaaff;text-decoration:none;">View</a></span>`;
+                historyContainer.appendChild(item);
+              }
+            });
+          });
+      }
     }
 
     async function logout() {
       await supabase.auth.signOut();
-      window.location.href = "login.html";
+      localStorage.removeItem("quadraReading");
+      localStorage.removeItem("quadraFavs");
+      window.location.href = 'index.html';
     }
+
+    loadProfile();
   </script>
 </body>
 </html>
