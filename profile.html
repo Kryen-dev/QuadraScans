@@ -1,5 +1,4 @@
-<!-- I understand now — keep body text white, and change only section titles like "Account Info", "Reading History", etc. to orange. Here's your updated HTML: -->
-
+<!-- Profile Page with Working Pencil Button to Edit Username -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,18 +21,15 @@
     .profile-header {
       padding: 20px;
       text-align: center;
-      background: transparent;
       border-bottom: 1px solid #333;
     }
 
     .profile-header h1 {
-      font-size: 2rem;
-      margin-bottom: 8px;
       color: orange;
+      font-size: 2rem;
     }
 
     .profile-header p {
-      font-size: 1rem;
       color: #ccc;
     }
 
@@ -41,7 +37,6 @@
       max-width: 900px;
       margin: 30px auto;
       padding: 20px;
-      background: transparent;
     }
 
     .info-block {
@@ -49,9 +44,9 @@
     }
 
     .info-block h2 {
+      color: orange;
       font-size: 1.3rem;
       margin-bottom: 12px;
-      color: orange;
     }
 
     .info-list {
@@ -70,21 +65,40 @@
       color: #ccc;
     }
 
+    .editable {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .editable input {
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid orange;
+      color: #fff;
+      padding: 4px;
+      width: 140px;
+    }
+
+    .editable i {
+      cursor: pointer;
+      color: orange;
+    }
+
     .btn, .logout-btn {
       display: inline-block;
       padding: 10px 16px;
-      background-color: transparent;
+      background: transparent;
       border: 2px solid orange;
-      border-radius: 8px;
       color: orange;
       font-weight: 600;
+      border-radius: 8px;
       cursor: pointer;
-      text-align: center;
       margin-top: 10px;
     }
 
     .btn:hover, .logout-btn:hover {
-      background-color: rgba(255, 165, 0, 0.1);
+      background: rgba(255,165,0,0.1);
     }
 
     .section {
@@ -92,43 +106,19 @@
     }
 
     .badges {
-      background: transparent;
       padding: 16px;
       border: 1px dashed orange;
       border-radius: 12px;
-      margin-bottom: 20px;
-      color: #aaa;
       text-align: center;
+      color: #aaa;
     }
 
     .history-item {
-      padding: 10px;
-      border-bottom: 1px solid #333;
       display: flex;
       justify-content: space-between;
-      font-size: 0.9rem;
+      padding: 10px;
+      border-bottom: 1px solid #333;
       color: #ddd;
-    }
-
-    .editable {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .editable input {
-      background: transparent;
-      border: none;
-      border-bottom: 1px solid orange;
-      color: white;
-      font-size: 1rem;
-      padding: 4px;
-      width: 150px;
-    }
-
-    .editable i {
-      cursor: pointer;
-      color: orange;
     }
 
     @media (max-width: 600px) {
@@ -170,9 +160,7 @@
 
     <div class="info-block section">
       <h2>Badges</h2>
-      <div class="badges">
-        🏅 Badges system coming soon...
-      </div>
+      <div class="badges">🏅 Badges system coming soon...</div>
     </div>
 
     <div class="info-block section">
@@ -207,9 +195,7 @@
 
       document.getElementById("userEmail").textContent = user.email;
       document.getElementById("emailInfo").textContent = user.email;
-
-      const username = user.user_metadata?.username;
-      document.getElementById("usernameInfo").textContent = username || "Not set";
+      document.getElementById("usernameInfo").textContent = user.user_metadata?.username || "Not set";
       document.getElementById("createdAtInfo").textContent = new Date(user.created_at).toLocaleDateString();
 
       const history = JSON.parse(localStorage.getItem("quadraReading") || "[]");
@@ -235,19 +221,18 @@
       }
     }
 
-    async function editUsername() {
+    window.editUsername = function () {
       const current = currentUser.user_metadata?.username || "";
       const container = document.getElementById("usernameContainer");
 
       container.innerHTML = `
-        <input id="newUsername" type="text" value="${current}" />
+        <input id="newUsername" value="${current}" />
         <i class="fas fa-check" onclick="saveUsername()"></i>
       `;
-
       document.getElementById("newUsername").focus();
     }
 
-    async function saveUsername() {
+    window.saveUsername = async function () {
       const newUsername = document.getElementById("newUsername").value.trim();
       if (!newUsername) return;
 
@@ -256,17 +241,16 @@
       });
 
       if (error) {
-        alert("Error updating username: " + error.message);
+        alert("Update failed: " + error.message);
         return;
       }
 
       location.reload();
     }
 
-    async function logout() {
+    window.logout = async function () {
       await supabase.auth.signOut();
-      localStorage.removeItem("quadraReading");
-      localStorage.removeItem("quadraFavs");
+      localStorage.clear();
       window.location.href = 'index.html';
     }
 
