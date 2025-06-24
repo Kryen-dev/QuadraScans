@@ -1,14 +1,18 @@
+// ✅ Your current format updated with releaseDate for lock logic
 [
   {
     "number": 1,
-    "title": "I'm Used To It"
+    "title": "I'm Used To It",
+    "releaseDate": "2025-06-14"
   },
   {
     "number": 2,
-    "title": "The Worst Hunter"
+    "title": "The Worst Hunter",
+    "releaseDate": "2025-06-17"
   },
   {
     "number": 3,
-    "title": "The Real Hunt Begins"
+    "title": "The Real Hunt Begins",
+    "releaseDate": "2025-06-20"
   }
 ]
