@@ -186,6 +186,12 @@
     </div>
 
     <div class="info-block section">
+      <h2>Plan Status</h2>
+      <p style="color:#ccc">Check your current subscription status.</p>
+      <a href="status.html" class="btn">View Plan Status</a>
+    </div>
+
+    <div class="info-block section">
       <h2>Subscription</h2>
       <p style="color:#ccc">Want early access and no ads?</p>
       <a href="subscription.html" class="btn">Upgrade to Premium</a>
@@ -218,11 +224,15 @@
       const email = localStorage.getItem("quadraEmail") || "user@email.com";
       const username = localStorage.getItem("quadraUsername") || "Not set";
       const joined = localStorage.getItem("quadraJoined") || new Date().toLocaleDateString();
+      const planData = JSON.parse(localStorage.getItem("quadraPlan"));
 
       document.getElementById("welcomeHeading").textContent = `Welcome to QuadraScans, ${username}`;
       document.getElementById("emailInfo").textContent = email;
       document.getElementById("usernameInfo").textContent = username;
       document.getElementById("createdAtInfo").textContent = joined;
+
+      const plan = planData?.plan || "Free";
+      document.getElementById("planInfo").textContent = plan;
 
       const history = JSON.parse(localStorage.getItem("quadraReading") || "[]");
       const historyContainer = document.getElementById("historySection");
