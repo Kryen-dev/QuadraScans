@@ -1,3 +1,5 @@
+<!-- ✅ Complete Updated manga.html with full early access logic -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -133,12 +135,10 @@
   </style>
 </head>
 <body>
-  <!-- Fixed Top-Left Button -->
   <div class="top-controls">
     <button onclick="window.location.href='index.html'"><i class="fas fa-arrow-left"></i> Back</button>
   </div>
 
-  <!-- Main Container -->
   <div style="padding-top: 60px;">
     <div class="manga-container">
       <div class="manga-flex">
@@ -176,7 +176,6 @@
     const mangaId = new URLSearchParams(window.location.search).get("id") || "solo-leveling";
     const descElem = document.getElementById("mangaDesc");
     const toggleElem = document.querySelector(".desc-toggle");
-    const favBtn = document.getElementById("favBtn");
     const searchInput = document.getElementById("chapterSearch");
 
     let expanded = false;
@@ -184,18 +183,13 @@
     let filteredChapters = [];
     const chaptersPerPage = 10;
 
+    const userPlan = JSON.parse(localStorage.getItem("quadraPlan") || "{}");
+    const isTier2 = userPlan?.plan === "Tier 2" || userPlan?.lifetime;
+
     function toggleDesc() {
       expanded = !expanded;
       descElem.style.maxHeight = expanded ? "none" : "90px";
       toggleElem.textContent = expanded ? "Show less" : "Show more";
-    }
-
-    function updateFavButton() {
-      const favs = JSON.parse(localStorage.getItem("quadraFavs") || "[]");
-      if (!favBtn) return;
-      favBtn.innerHTML = favs.includes(mangaId)
-        ? '<i class="fas fa-heart"></i> Favorited'
-        : '<i class="far fa-heart"></i> Favorite';
     }
 
     function renderChapters(page = 1) {
@@ -204,11 +198,23 @@
       list.innerHTML = '';
       const start = (page - 1) * chaptersPerPage;
       const pageData = data.slice(start, start + chaptersPerPage);
+
       pageData.forEach(chap => {
         const li = document.createElement("li");
-        li.innerHTML = `<a href="reader.html?id=${mangaId}&chapter=${chap.number}">Chapter ${chap.number}</a>`;
+        const chapterDate = new Date(chap.releaseDate);
+        const today = new Date();
+        const timeDiff = Math.floor((today - chapterDate) / (1000 * 60 * 60 * 24)); // in days
+        const isUnlocked = isTier2 || timeDiff >= 3;
+
+        if (isUnlocked) {
+          li.innerHTML = `<a href="reader.html?id=${mangaId}&chapter=${chap.number}">Chapter ${chap.number}</a>`;
+        } else {
+          li.innerHTML = `<span style="color:#888">🔒 Chapter ${chap.number} - Tier 2 Only. Available in ${3 - timeDiff} days.</span>`;
+        }
+
         list.appendChild(li);
       });
+
       renderPagination(page, data.length);
     }
 
@@ -238,14 +244,13 @@
         if (!manga) return;
         document.getElementById("mangaTitle").textContent = manga.title;
         document.getElementById("mangaStatus").textContent = manga.status || "-";
-        document.getElementById("altNames").textContent = manga.altNames || "-";
+        document.getElementById("altNames").textContent = Array.isArray(manga.altNames) ? manga.altNames.join(", ") : (manga.altNames || "-");
         document.getElementById("published").textContent = manga.published || "-";
         document.getElementById("genre").textContent = Array.isArray(manga.genres) ? manga.genres.join(", ") : (manga.genres || "-");
         document.getElementById("language").textContent = manga.originalLanguage || "-";
         document.getElementById("finalChapter").textContent = manga.finalChapter || "-";
         descElem.textContent = manga.description;
         document.getElementById("mangaCover").src = `assets/images/${manga.id}/cover-image.jpg`;
-        updateFavButton();
       });
 
     fetch(`assets/data/chapters/${mangaId}.json`)
