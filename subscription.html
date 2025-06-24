@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Payment - QuadraScans</title>
+  <title>Subscription - QuadraScans</title>
   <link rel="stylesheet" href="assets/css/style.css" />
   <link rel="icon" href="assets/images/logo.svg" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: 'Poppins', sans-serif;
@@ -35,56 +35,124 @@
     }
 
     .container {
-      max-width: 800px;
+      max-width: 900px;
       margin: 80px auto 40px;
       padding: 20px;
-      text-align: center;
     }
 
     h1 {
+      text-align: center;
       color: orange;
       font-size: 2rem;
       margin-bottom: 20px;
     }
 
-    .qr-section {
+    .plans {
       display: flex;
       flex-direction: column;
-      gap: 30px;
-      align-items: center;
-      margin-top: 30px;
+      gap: 20px;
     }
 
-    .qr-card {
+    .card {
       background-color: #1e1e1e;
       border: 1px solid #333;
-      border-radius: 12px;
       padding: 20px;
-      width: 100%;
-      max-width: 300px;
-      box-shadow: 0 0 10px rgba(255, 165, 0, 0.1);
+      border-radius: 12px;
+      box-shadow: 0 0 8px rgba(255, 165, 0, 0.1);
     }
 
-    .qr-card img {
+    .card h2 {
+      color: orange;
+      font-size: 1.3rem;
+      margin-bottom: 10px;
+    }
+
+    .price {
+      color: #ccc;
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+    }
+
+    .card ul {
+      list-style: none;
+      padding: 0;
+      color: #bbb;
+    }
+
+    .card ul li {
+      padding: 6px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-select {
+      margin-top: 12px;
+      background-color: transparent;
+      color: orange;
+      border: 2px solid orange;
+      padding: 8px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    .btn-select:hover {
+      background-color: rgba(255, 165, 0, 0.1);
+    }
+
+    /* QR Section */
+    .qr-section {
+      margin-top: 50px;
+      text-align: center;
+    }
+
+    .qr-title {
+      color: orange;
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+    }
+
+    .qr-cards {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 30px;
+    }
+
+    .qr-box {
+      background-color: #1e1e1e;
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid #333;
+      box-shadow: 0 0 8px rgba(255, 165, 0, 0.1);
+      max-width: 280px;
+      width: 100%;
+    }
+
+    .qr-box h3 {
+      color: orange;
+      margin-bottom: 12px;
+    }
+
+    .qr-box img {
       width: 100%;
       border-radius: 8px;
-      margin-top: 10px;
     }
 
-    .qr-card h2 {
-      font-size: 1.2rem;
-      color: orange;
-      margin-bottom: 8px;
-    }
-
-    .note {
-      margin-top: 20px;
-      color: #bbb;
+    .qr-note {
+      color: #aaa;
       font-size: 0.95rem;
+      margin-top: 20px;
     }
 
     @media (min-width: 600px) {
-      .qr-section {
+      .plans {
+        gap: 24px;
+      }
+
+      .qr-cards {
         flex-direction: row;
         justify-content: center;
       }
@@ -98,24 +166,75 @@
   </div>
 
   <div class="container">
-    <h1>🔐 Complete Your Payment</h1>
-    <p>Select a payment option and scan the QR using your UPI app</p>
+    <h1>🛡️ Choose Your Plan</h1>
 
-    <div class="qr-section">
-      <!-- PhonePe -->
-      <div class="qr-card">
-        <h2>📱 PhonePe</h2>
-        <img src="assets/images/qr-phonepe.png" alt="PhonePe QR">
+    <div class="plans">
+
+      <!-- Free Plan -->
+      <div class="card">
+        <h2>✅ Free User (Default)</h2>
+        <p class="price">₹0/month</p>
+        <ul>
+          <li><i class="fas fa-book-open"></i> Access to all manga</li>
+          <li><i class="fas fa-clock"></i> Chapters released 3–7 days later</li>
+          <li><i class="fas fa-ad"></i> Ads are displayed</li>
+          <li><i class="fas fa-ban"></i> No downloads / offline access</li>
+        </ul>
+        <button class="btn-select" disabled>Current Plan</button>
       </div>
 
-      <!-- Google Pay -->
-      <div class="qr-card">
-        <h2>💳 Google Pay</h2>
-        <img src="assets/images/qr-googlepay.png" alt="Google Pay QR">
+      <!-- Tier 1 Plan -->
+      <div class="card">
+        <h2>💎 Tier 1: Ad-Free Reader</h2>
+        <p class="price">₹49/month</p>
+        <ul>
+          <li><i class="fas fa-check-circle"></i> No ads anywhere</li>
+          <li><i class="fas fa-headset"></i> Priority support</li>
+          <li><i class="fas fa-ban"></i> No early access</li>
+        </ul>
+        <button class="btn-select" onclick="subscribe(49)">Subscribe Now</button>
+      </div>
+
+      <!-- Tier 2 Plan -->
+      <div class="card">
+        <h2>🚀 Tier 2: Early Access + No Ads</h2>
+        <p class="price">₹99/month</p>
+        <ul>
+          <li><i class="fas fa-check-circle"></i> No ads anywhere</li>
+          <li><i class="fas fa-hourglass-start"></i> Chapters 7 days earlier</li>
+          <li><i class="fas fa-star"></i> Early Access Badge</li>
+          <li><i class="fas fa-headset"></i> Priority support</li>
+        </ul>
+        <button class="btn-select" onclick="subscribe(99)">Subscribe Now</button>
       </div>
     </div>
 
-    <p class="note">After completing payment, return to the app or site to confirm your subscription manually.</p>
+    <!-- QR Payment Section -->
+    <div class="qr-section">
+      <div class="qr-title">📲 Pay via UPI QR</div>
+      <div class="qr-cards">
+        <!-- PhonePe -->
+        <div class="qr-box">
+          <h3>📱 PhonePe</h3>
+          <img src="assets/images/qr-phonepe.png" alt="PhonePe QR">
+        </div>
+
+        <!-- Google Pay -->
+        <div class="qr-box">
+          <h3>💳 Google Pay</h3>
+          <img src="assets/images/qr-googlepay.png" alt="Google Pay QR">
+        </div>
+      </div>
+      <p class="qr-note">After payment, you may need to contact us or reload to activate your subscription manually.</p>
+    </div>
   </div>
+
+  <script>
+    function subscribe(amount) {
+      alert(`Redirecting to payment for ₹${amount}/month...`);
+      // Here you can open a QR popup or scroll to QR section
+      document.querySelector(".qr-section").scrollIntoView({ behavior: "smooth" });
+    }
+  </script>
 </body>
 </html>
