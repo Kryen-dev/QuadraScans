@@ -102,10 +102,10 @@
       background-color: rgba(255, 165, 0, 0.1);
     }
 
-    /* QR Section */
     .qr-section {
       margin-top: 50px;
       text-align: center;
+      display: none;
     }
 
     .qr-title {
@@ -147,11 +147,44 @@
       margin-top: 20px;
     }
 
-    @media (min-width: 600px) {
-      .plans {
-        gap: 24px;
-      }
+    .bill {
+      margin-top: 40px;
+      background-color: #1e1e1e;
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid #444;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
 
+    .bill p {
+      margin: 8px 0;
+    }
+
+    .bill input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 10px;
+      border-radius: 8px;
+      border: 1px solid orange;
+      background: #121212;
+      color: #fff;
+    }
+
+    .bill button {
+      margin-top: 10px;
+      width: 100%;
+      padding: 10px;
+      border: none;
+      background-color: orange;
+      color: #000;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    @media (min-width: 600px) {
       .qr-cards {
         flex-direction: row;
         justify-content: center;
@@ -160,7 +193,6 @@
   </style>
 </head>
 <body>
-  <!-- Back Button -->
   <div class="top-controls">
     <button onclick="history.back()"><i class="fas fa-arrow-left"></i> Back</button>
   </div>
@@ -169,8 +201,6 @@
     <h1>🛡️ Choose Your Plan</h1>
 
     <div class="plans">
-
-      <!-- Free Plan -->
       <div class="card">
         <h2>✅ Free User (Default)</h2>
         <p class="price">₹0/month</p>
@@ -183,7 +213,6 @@
         <button class="btn-select" disabled>Current Plan</button>
       </div>
 
-      <!-- Tier 1 Plan -->
       <div class="card">
         <h2>💎 Tier 1: Ad-Free Reader</h2>
         <p class="price">₹49/month</p>
@@ -192,10 +221,9 @@
           <li><i class="fas fa-headset"></i> Priority support</li>
           <li><i class="fas fa-ban"></i> No early access</li>
         </ul>
-        <button class="btn-select" onclick="subscribe(49)">Subscribe Now</button>
+        <button class="btn-select" onclick="showQR('Tier 1', 49)">Subscribe Now</button>
       </div>
 
-      <!-- Tier 2 Plan -->
       <div class="card">
         <h2>🚀 Tier 2: Early Access + No Ads</h2>
         <p class="price">₹99/month</p>
@@ -205,35 +233,66 @@
           <li><i class="fas fa-star"></i> Early Access Badge</li>
           <li><i class="fas fa-headset"></i> Priority support</li>
         </ul>
-        <button class="btn-select" onclick="subscribe(99)">Subscribe Now</button>
+        <button class="btn-select" onclick="showQR('Tier 2', 99)">Subscribe Now</button>
       </div>
     </div>
 
-    <!-- QR Payment Section -->
-    <div class="qr-section">
-      <div class="qr-title">📲 Pay via UPI QR</div>
-      <div class="qr-cards">
-        <!-- PhonePe -->
+    <div class="qr-section" id="qrSection">
+      <div class="bill">
+        <h3 style="color:orange">📄 Bill Summary</h3>
+        <p><strong>Plan:</strong> <span id="planName">-</span></p>
+        <p><strong>Price:</strong> ₹<span id="planPrice">-</span></p>
+
+        <input type="text" id="redeemCode" placeholder="Enter redeem code">
+        <button onclick="applyCode()">Apply Code</button>
+      </div>
+
+      <div class="qr-title">📲 Scan & Pay via UPI</div>
+      <div class="qr-cards" id="qrCards">
         <div class="qr-box">
           <h3>📱 PhonePe</h3>
           <img src="assets/images/qr-phonepe.png" alt="PhonePe QR">
         </div>
-
-        <!-- Google Pay -->
         <div class="qr-box">
           <h3>💳 Google Pay</h3>
           <img src="assets/images/qr-googlepay.png" alt="Google Pay QR">
         </div>
       </div>
-      <p class="qr-note">After payment, you may need to contact us or reload to activate your subscription manually.</p>
+
+      <p class="qr-note" id="qrNote">After payment or successful code, your subscription will be activated.</p>
     </div>
   </div>
 
   <script>
-    function subscribe(amount) {
-      alert(`Redirecting to payment for ₹${amount}/month...`);
-      // Here you can open a QR popup or scroll to QR section
-      document.querySelector(".qr-section").scrollIntoView({ behavior: "smooth" });
+    let selectedPlan = '';
+    let selectedPrice = 0;
+
+    function showQR(plan, price) {
+      selectedPlan = plan;
+      selectedPrice = price;
+      document.getElementById('planName').innerText = plan;
+      document.getElementById('planPrice').innerText = price;
+      document.getElementById('qrSection').style.display = 'block';
+      document.getElementById('qrSection').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function applyCode() {
+      const code = document.getElementById('redeemCode').value.trim();
+      if (code === 'QuadraIsNew') {
+        alert('🎉 Code Applied: Lifetime subscription activated!');
+        localStorage.setItem('quadraPlan', JSON.stringify({
+          plan: selectedPlan,
+          price: 0,
+          lifetime: true,
+          redeemedVia: code
+        }));
+
+        document.getElementById('planPrice').innerText = "0 (100% OFF)";
+        document.getElementById('qrCards').style.display = "none";
+        document.getElementById('qrNote').innerText = "✅ Lifetime subscription activated. Please refresh to apply.";
+      } else {
+        alert('❌ Invalid code.');
+      }
     }
   </script>
 </body>
