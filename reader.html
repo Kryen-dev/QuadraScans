@@ -1,3 +1,5 @@
+<!-- ✅ Full updated reader.html with access restriction for non-Tier 2 users -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -87,6 +89,7 @@
     const urlParams = new URLSearchParams(window.location.search);
     const mangaId = urlParams.get('id');
     const chapterNum = parseInt(urlParams.get('chapter'), 10);
+
     const imageContainer = document.getElementById('image-container');
     const spinner = document.getElementById('spinner');
     const titleElement = document.getElementById('chapter-title');
@@ -96,16 +99,41 @@
     const prevNum = document.getElementById('prev-num');
     const nextNum = document.getElementById('next-num');
 
-    // Show title
+    const userPlan = JSON.parse(localStorage.getItem("quadraPlan") || "{}");
+    const isTier2 = userPlan?.plan === "Tier 2" || userPlan?.lifetime;
+
     fetch(`assets/data/chapters/${mangaId}.json`)
       .then(res => res.json())
       .then(data => {
-        const chapter = data[chapterNum - 1];
+        const chapter = data.find(c => c.number === chapterNum);
+        if (!chapter) {
+          document.body.innerHTML = "<p style='padding:40px;text-align:center;'>❌ Chapter not found.</p>";
+          return;
+        }
+
+        // Access check
+        const releaseDate = new Date(chapter.releaseDate);
+        const today = new Date();
+        const diffDays = Math.floor((today - releaseDate) / (1000 * 60 * 60 * 24));
+        const isUnlocked = isTier2 || diffDays >= 3;
+
+        if (!isUnlocked) {
+          document.body.innerHTML = `
+            <div style="padding:40px;text-align:center;">
+              <h2>🔒 Tier 2 Only</h2>
+              <p>This chapter will unlock in ${3 - diffDays} day(s) for free users.</p>
+              <a href="subscription.html" style="color:orange;text-decoration:underline;">Upgrade to Tier 2</a>
+            </div>
+          `;
+          return;
+        }
+
+        // Title
         titleElement.textContent = chapter?.title ? `Chapter ${chapterNum}: ${chapter.title}` : `Chapter ${chapterNum}`;
         titleElement.style.display = 'block';
 
-        const hasPrev = data[chapterNum - 2];
-        const hasNext = data[chapterNum];
+        const hasPrev = data.find(c => c.number === chapterNum - 1);
+        const hasNext = data.find(c => c.number === chapterNum + 1);
 
         if (hasPrev) {
           prevBtn.style.display = 'inline-flex';
@@ -127,40 +155,40 @@
         homeBtn.onclick = () => {
           window.location.href = `manga.html?id=${mangaId}`;
         };
+
+        // Load images
+        fetch(`assets/data/${mangaId}/chapter-${chapterNum}/${chapterNum}.json`)
+          .then(res => res.json())
+          .then(images => {
+            spinner.style.display = 'none';
+            imageContainer.style.display = 'block';
+            imageContainer.innerHTML = '';
+
+            images.forEach(filename => {
+              const img = document.createElement('img');
+              img.src = `assets/data/${mangaId}/chapter-${chapterNum}/${filename}`;
+              img.className = 'reader-img';
+              imageContainer.appendChild(img);
+            });
+
+            // Save reading history
+            let reading = JSON.parse(localStorage.getItem("quadraReading") || "[]");
+            if (!reading.includes(mangaId)) {
+              reading.unshift(mangaId);
+              if (reading.length > 10) reading.pop();
+              localStorage.setItem("quadraReading", JSON.stringify(reading));
+            }
+
+            document.getElementById('end-buttons').style.display = 'flex';
+          })
+          .catch(() => {
+            spinner.style.display = 'none';
+            imageContainer.innerHTML = '<p>❌ Failed to load chapter images.</p>';
+          });
       })
       .catch(() => {
-        titleElement.textContent = `Chapter ${chapterNum}`;
-        titleElement.style.display = 'block';
-      });
-
-    // Load chapter images
-    fetch(`assets/data/${mangaId}/chapter-${chapterNum}/${chapterNum}.json`)
-      .then(res => res.json())
-      .then(images => {
         spinner.style.display = 'none';
-        imageContainer.style.display = 'block';
-        imageContainer.innerHTML = '';
-
-        images.forEach(filename => {
-          const img = document.createElement('img');
-          img.src = `assets/data/${mangaId}/chapter-${chapterNum}/${filename}`;
-          img.className = 'reader-img';
-          imageContainer.appendChild(img);
-        });
-
-        // Save for continue reading
-        let reading = JSON.parse(localStorage.getItem("quadraReading") || "[]");
-        if (!reading.includes(mangaId)) {
-          reading.unshift(mangaId);
-          if (reading.length > 10) reading.pop();
-          localStorage.setItem("quadraReading", JSON.stringify(reading));
-        }
-
-        document.getElementById('end-buttons').style.display = 'flex';
-      })
-      .catch(() => {
-        spinner.style.display = 'none';
-        imageContainer.innerHTML = '<p>❌ Failed to load chapter.</p>';
+        document.body.innerHTML = "<p style='padding:40px;text-align:center;'>❌ Could not load chapter data.</p>";
       });
   </script>
 </body>
