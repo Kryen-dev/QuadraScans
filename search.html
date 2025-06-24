@@ -19,8 +19,8 @@
     .search-bar {
       display: flex;
       align-items: center;
-      padding: 14px;
-      gap: 12px;
+      padding: 14px 12px;
+      gap: 8px;
       background-color: #121212;
     }
 
@@ -50,11 +50,12 @@
     }
 
     .cancel-btn {
-      font-size: 0.7rem;
+      font-size: 0.88rem;
       color: orange;
       cursor: pointer;
       font-weight: 600;
       white-space: nowrap;
+      margin-left: -4px; /* shifted slightly left */
     }
 
     #searchResults {
@@ -86,7 +87,8 @@
       }
 
       .cancel-btn {
-        font-size: 1.1rem;
+        font-size: 1.05rem;
+        margin-left: 0;
       }
 
       .search-container input {
