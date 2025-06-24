@@ -1,5 +1,3 @@
-<!-- ✅ Complete Updated manga.html with full early access logic -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -201,15 +199,23 @@
 
       pageData.forEach(chap => {
         const li = document.createElement("li");
+
+        // Strict: Skip if no releaseDate or invalid date
+        if (!chap.releaseDate) return;
         const chapterDate = new Date(chap.releaseDate);
+        if (isNaN(chapterDate.getTime())) return;
+
         const today = new Date();
-        const timeDiff = Math.floor((today - chapterDate) / (1000 * 60 * 60 * 24)); // in days
+        const timeDiff = Math.floor((today - chapterDate) / (1000 * 60 * 60 * 24));
         const isUnlocked = isTier2 || timeDiff >= 3;
 
         if (isUnlocked) {
           li.innerHTML = `<a href="reader.html?id=${mangaId}&chapter=${chap.number}">Chapter ${chap.number}</a>`;
         } else {
-          li.innerHTML = `<span style="color:#888">🔒 Chapter ${chap.number} - Tier 2 Only. Available in ${3 - timeDiff} days.</span>`;
+          const daysLeft = 3 - timeDiff;
+          li.innerHTML = `<span style="color:#888">🔒 Chapter ${chap.number} – Tier 2 Only. ${
+            daysLeft > 0 ? `Available in ${daysLeft} day${daysLeft > 1 ? 's' : ''}.` : ''
+          }</span>`;
         }
 
         list.appendChild(li);
