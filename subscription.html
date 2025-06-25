@@ -1,4 +1,7 @@
-<!DOCTYPE html><html lang="en">
+<!-- ✅ subscription.html (updated to redirect to payment.html when user clicks Subscribe Now) -->
+
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -88,83 +91,6 @@
     .btn-select:hover {
       background-color: rgba(255, 165, 0, 0.1);
     }
-    .qr-section {
-      margin-top: 50px;
-      text-align: center;
-      display: none;
-    }
-    .qr-title {
-      color: orange;
-      font-size: 1.5rem;
-      margin-bottom: 20px;
-    }
-    .qr-cards {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 30px;
-    }
-    .qr-box {
-      background-color: #1e1e1e;
-      padding: 20px;
-      border-radius: 12px;
-      border: 1px solid #333;
-      box-shadow: 0 0 8px rgba(255, 165, 0, 0.1);
-      max-width: 280px;
-      width: 100%;
-    }
-    .qr-box h3 {
-      color: orange;
-      margin-bottom: 12px;
-    }
-    .qr-box img {
-      width: 100%;
-      border-radius: 8px;
-    }
-    .qr-note {
-      color: #aaa;
-      font-size: 0.95rem;
-      margin-top: 20px;
-    }
-    .bill {
-      margin-top: 40px;
-      background-color: #1e1e1e;
-      padding: 20px;
-      border-radius: 12px;
-      border: 1px solid #444;
-      max-width: 400px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    .bill p {
-      margin: 8px 0;
-    }
-    .bill input {
-      width: 100%;
-      padding: 8px;
-      margin-top: 10px;
-      border-radius: 8px;
-      border: 1px solid orange;
-      background: #121212;
-      color: #fff;
-    }
-    .bill button {
-      margin-top: 10px;
-      width: 100%;
-      padding: 10px;
-      border: none;
-      background-color: orange;
-      color: #000;
-      font-weight: bold;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    @media (min-width: 600px) {
-      .qr-cards {
-        flex-direction: row;
-        justify-content: center;
-      }
-    }
     .toast {
       position: fixed;
       top: 20px;
@@ -189,7 +115,7 @@
     <h1>🛡️ Choose Your Plan</h1>
     <div class="plans">
       <div class="card">
-        <h2>✅ Free User (Default)</h2>
+        <h2><i class="fas fa-user"></i> Free User (Default)</h2>
         <p class="price">₹0/month</p>
         <ul>
           <li><i class="fas fa-book-open"></i> Access to all manga</li>
@@ -197,20 +123,20 @@
           <li><i class="fas fa-ad"></i> Ads are displayed</li>
           <li><i class="fas fa-ban"></i> No downloads / offline access</li>
         </ul>
-        <button class="btn-select" id="freeBtn" onclick="cannotBuyFree()">Default Plan</button>
+        <button class="btn-select" id="freeBtn" onclick="showToast()">Default Plan</button>
       </div>
       <div class="card">
-        <h2>💎 Tier 1: Ad-Free Reader</h2>
+        <h2><i class="fas fa-gem"></i> Tier 1: Ad-Free Reader</h2>
         <p class="price">₹49/month</p>
         <ul>
           <li><i class="fas fa-check-circle"></i> No ads anywhere</li>
           <li><i class="fas fa-headset"></i> Priority support</li>
           <li><i class="fas fa-ban"></i> No early access</li>
         </ul>
-        <button class="btn-select" onclick="showQR('Tier 1', 49)">Subscribe Now</button>
+        <button class="btn-select" onclick="goToPayment('Tier 1', 49)">Subscribe</button>
       </div>
       <div class="card">
-        <h2>🚀 Tier 2: Early Access + No Ads</h2>
+        <h2><i class="fas fa-rocket"></i> Tier 2: Early Access + No Ads</h2>
         <p class="price">₹99/month</p>
         <ul>
           <li><i class="fas fa-check-circle"></i> No ads anywhere</li>
@@ -218,103 +144,38 @@
           <li><i class="fas fa-star"></i> Early Access Badge</li>
           <li><i class="fas fa-headset"></i> Priority support</li>
         </ul>
-        <button class="btn-select" onclick="showQR('Tier 2', 99)">Subscribe Now</button>
+        <button class="btn-select" onclick="goToPayment('Tier 2', 99)">Subscribe</button>
       </div>
-    </div>
-    <div class="qr-section" id="qrSection">
-      <div class="bill">
-        <h3 style="color:orange">📄 Bill Summary</h3>
-        <p><strong>Plan:</strong> <span id="planName">-</span></p>
-        <p><strong>Price:</strong> ₹<span id="planPrice">-</span></p>
-        <input type="text" id="redeemCode" placeholder="Enter redeem code">
-        <button onclick="applyCode()">Apply Code</button>
-      </div>
-      <div class="qr-title">📲 Scan & Pay via UPI</div>
-      <div class="qr-cards" id="qrCards">
-        <div class="qr-box">
-          <h3>📱 PhonePe</h3>
-          <img src="assets/images/qr-phonepe.png" alt="PhonePe QR">
-        </div>
-        <div class="qr-box">
-          <h3>💳 Google Pay</h3>
-          <img src="assets/images/qr-googlepay.png" alt="Google Pay QR">
-        </div>
-      </div>
-      <p class="qr-note" id="qrNote">After payment or successful code, your subscription will be activated.</p>
     </div>
   </div>
 
-  <div class="toast" id="toastMsg">This is a default free plan and cannot be purchased.</div>
+  <div class="toast" id="toast">⚠️ This is the default free plan and cannot be purchased.</div>
 
   <script>
-    let selectedPlan = '';
-    let selectedPrice = 0;
-
-    function showQR(plan, price) {
-      selectedPlan = plan;
-      selectedPrice = price;
-      document.getElementById('planName').innerText = plan;
-      document.getElementById('planPrice').innerText = price;
-      document.getElementById('qrSection').style.display = 'block';
-      document.getElementById('qrSection').scrollIntoView({ behavior: 'smooth' });
-
-      localStorage.setItem('quadraPlan', JSON.stringify({
-        plan: plan,
-        price: price,
-        lifetime: false,
-        joinedOn: new Date().toISOString()
-      }));
-
-      updatePlanUI();
-    }
-
-    function applyCode() {
-      const code = document.getElementById('redeemCode').value.trim();
-      if (code === 'QuadraIsNew') {
-        alert('🎉 Code Applied: Lifetime subscription activated!');
-        localStorage.setItem('quadraPlan', JSON.stringify({
-          plan: selectedPlan,
-          price: 0,
-          lifetime: true,
-          redeemedVia: code
-        }));
-        document.getElementById('planPrice').innerText = "0 (100% OFF)";
-        document.getElementById('qrCards').style.display = "none";
-        document.getElementById('qrNote').innerText = "✅ Lifetime subscription activated. Please refresh to apply.";
-        updatePlanUI();
-      } else {
-        alert('❌ Invalid code.');
-      }
-    }
-
-    function cannotBuyFree() {
-      showToast("⚠️ This is the default free plan and cannot be purchased.");
-    }
-
-    function showToast(msg) {
-      const toast = document.getElementById("toastMsg");
-      toast.innerText = msg;
+    function showToast() {
+      const toast = document.getElementById("toast");
       toast.style.display = "block";
       setTimeout(() => {
         toast.style.display = "none";
       }, 3000);
     }
 
-    function updatePlanUI() {
-      const activePlan = JSON.parse(localStorage.getItem('quadraPlan'));
-      const buttons = document.querySelectorAll('.btn-select');
+    function goToPayment(plan, price) {
+      localStorage.setItem('quadraSelectedPlan', JSON.stringify({ plan, price }));
+      window.location.href = 'payment.html';
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      const activePlan = JSON.parse(localStorage.getItem("quadraPlan"));
+      const buttons = document.querySelectorAll(".btn-select");
+
       buttons.forEach(btn => {
         btn.disabled = false;
-        btn.innerText = "Subscribe Now";
+        btn.innerText = "Subscribe";
         btn.style.opacity = 1;
       });
 
-      const freeBtn = document.getElementById("freeBtn");
-      freeBtn.innerText = "Default Plan";
-      freeBtn.disabled = false;
-      freeBtn.style.opacity = 1;
-
-      if (activePlan?.plan && (activePlan.plan === 'Tier 1' || activePlan.plan === 'Tier 2')) {
+      if (activePlan?.plan === "Tier 1" || activePlan?.plan === "Tier 2") {
         buttons.forEach(btn => {
           if (btn.onclick?.toString().includes(activePlan.plan)) {
             btn.innerText = "Current Plan";
@@ -323,9 +184,7 @@
           }
         });
       }
-    }
-
-    window.addEventListener("DOMContentLoaded", updatePlanUI);
+    });
   </script>
 </body>
 </html>
