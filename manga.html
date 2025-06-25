@@ -200,22 +200,24 @@
       pageData.forEach(chap => {
         const li = document.createElement("li");
 
-        // Strict: Skip if no releaseDate or invalid date
         if (!chap.releaseDate) return;
-        const chapterDate = new Date(chap.releaseDate);
-        if (isNaN(chapterDate.getTime())) return;
+        const release = new Date(chap.releaseDate);
+        if (isNaN(release.getTime())) return;
 
-        const today = new Date();
-        const timeDiff = Math.floor((today - chapterDate) / (1000 * 60 * 60 * 24));
-        const isUnlocked = isTier2 || timeDiff >= 3;
+        // Convert current UTC to IST
+        const now = new Date();
+        const nowUtc = now.getTime() + (now.getTimezoneOffset() * 60000);
+        const nowIST = new Date(nowUtc + 19800000); // +5:30
+
+        const releaseMidnightIST = new Date(release);
+        releaseMidnightIST.setHours(0, 0, 0, 0); // IST 00:00
+
+        const isUnlocked = isTier2 || nowIST >= releaseMidnightIST;
 
         if (isUnlocked) {
           li.innerHTML = `<a href="reader.html?id=${mangaId}&chapter=${chap.number}">Chapter ${chap.number}</a>`;
         } else {
-          const daysLeft = 3 - timeDiff;
-          li.innerHTML = `<span style="color:#888">🔒 Chapter ${chap.number} – Tier 2 Only. ${
-            daysLeft > 0 ? `Available in ${daysLeft} day${daysLeft > 1 ? 's' : ''}.` : ''
-          }</span>`;
+          li.innerHTML = `<span style="color:#888">🔒 Chapter ${chap.number} – Tier 2 Only. Releases on ${releaseMidnightIST.toDateString()}.</span>`;
         }
 
         list.appendChild(li);
