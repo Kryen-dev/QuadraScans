@@ -3,185 +3,203 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>QuadraScans</title>
+  <title>QuadraScans – Premium Manga Reader</title>
   <link rel="stylesheet" href="assets/css/style.css" />
   <link rel="icon" href="assets/images/logo.svg" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background-color: #121212;
+      color: #fff;
+    }
+    header {
+      background-color: #1c1c1c;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 24px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .logo img {
+      height: 40px;
+    }
+    .site-title {
+      font-size: 1.4rem;
+      color: orange;
+    }
+    .nav-icons button {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.2rem;
+      margin-left: 14px;
+      cursor: pointer;
+    }
+    main {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    h2 {
+      color: orange;
+      margin-bottom: 16px;
+      font-size: 1.4rem;
+    }
+    .manga-section {
+      margin-bottom: 50px;
+    }
+    .manga-scroll {
+      display: flex;
+      overflow-x: auto;
+      gap: 20px;
+      padding-bottom: 10px;
+    }
+    .manga-card {
+      flex: 0 0 auto;
+      width: 160px;
+      text-align: center;
+      background: #1e1e1e;
+      border-radius: 12px;
+      padding: 10px;
+      box-shadow: 0 4px 10px rgba(255,165,0,0.1);
+      transition: transform 0.2s ease;
+    }
+    .manga-card:hover {
+      transform: scale(1.05);
+    }
+    .manga-card img {
+      width: 100%;
+      border-radius: 8px;
+    }
+    .manga-card span {
+      display: block;
+      margin-top: 8px;
+      font-size: 0.9rem;
+      color: #ddd;
+    }
+    .notice {
+      background-color: #222;
+      padding: 12px 20px;
+      border-left: 4px solid orange;
+      margin-bottom: 30px;
+      border-radius: 8px;
+      color: #ccc;
+    }
+    .notice a {
+      color: orange;
+      text-decoration: underline;
+    }
+    footer {
+      text-align: center;
+      color: #666;
+      font-size: 0.9rem;
+      margin-top: 40px;
+      padding: 20px;
+    }
+  </style>
 </head>
-<body class="dark-theme">
+<body>
 
-  <!-- Top Header -->
-  <header class="top-header">
-    <div class="logo-section">
-      <img src="assets/images/logo.png" alt="logo" class="logo-img" />
-      <h1 class="site-title">QuadraScans</h1>
+  <header>
+    <div class="logo">
+      <img src="assets/images/logo.png" alt="QuadraScans Logo" />
+      <span class="site-title">QuadraScans</span>
     </div>
-    <div class="icon-section">
-      <button class="header-icon" onclick="window.location.href='search.html'"><i class="fas fa-search"></i></button>
-      <button class="header-icon" id="userIcon"><i class="fas fa-user"></i></button>
+    <div class="nav-icons">
+      <button onclick="location.href='search.html'"><i class="fas fa-search"></i></button>
+      <button onclick="handleUser()"><i class="fas fa-user-circle"></i></button>
     </div>
   </header>
 
-  <!-- Main Content -->
-  <main class="main-content" id="mainContent">
-    <section class="tab-page" id="tab-home">
-      <section class="notice"><p>Join <a href="https://discord.gg/pTsHMa5rMv">Discord</a> for updates.</p></section>
+  <main>
+    <div class="notice">
+      📢 Join our <a href="https://discord.gg/pTsHMa5rMv">Discord</a> for release updates, announcements, and support!
+    </div>
 
-      <section class="reading-history">
-        <h3>Continue Reading</h3>
-        <div class="manga-scroll" id="continueReadingContainer"><p class="no-results">No reading history yet.</p></div>
-      </section>
-
-      <section class="new-mangas">
-        <h3>New Mangas</h3>
-        <div class="manga-scroll" id="newMangasContainer"><p class="no-results">No new mangas found.</p></div>
-      </section>
-
-      <section class="new-chapters">
-        <h3>New Chapters</h3>
-        <div class="manga-scroll" id="newChaptersContainer"><p class="no-results">No new chapters found.</p></div>
-      </section>
-    </section>
-
-    <section class="tab-page" id="tab-favorites" style="display: none;">
-      <h3>Favorites</h3>
-      <div class="manga-scroll" id="favoritesContainer"><p class="no-results">No favorites yet.</p></div>
-    </section>
-
-    <section class="tab-page" id="tab-badges" style="display: none;">
-      <h3>Badges</h3>
-      <div class="badge-placeholder" style="text-align:center; padding: 40px 20px; color: #999; font-size: 1rem; background-color: #1e1e1e; border-radius: 12px;">
-        🏅 Badges system coming soon...
+    <section class="manga-section">
+      <h2>📖 Continue Reading</h2>
+      <div class="manga-scroll" id="continueReadingContainer">
+        <p style="color:#777;">No reading history yet.</p>
       </div>
     </section>
 
-    <section class="tab-page" id="tab-settings" style="display: none;">
-      <h3>Settings</h3>
-      <p>Settings section coming soon...</p>
+    <section class="manga-section">
+      <h2>🆕 New Mangas</h2>
+      <div class="manga-scroll" id="newMangasContainer">
+        <p style="color:#777;">Loading...</p>
+      </div>
+    </section>
+
+    <section class="manga-section">
+      <h2>📅 Latest Chapters</h2>
+      <div class="manga-scroll" id="newChaptersContainer">
+        <p style="color:#777;">Loading...</p>
+      </div>
     </section>
   </main>
 
-  <!-- Bottom Navigation -->
-  <nav class="bottom-nav">
-    <button data-tab="home" class="tab-btn active"><i class="fas fa-home"></i></button>
-    <button data-tab="badges" class="tab-btn"><i class="fas fa-award"></i></button>
-    <button data-tab="favorites" class="tab-btn"><i class="fas fa-heart"></i></button>
-    <button data-tab="settings" class="tab-btn"><i class="fas fa-cog"></i></button>
-  </nav>
+  <footer>
+    © 2025 QuadraScans. All rights reserved.
+  </footer>
 
-  <!-- Tab and Manga Render Script -->
   <script>
-    const tabs = document.querySelectorAll('.tab-page');
-    const buttons = document.querySelectorAll('.tab-btn');
-
-    function showTab(name) {
-      tabs.forEach(tab => {
-        tab.style.display = tab.id === `tab-${name}` ? 'block' : 'none';
-      });
-      buttons.forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.tab === name);
-      });
-      localStorage.setItem('activeTab', name);
-      if (name === 'favorites') renderFavorites();
+    function handleUser() {
+      const loggedIn = localStorage.getItem("quadraUser");
+      window.location.href = loggedIn ? "profile.html" : "signup.html";
     }
-
-    buttons.forEach(btn => {
-      btn.addEventListener('click', () => showTab(btn.dataset.tab));
-    });
-
-    showTab(localStorage.getItem('activeTab') || 'home');
-
-    const continueReadingContainer = document.getElementById("continueReadingContainer");
-    const newChaptersContainer = document.getElementById("newChaptersContainer");
-    const newMangasContainer = document.getElementById("newMangasContainer");
-    const favoritesContainer = document.getElementById("favoritesContainer");
 
     const readingHistory = JSON.parse(localStorage.getItem("quadraReading") || "[]");
-    const favoriteIds = JSON.parse(localStorage.getItem("quadraFavs") || "[]");
-
-    function renderFavorites() {
-      favoritesContainer.innerHTML = '';
-      if (favoriteIds.length === 0) {
-        favoritesContainer.innerHTML = '<p class="no-results">No favorites yet.</p>';
-        return;
-      }
-
-      fetch("assets/data/mangas.json")
-        .then(res => res.json())
-        .then(mangas => {
-          const favs = mangas.filter(m => favoriteIds.includes(m.id));
-          if (favs.length === 0) {
-            favoritesContainer.innerHTML = '<p class="no-results">No favorites yet.</p>';
-            return;
-          }
-
-          favs.forEach(manga => {
-            const a = document.createElement("a");
-            a.href = `manga.html?id=${manga.id}`;
-            a.className = "manga-card";
-            a.innerHTML = `<img src="${manga.cover}" alt="${manga.title}" /><span>${manga.title}</span>`;
-            favoritesContainer.appendChild(a);
-          });
-        });
-    }
+    const continueContainer = document.getElementById("continueReadingContainer");
+    const newMangasContainer = document.getElementById("newMangasContainer");
+    const newChaptersContainer = document.getElementById("newChaptersContainer");
 
     fetch("assets/data/mangas.json")
       .then(res => res.json())
       .then(mangas => {
+        // Continue Reading
         const historyMangas = readingHistory.map(id => mangas.find(m => m.id === id)).filter(Boolean);
         if (historyMangas.length > 0) {
-          continueReadingContainer.innerHTML = '';
-          historyMangas.forEach(manga => {
-            const a = document.createElement("a");
-            a.href = `manga.html?id=${manga.id}`;
-            a.className = "manga-card";
-            a.innerHTML = `<img src="${manga.cover}" alt="${manga.title}" /><span>${manga.title}</span>`;
-            continueReadingContainer.appendChild(a);
+          continueContainer.innerHTML = "";
+          historyMangas.forEach(m => {
+            const el = document.createElement("a");
+            el.href = `manga.html?id=${m.id}`;
+            el.className = "manga-card";
+            el.innerHTML = `<img src="${m.cover}" alt="${m.title}" /><span>${m.title}</span>`;
+            continueContainer.appendChild(el);
           });
         }
 
-        mangas.forEach(manga => {
-          const a = document.createElement("a");
-          a.href = `manga.html?id=${manga.id}`;
-          a.className = "manga-card";
-          a.innerHTML = `<img src="${manga.cover}" alt="${manga.title}" /><span>${manga.title}</span>`;
-          newMangasContainer.appendChild(a);
+        // New Mangas
+        newMangasContainer.innerHTML = "";
+        mangas.forEach(m => {
+          const el = document.createElement("a");
+          el.href = `manga.html?id=${m.id}`;
+          el.className = "manga-card";
+          el.innerHTML = `<img src="${m.cover}" alt="${m.title}" /><span>${m.title}</span>`;
+          newMangasContainer.appendChild(el);
         });
-        newMangasContainer.querySelector('.no-results')?.remove();
 
-        let foundNew = false;
-        mangas.forEach(manga => {
-          if (manga.latestChapter) {
-            foundNew = true;
-            const a = document.createElement("a");
-            a.href = `reader.html?id=${manga.id}&chapter=${manga.latestChapter}`;
-            a.className = "manga-card";
-            a.innerHTML = `<img src="${manga.cover}" alt="${manga.title}" /><span>${manga.title} – Chapter ${manga.latestChapter}</span>`;
-            newChaptersContainer.appendChild(a);
+        // New Chapters
+        newChaptersContainer.innerHTML = "";
+        mangas.forEach(m => {
+          if (m.latestChapter) {
+            const el = document.createElement("a");
+            el.href = `reader.html?id=${m.id}&chapter=${m.latestChapter}`;
+            el.className = "manga-card";
+            el.innerHTML = `<img src="${m.cover}" alt="${m.title}" /><span>${m.title} – Chapter ${m.latestChapter}</span>`;
+            newChaptersContainer.appendChild(el);
           }
         });
-        if (foundNew) newChaptersContainer.querySelector('.no-results')?.remove();
       });
   </script>
 
-  <!-- Supabase Auth Script to Handle User Icon Click -->
-  <script type="module">
-    import { createClient } from 'https://esm.sh/@supabase/supabase-js';
-    const supabase = createClient(
-      'https://qanielcwwcfbffyucytk.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhbmllbGN3d2NmYmZmeXVjeXRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1MjU0MDgsImV4cCI6MjA2NjEwMTQwOH0.7PIncqpt4KnPJv4EH00BRtPNE8ckLACo_DFNM40WCMo'
-    );
-
-    const userIcon = document.getElementById("userIcon");
-    userIcon.addEventListener("click", async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        window.location.href = "profile.html";
-      } else {
-        window.location.href = "signup.html";
-      }
-    });
-  </script>
 </body>
 </html>
