@@ -191,10 +191,10 @@
       toggleElem.textContent = expanded ? "Show less" : "Show more";
     }
 
-    function parseIST(dateStr) {
-      const [y, m, d] = dateStr.split("-");
-      const date = new Date(Date.UTC(y, m - 1, d, 0, 0));
-      return new Date(date.getTime() + (5.5 * 60 * 60 * 1000)); // UTC +5:30
+    function getISTDateOnly(dateStr) {
+      const [year, month, day] = dateStr.split("-").map(Number);
+      // Strict 00:00 IST time
+      return new Date(`${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}T00:00:00+05:30`);
     }
 
     function renderChapters(page = 1) {
@@ -210,7 +210,7 @@
         const li = document.createElement("li");
         if (!chap.releaseDate) return;
 
-        const releaseIST = parseIST(chap.releaseDate);
+        const releaseIST = getISTDateOnly(chap.releaseDate);
         const isUnlocked = isTier2 || now >= releaseIST;
 
         if (isUnlocked) {
