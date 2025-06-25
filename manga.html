@@ -1,4 +1,4 @@
-<!-- ✅ Fully Updated: manga.html with strict IST-based unlock logic -->
+<!-- ✅ Fully Updated: manga.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,6 +31,25 @@
       border-radius: 8px;
       cursor: pointer;
       font-size: 0.9rem;
+    }
+    .top-fav {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      z-index: 1000;
+    }
+    .top-fav button {
+      background: none;
+      border: none;
+      color: #888;
+      font-size: 1.4rem;
+      cursor: pointer;
+    }
+    .top-fav button:hover {
+      color: #ff4b91;
+    }
+    .top-fav .active {
+      color: #ff4b91;
     }
     .manga-container {
       display: flex;
@@ -138,6 +157,10 @@
     <button onclick="window.location.href='index.html'"><i class="fas fa-arrow-left"></i> Back</button>
   </div>
 
+  <div class="top-fav">
+    <button id="favBtn" title="Favorite" aria-label="Favorite"><i class="fas fa-heart"></i></button>
+  </div>
+
   <div style="padding-top: 60px;">
     <div class="manga-container">
       <div class="manga-flex">
@@ -191,10 +214,10 @@
       toggleElem.textContent = expanded ? "Show less" : "Show more";
     }
 
-    function getISTDateOnly(dateStr) {
-      const [year, month, day] = dateStr.split("-").map(Number);
-      // Strict 00:00 IST time
-      return new Date(`${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}T00:00:00+05:30`);
+    function parseIST(dateStr) {
+      const [y, m, d] = dateStr.split("-");
+      const date = new Date(Date.UTC(y, m - 1, d, 0, 0));
+      return new Date(date.getTime() + (5.5 * 60 * 60 * 1000)); // Add IST offset
     }
 
     function renderChapters(page = 1) {
@@ -210,7 +233,7 @@
         const li = document.createElement("li");
         if (!chap.releaseDate) return;
 
-        const releaseIST = getISTDateOnly(chap.releaseDate);
+        const releaseIST = parseIST(chap.releaseDate);
         const isUnlocked = isTier2 || now >= releaseIST;
 
         if (isUnlocked) {
@@ -269,6 +292,31 @@
         chaptersData = data.reverse();
         renderChapters();
       });
+
+    // ❤️ Favorite Button Logic
+    const favBtn = document.getElementById("favBtn");
+    const favs = JSON.parse(localStorage.getItem("quadraFavs") || "[]");
+
+    function updateFavBtn() {
+      if (favs.includes(mangaId)) {
+        favBtn.classList.add("active");
+      } else {
+        favBtn.classList.remove("active");
+      }
+    }
+
+    favBtn.addEventListener("click", () => {
+      const index = favs.indexOf(mangaId);
+      if (index === -1) {
+        favs.push(mangaId);
+      } else {
+        favs.splice(index, 1);
+      }
+      localStorage.setItem("quadraFavs", JSON.stringify(favs));
+      updateFavBtn();
+    });
+
+    updateFavBtn();
   </script>
 </body>
 </html>
