@@ -1,4 +1,4 @@
-<!-- ✅ Full updated reader.html with access restriction for non-Tier 2 users -->
+<!-- ✅ Fully Updated: reader.html with Tier 2-only download ZIP button in 3-dot menu -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -16,23 +16,58 @@
       margin: 0;
       text-align: center;
     }
-
+    .header-bar {
+      background: #1f1f1f;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .header-bar h2 {
+      font-size: 1.1rem;
+      margin: 0;
+    }
+    .menu-btn {
+      position: relative;
+    }
+    .menu-dot {
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    .dropdown {
+      position: absolute;
+      right: 0;
+      background: #222;
+      border: 1px solid #444;
+      border-radius: 8px;
+      display: none;
+      flex-direction: column;
+      z-index: 10;
+      margin-top: 8px;
+    }
+    .dropdown button {
+      background: none;
+      border: none;
+      color: white;
+      padding: 10px 14px;
+      text-align: left;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+    .dropdown button:hover {
+      background: #333;
+    }
     h2.chapter-title {
       margin: 20px 0 10px;
       font-size: 1.4rem;
       font-weight: 600;
-      color: #fff;
     }
-
     .reader-img {
       width: 100%;
       max-width: 800px;
       margin: 0 auto;
       display: block;
-      border-radius: 0;
-      border: none;
     }
-
     .end-buttons {
       margin: 30px 0;
       display: flex;
@@ -40,7 +75,6 @@
       gap: 20px;
       flex-wrap: wrap;
     }
-
     .btn-nav {
       background: #1f1f1f;
       color: #fff;
@@ -55,7 +89,6 @@
       width: 160px;
       justify-content: center;
     }
-
     .spinner {
       border: 4px solid #444;
       border-top: 4px solid #00b7ff;
@@ -65,7 +98,6 @@
       animation: spin 1s linear infinite;
       margin: 40px auto;
     }
-
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
@@ -73,6 +105,16 @@
   </style>
 </head>
 <body>
+  <div class="header-bar">
+    <h2 id="top-chapter">Loading...</h2>
+    <div class="menu-btn">
+      <span class="menu-dot" onclick="toggleMenu()">⋮</span>
+      <div class="dropdown" id="dropdownMenu">
+        <button id="downloadBtn" style="display:none" onclick="downloadZIP()">📥 Download ZIP</button>
+      </div>
+    </div>
+  </div>
+
   <main>
     <div id="spinner" class="spinner"></div>
     <h2 id="chapter-title" class="chapter-title" style="display: none;"></h2>
@@ -89,18 +131,34 @@
     const urlParams = new URLSearchParams(window.location.search);
     const mangaId = urlParams.get('id');
     const chapterNum = parseInt(urlParams.get('chapter'), 10);
-
     const imageContainer = document.getElementById('image-container');
     const spinner = document.getElementById('spinner');
     const titleElement = document.getElementById('chapter-title');
+    const topTitle = document.getElementById('top-chapter');
     const prevBtn = document.getElementById('prev-btn');
     const nextBtn = document.getElementById('next-btn');
     const homeBtn = document.getElementById('home-btn');
     const prevNum = document.getElementById('prev-num');
     const nextNum = document.getElementById('next-num');
-
+    const downloadBtn = document.getElementById('downloadBtn');
     const userPlan = JSON.parse(localStorage.getItem("quadraPlan") || "{}");
     const isTier2 = userPlan?.plan === "Tier 2" || userPlan?.lifetime;
+
+    function toggleMenu() {
+      const menu = document.getElementById("dropdownMenu");
+      menu.style.display = menu.style.display === "flex" ? "none" : "flex";
+    }
+
+    function downloadZIP() {
+      alert("📥 Starting ZIP download...");
+      const zipPath = `assets/data/${mangaId}/chapter-${chapterNum}/chapter-${chapterNum}.zip`;
+      const a = document.createElement("a");
+      a.href = zipPath;
+      a.download = `chapter-${chapterNum}.zip`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }
 
     fetch(`assets/data/chapters/${mangaId}.json`)
       .then(res => res.json())
@@ -111,7 +169,6 @@
           return;
         }
 
-        // Access check
         const releaseDate = new Date(chapter.releaseDate);
         const today = new Date();
         const diffDays = Math.floor((today - releaseDate) / (1000 * 60 * 60 * 24));
@@ -128,8 +185,8 @@
           return;
         }
 
-        // Title
         titleElement.textContent = chapter?.title ? `Chapter ${chapterNum}: ${chapter.title}` : `Chapter ${chapterNum}`;
+        topTitle.textContent = `Chapter ${chapterNum}`;
         titleElement.style.display = 'block';
 
         const hasPrev = data.find(c => c.number === chapterNum - 1);
@@ -156,7 +213,6 @@
           window.location.href = `manga.html?id=${mangaId}`;
         };
 
-        // Load images
         fetch(`assets/data/${mangaId}/chapter-${chapterNum}/${chapterNum}.json`)
           .then(res => res.json())
           .then(images => {
@@ -171,12 +227,15 @@
               imageContainer.appendChild(img);
             });
 
-            // Save reading history
             let reading = JSON.parse(localStorage.getItem("quadraReading") || "[]");
             if (!reading.includes(mangaId)) {
               reading.unshift(mangaId);
               if (reading.length > 10) reading.pop();
               localStorage.setItem("quadraReading", JSON.stringify(reading));
+            }
+
+            if (isTier2) {
+              downloadBtn.style.display = "block";
             }
 
             document.getElementById('end-buttons').style.display = 'flex';
