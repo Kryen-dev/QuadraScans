@@ -1,4 +1,7 @@
-<!DOCTYPE html><html lang="en">
+<!-- ✅ Updated subscription.html with Subscribe Now → payment.html redirection -->
+
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -13,22 +16,6 @@
       background-color: #121212;
       color: #fff;
       margin: 0;
-      padding: 0;
-    }
-    .top-controls {
-      position: fixed;
-      top: 15px;
-      left: 15px;
-      z-index: 999;
-    }
-    .top-controls button {
-      background-color: #1e1e1e;
-      color: #fff;
-      border: none;
-      padding: 8px 12px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 0.9rem;
     }
     .container {
       max-width: 900px;
@@ -39,7 +26,6 @@
       text-align: center;
       color: orange;
       font-size: 2rem;
-      margin-bottom: 20px;
     }
     .plans {
       display: flex;
@@ -47,285 +33,87 @@
       gap: 20px;
     }
     .card {
-      background-color: #1e1e1e;
+      background: #1e1e1e;
       border: 1px solid #333;
       padding: 20px;
       border-radius: 12px;
-      box-shadow: 0 0 8px rgba(255, 165, 0, 0.1);
     }
     .card h2 {
       color: orange;
-      font-size: 1.3rem;
-      margin-bottom: 10px;
+      margin: 0 0 10px;
     }
     .price {
       color: #ccc;
-      font-size: 1.1rem;
+      font-size: 1rem;
       margin-bottom: 10px;
     }
     .card ul {
       list-style: none;
       padding: 0;
+      margin: 0;
       color: #bbb;
     }
     .card ul li {
-      padding: 6px 0;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      margin-bottom: 6px;
     }
     .btn-select {
       margin-top: 12px;
-      background-color: transparent;
-      color: orange;
+      background: transparent;
       border: 2px solid orange;
-      padding: 8px 14px;
+      color: orange;
+      padding: 10px 16px;
       border-radius: 8px;
+      font-weight: bold;
       cursor: pointer;
-      font-weight: 600;
-      transition: 0.3s;
     }
     .btn-select:hover {
-      background-color: rgba(255, 165, 0, 0.1);
-    }
-    .qr-section {
-      margin-top: 50px;
-      text-align: center;
-      display: none;
-    }
-    .qr-title {
-      color: orange;
-      font-size: 1.5rem;
-      margin-bottom: 20px;
-    }
-    .qr-cards {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 30px;
-    }
-    .qr-box {
-      background-color: #1e1e1e;
-      padding: 20px;
-      border-radius: 12px;
-      border: 1px solid #333;
-      box-shadow: 0 0 8px rgba(255, 165, 0, 0.1);
-      max-width: 280px;
-      width: 100%;
-    }
-    .qr-box h3 {
-      color: orange;
-      margin-bottom: 12px;
-    }
-    .qr-box img {
-      width: 100%;
-      border-radius: 8px;
-    }
-    .qr-note {
-      color: #aaa;
-      font-size: 0.95rem;
-      margin-top: 20px;
-    }
-    .bill {
-      margin-top: 40px;
-      background-color: #1e1e1e;
-      padding: 20px;
-      border-radius: 12px;
-      border: 1px solid #444;
-      max-width: 400px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    .bill p {
-      margin: 8px 0;
-    }
-    .bill input {
-      width: 100%;
-      padding: 8px;
-      margin-top: 10px;
-      border-radius: 8px;
-      border: 1px solid orange;
-      background: #121212;
-      color: #fff;
-    }
-    .bill button {
-      margin-top: 10px;
-      width: 100%;
-      padding: 10px;
-      border: none;
-      background-color: orange;
-      color: #000;
-      font-weight: bold;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    @media (min-width: 600px) {
-      .qr-cards {
-        flex-direction: row;
-        justify-content: center;
-      }
-    }
-    .toast {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background-color: #333;
-      color: #fff;
-      padding: 12px 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(255,255,255,0.1);
-      display: none;
-      z-index: 1000;
-      font-size: 0.95rem;
+      background: rgba(255,165,0,0.1);
     }
   </style>
 </head>
 <body>
-  <div class="top-controls">
-    <button onclick="history.back()"><i class="fas fa-arrow-left"></i> Back</button>
-  </div>
   <div class="container">
     <h1>🛡️ Choose Your Plan</h1>
     <div class="plans">
       <div class="card">
-        <h2>✅ Free User (Default)</h2>
+        <h2>✅ Free User</h2>
         <p class="price">₹0/month</p>
         <ul>
-          <li><i class="fas fa-book-open"></i> Access to all manga</li>
-          <li><i class="fas fa-clock"></i> Chapters released 3–7 days later</li>
-          <li><i class="fas fa-ad"></i> Ads are displayed</li>
-          <li><i class="fas fa-ban"></i> No downloads / offline access</li>
+          <li>Access to all manga</li>
+          <li>Chapters released after 3–7 days</li>
+          <li>Ads are shown</li>
+          <li>No download access</li>
         </ul>
-        <button class="btn-select" id="freeBtn" onclick="cannotBuyFree()">Default Plan</button>
+        <button class="btn-select" disabled>Default Plan</button>
       </div>
       <div class="card">
-        <h2>💎 Tier 1: Ad-Free Reader</h2>
+        <h2>💎 Tier 1: Ad-Free</h2>
         <p class="price">₹49/month</p>
         <ul>
-          <li><i class="fas fa-check-circle"></i> No ads anywhere</li>
-          <li><i class="fas fa-headset"></i> Priority support</li>
-          <li><i class="fas fa-ban"></i> No early access</li>
+          <li>No ads anywhere</li>
+          <li>Priority support</li>
         </ul>
-        <button class="btn-select" onclick="showQR('Tier 1', 49)">Subscribe Now</button>
+        <button class="btn-select" onclick="subscribe('Tier 1', 49)">Subscribe Now</button>
       </div>
       <div class="card">
-        <h2>🚀 Tier 2: Early Access + No Ads</h2>
+        <h2>🚀 Tier 2: Early + No Ads</h2>
         <p class="price">₹99/month</p>
         <ul>
-          <li><i class="fas fa-check-circle"></i> No ads anywhere</li>
-          <li><i class="fas fa-hourglass-start"></i> Chapters 7 days earlier</li>
-          <li><i class="fas fa-star"></i> Early Access Badge</li>
-          <li><i class="fas fa-headset"></i> Priority support</li>
+          <li>No ads anywhere</li>
+          <li>Chapters 7 days earlier</li>
+          <li>Download chapters</li>
+          <li>Priority support</li>
         </ul>
-        <button class="btn-select" onclick="showQR('Tier 2', 99)">Subscribe Now</button>
+        <button class="btn-select" onclick="subscribe('Tier 2', 99)">Subscribe Now</button>
       </div>
-    </div>
-    <div class="qr-section" id="qrSection">
-      <div class="bill">
-        <h3 style="color:orange">📄 Bill Summary</h3>
-        <p><strong>Plan:</strong> <span id="planName">-</span></p>
-        <p><strong>Price:</strong> ₹<span id="planPrice">-</span></p>
-        <input type="text" id="redeemCode" placeholder="Enter redeem code">
-        <button onclick="applyCode()">Apply Code</button>
-      </div>
-      <div class="qr-title">📲 Scan & Pay via UPI</div>
-      <div class="qr-cards" id="qrCards">
-        <div class="qr-box">
-          <h3>📱 PhonePe</h3>
-          <img src="assets/images/qr-phonepe.png" alt="PhonePe QR">
-        </div>
-        <div class="qr-box">
-          <h3>💳 Google Pay</h3>
-          <img src="assets/images/qr-googlepay.png" alt="Google Pay QR">
-        </div>
-      </div>
-      <p class="qr-note" id="qrNote">After payment or successful code, your subscription will be activated.</p>
     </div>
   </div>
 
-  <div class="toast" id="toastMsg">This is a default free plan and cannot be purchased.</div>
-
   <script>
-    let selectedPlan = '';
-    let selectedPrice = 0;
-
-    function showQR(plan, price) {
-      selectedPlan = plan;
-      selectedPrice = price;
-      document.getElementById('planName').innerText = plan;
-      document.getElementById('planPrice').innerText = price;
-      document.getElementById('qrSection').style.display = 'block';
-      document.getElementById('qrSection').scrollIntoView({ behavior: 'smooth' });
-
-      localStorage.setItem('quadraPlan', JSON.stringify({
-        plan: plan,
-        price: price,
-        lifetime: false,
-        joinedOn: new Date().toISOString()
-      }));
-
-      updatePlanUI();
+    function subscribe(plan, price) {
+      localStorage.setItem('pendingSubscription', JSON.stringify({ plan, price }));
+      window.location.href = 'payment.html';
     }
-
-    function applyCode() {
-      const code = document.getElementById('redeemCode').value.trim();
-      if (code === 'QuadraIsNew') {
-        alert('🎉 Code Applied: Lifetime subscription activated!');
-        localStorage.setItem('quadraPlan', JSON.stringify({
-          plan: selectedPlan,
-          price: 0,
-          lifetime: true,
-          redeemedVia: code
-        }));
-        document.getElementById('planPrice').innerText = "0 (100% OFF)";
-        document.getElementById('qrCards').style.display = "none";
-        document.getElementById('qrNote').innerText = "✅ Lifetime subscription activated. Please refresh to apply.";
-        updatePlanUI();
-      } else {
-        alert('❌ Invalid code.');
-      }
-    }
-
-    function cannotBuyFree() {
-      showToast("⚠️ This is the default free plan and cannot be purchased.");
-    }
-
-    function showToast(msg) {
-      const toast = document.getElementById("toastMsg");
-      toast.innerText = msg;
-      toast.style.display = "block";
-      setTimeout(() => {
-        toast.style.display = "none";
-      }, 3000);
-    }
-
-    function updatePlanUI() {
-      const activePlan = JSON.parse(localStorage.getItem('quadraPlan'));
-      const buttons = document.querySelectorAll('.btn-select');
-      buttons.forEach(btn => {
-        btn.disabled = false;
-        btn.innerText = "Subscribe Now";
-        btn.style.opacity = 1;
-      });
-
-      const freeBtn = document.getElementById("freeBtn");
-      freeBtn.innerText = "Default Plan";
-      freeBtn.disabled = false;
-      freeBtn.style.opacity = 1;
-
-      if (activePlan?.plan && (activePlan.plan === 'Tier 1' || activePlan.plan === 'Tier 2')) {
-        buttons.forEach(btn => {
-          if (btn.onclick?.toString().includes(activePlan.plan)) {
-            btn.innerText = "Current Plan";
-            btn.disabled = true;
-            btn.style.opacity = 0.6;
-          }
-        });
-      }
-    }
-
-    window.addEventListener("DOMContentLoaded", updatePlanUI);
   </script>
 </body>
 </html>
