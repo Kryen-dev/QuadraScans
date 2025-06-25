@@ -20,6 +20,22 @@
       margin: 0;
     }
 
+    #toast {
+      display: none;
+      position: fixed;
+      top: -60px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #333;
+      color: #fff;
+      padding: 12px 20px;
+      font-size: 0.9rem;
+      border-radius: 0 0 12px 12px;
+      z-index: 9999;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      transition: top 0.5s ease;
+    }
+
     .login-card {
       background: #1e1e1e;
       padding: 2rem;
@@ -109,6 +125,10 @@
   </style>
 </head>
 <body>
+
+  <!-- ✅ TOAST -->
+  <div id="toast">✅ Please confirm your email before logging in.</div>
+
   <div class="login-card">
     <img src="assets/images/logo.png" alt="QuadraScans Logo">
     <h2>Welcome back to QuadraScans</h2>
@@ -127,40 +147,54 @@
     <div id="msg" class="message"></div>
   </div>
 
+  <!-- ✅ Supabase & Toast Script -->
   <script type="module">
-  import { createClient } from 'https://esm.sh/@supabase/supabase-js'
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js'
 
-  const supabase = createClient(
-    'https://qanielcwwcfbffyucytk.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhbmllbGN3d2NmYmZmeXVjeXRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1MjU0MDgsImV4cCI6MjA2NjEwMTQwOH0.7PIncqpt4KnPJv4EH00BRtPNE8ckLACo_DFNM40WCMo'
-  );
+    const supabase = createClient(
+      'https://qanielcwwcfbffyucytk.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhbmllbGN3d2NmYmZmeXVjeXRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1MjU0MDgsImV4cCI6MjA2NjEwMTQwOH0.7PIncqpt4KnPJv4EH00BRtPNE8ckLACo_DFNM40WCMo'
+    );
 
-  const form = document.getElementById('emailLogin');
-  const msg = document.getElementById('msg');
+    const form = document.getElementById('emailLogin');
+    const msg = document.getElementById('msg');
 
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    msg.textContent = '';
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      msg.textContent = '';
 
-    const email = document.getElementById('email').value.trim();
-    const password = document.getElementById('password').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
 
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
-    if (error) {
-      msg.textContent = error.message;
-    } else {
-      // ✅ Save values to localStorage
-      localStorage.setItem("quadraEmail", email);
-      localStorage.setItem("quadraJoined", new Date().toLocaleDateString());
-      // Username left blank — user sets it later in profile
-      if (!localStorage.getItem("quadraUsername")) {
-        localStorage.setItem("quadraUsername", "Not set");
+      if (error) {
+        msg.textContent = error.message;
+      } else {
+        localStorage.setItem("quadraEmail", email);
+        localStorage.setItem("quadraJoined", new Date().toLocaleDateString());
+        if (!localStorage.getItem("quadraUsername")) {
+          localStorage.setItem("quadraUsername", "Not set");
+        }
+        window.location.href = "index.html";
       }
+    });
 
-      window.location.href = "index.html";
-    }
-  });
-</script>
+    // ✅ TOAST SHOW LOGIC
+    window.addEventListener("DOMContentLoaded", () => {
+      if (localStorage.getItem("showConfirmToast") === "yes") {
+        const toast = document.getElementById("toast");
+        toast.style.display = "block";
+        setTimeout(() => toast.style.top = "0", 100); // slide down
+
+        setTimeout(() => {
+          toast.style.top = "-60px"; // slide up
+          setTimeout(() => toast.style.display = "none", 500);
+        }, 4000);
+
+        localStorage.removeItem("showConfirmToast");
+      }
+    });
+  </script>
 </body>
 </html>
