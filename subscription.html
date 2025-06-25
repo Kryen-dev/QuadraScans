@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -165,6 +166,20 @@
         justify-content: center;
       }
     }
+
+    /* Toast Styles */
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: #ff4444;
+      color: white;
+      padding: 10px 16px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      z-index: 9999;
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -183,7 +198,7 @@
           <li><i class="fas fa-ad"></i> Ads are displayed</li>
           <li><i class="fas fa-ban"></i> No downloads / offline access</li>
         </ul>
-        <button class="btn-select" disabled>Current Plan</button>
+        <button class="btn-select" onclick="cannotBuyFree()">Current Plan</button>
       </div>
       <div class="card">
         <h2>💎 Tier 1: Ad-Free Reader</h2>
@@ -229,9 +244,13 @@
       <p class="qr-note" id="qrNote">After payment or successful code, your subscription will be activated.</p>
     </div>
   </div>
+
+  <div class="toast" id="toastMsg">This is a default free plan and cannot be purchased.</div>
+
   <script>
     let selectedPlan = '';
     let selectedPrice = 0;
+
     function showQR(plan, price) {
       selectedPlan = plan;
       selectedPrice = price;
@@ -239,7 +258,17 @@
       document.getElementById('planPrice').innerText = price;
       document.getElementById('qrSection').style.display = 'block';
       document.getElementById('qrSection').scrollIntoView({ behavior: 'smooth' });
+
+      // Simulate setting plan (in real case: after payment)
+      localStorage.setItem('quadraPlan', JSON.stringify({
+        plan: plan,
+        price: price,
+        lifetime: false,
+        subscribedOn: new Date().toISOString()
+      }));
+      updatePlanUI();
     }
+
     function applyCode() {
       const code = document.getElementById('redeemCode').value.trim();
       if (code === 'QuadraIsNew') {
@@ -253,23 +282,35 @@
         document.getElementById('planPrice').innerText = "0 (100% OFF)";
         document.getElementById('qrCards').style.display = "none";
         document.getElementById('qrNote').innerText = "✅ Lifetime subscription activated. Please refresh to apply.";
-        // Update UI instantly
-        const buttons = document.querySelectorAll('.btn-select');
-        buttons.forEach(btn => {
-          if (btn.onclick?.toString().includes(selectedPlan)) {
-            btn.innerText = "Current Plan";
-            btn.disabled = true;
-            btn.style.opacity = 0.6;
-          }
-        });
+        updatePlanUI();
       } else {
         alert('❌ Invalid code.');
       }
     }
-    window.addEventListener("DOMContentLoaded", () => {
+
+    function cannotBuyFree() {
+      showToast("⚠️ This is a default free plan and cannot be purchased.");
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toastMsg');
+      toast.innerText = message;
+      toast.style.display = 'block';
+      setTimeout(() => {
+        toast.style.display = 'none';
+      }, 3000);
+    }
+
+    function updatePlanUI() {
       const activePlan = JSON.parse(localStorage.getItem('quadraPlan'));
-      if (activePlan?.plan && activePlan?.lifetime) {
-        const buttons = document.querySelectorAll('.btn-select');
+      const buttons = document.querySelectorAll('.btn-select');
+      buttons.forEach(btn => {
+        btn.disabled = false;
+        btn.innerText = "Subscribe Now";
+        btn.style.opacity = 1;
+      });
+
+      if (activePlan?.plan) {
         buttons.forEach(btn => {
           if (btn.onclick?.toString().includes(activePlan.plan)) {
             btn.innerText = "Current Plan";
@@ -277,8 +318,15 @@
             btn.style.opacity = 0.6;
           }
         });
+      } else {
+        // If no plan, mark Free as default
+        buttons[0].innerText = "Current Plan";
+        buttons[0].disabled = true;
+        buttons[0].style.opacity = 0.6;
       }
-    });
+    }
+
+    window.addEventListener('DOMContentLoaded', updatePlanUI);
   </script>
 </body>
 </html>
