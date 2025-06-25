@@ -1,3 +1,4 @@
+<!-- ✅ Fully Updated: manga.html with strict IST-based unlock logic -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -190,6 +191,12 @@
       toggleElem.textContent = expanded ? "Show less" : "Show more";
     }
 
+    function parseIST(dateStr) {
+      const [y, m, d] = dateStr.split("-");
+      const date = new Date(Date.UTC(y, m - 1, d, 0, 0));
+      return new Date(date.getTime() + (5.5 * 60 * 60 * 1000)); // UTC +5:30
+    }
+
     function renderChapters(page = 1) {
       const list = document.getElementById("chapterList");
       const data = filteredChapters.length ? filteredChapters : chaptersData;
@@ -197,27 +204,22 @@
       const start = (page - 1) * chaptersPerPage;
       const pageData = data.slice(start, start + chaptersPerPage);
 
+      const now = new Date();
+
       pageData.forEach(chap => {
         const li = document.createElement("li");
-
         if (!chap.releaseDate) return;
-        const release = new Date(chap.releaseDate);
-        if (isNaN(release.getTime())) return;
 
-        // Convert current UTC to IST
-        const now = new Date();
-        const nowUtc = now.getTime() + (now.getTimezoneOffset() * 60000);
-        const nowIST = new Date(nowUtc + 19800000); // +5:30
-
-        const releaseMidnightIST = new Date(release);
-        releaseMidnightIST.setHours(0, 0, 0, 0); // IST 00:00
-
-        const isUnlocked = isTier2 || nowIST >= releaseMidnightIST;
+        const releaseIST = parseIST(chap.releaseDate);
+        const isUnlocked = isTier2 || now >= releaseIST;
 
         if (isUnlocked) {
           li.innerHTML = `<a href="reader.html?id=${mangaId}&chapter=${chap.number}">Chapter ${chap.number}</a>`;
         } else {
-          li.innerHTML = `<span style="color:#888">🔒 Chapter ${chap.number} – Tier 2 Only. Releases on ${releaseMidnightIST.toDateString()}.</span>`;
+          const diff = Math.ceil((releaseIST - now) / (1000 * 60 * 60 * 24));
+          li.innerHTML = `<span style="color:#888">🔒 Chapter ${chap.number} – Tier 2 Only. ${
+            diff > 0 ? `Available in ${diff} day${diff > 1 ? 's' : ''}.` : 'Releasing soon.'
+          }</span>`;
         }
 
         list.appendChild(li);
