@@ -1,17 +1,17 @@
-<!-- ✅ Final reader.html with exact SS-style topbar, download ZIP (Tier 2 only) -->
+<!-- ✅ Fully Updated reader.html matching screenshot design -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Chapter Reader | QuadraScans</title>
-  <link rel="stylesheet" href="assets/css/style.css" />
+  <title>Reader | QuadraScans</title>
   <link rel="icon" href="assets/images/logo.png" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
   <style>
     body {
       background-color: #121212;
-      color: #fff;
+      color: white;
       font-family: 'Poppins', sans-serif;
       margin: 0;
     }
@@ -20,77 +20,69 @@
       align-items: center;
       justify-content: space-between;
       padding: 10px 16px;
-      background-color: #1e1e1e;
-      border-bottom: 1px solid #333;
+      background-color: #1f1f1f;
       position: sticky;
       top: 0;
-      z-index: 1000;
+      z-index: 999;
     }
-    .topbar img {
+    .topbar img.logo {
+      height: 28px;
+    }
+    .topbar .chapter-title {
+      font-size: 1rem;
+      font-weight: 500;
+      color: #fff;
+    }
+    .topbar .right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      position: relative;
+    }
+    .topbar .profile {
       height: 32px;
+      width: 32px;
+      border-radius: 50%;
+      object-fit: cover;
     }
-    .chapter-name {
-      font-size: 1.1rem;
-      font-weight: 600;
-    }
-    .menu-btn {
+    .dots-btn {
       background: none;
       border: none;
-      color: #fff;
-      font-size: 1.2rem;
+      color: white;
+      font-size: 1.4rem;
       cursor: pointer;
     }
-    .dropdown {
+    .menu-dropdown {
       position: absolute;
-      top: 60px;
-      right: 16px;
-      background-color: #1e1e1e;
-      border: 1px solid #333;
-      border-radius: 8px;
+      top: 38px;
+      right: 0;
+      background: #2a2a2a;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
       display: none;
       min-width: 160px;
-      z-index: 1001;
+      z-index: 1000;
     }
-    .dropdown a {
-      display: block;
-      padding: 10px 15px;
-      color: #fff;
-      text-decoration: none;
+    .menu-dropdown button {
+      background: none;
+      border: none;
+      color: white;
+      padding: 12px 16px;
+      width: 100%;
+      text-align: left;
       font-size: 0.95rem;
+      cursor: pointer;
     }
-    .dropdown a:hover {
-      background-color: #2c2c2c;
+    .menu-dropdown button:hover {
+      background: #3a3a3a;
     }
-
     .reader-img {
       width: 100%;
       max-width: 800px;
-      margin: 0 auto;
       display: block;
+      margin: 20px auto;
     }
-
-    .end-buttons {
-      margin: 30px 0;
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
-    .btn-nav {
-      background: #1f1f1f;
-      color: #fff;
-      border: none;
-      padding: 12px 18px;
-      font-size: 1rem;
-      border-radius: 10px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      width: 160px;
-      justify-content: center;
-    }
-
     .spinner {
       border: 4px solid #444;
       border-top: 4px solid #00b7ff;
@@ -107,66 +99,45 @@
   </style>
 </head>
 <body>
+
   <div class="topbar">
-    <img src="assets/images/logo.png" alt="Logo">
-    <div class="chapter-name" id="chapter-name">Chapter</div>
-    <button class="menu-btn" id="menu-toggle"><i class="fas fa-ellipsis-v"></i></button>
-    <div class="dropdown" id="dropdown-menu">
-      <a href="#" id="downloadZip">📦 Download ZIP</a>
+    <img src="assets/images/logo.png" alt="Logo" class="logo" />
+    <div class="chapter-title" id="chapterTitle">Chapter</div>
+    <div class="right">
+      <img src="assets/images/profile.png" class="profile" alt="User" />
+      <button class="dots-btn" onclick="toggleMenu()">⋮</button>
+      <div class="menu-dropdown" id="dropdownMenu">
+        <button id="downloadBtn" style="display: none;">⬇️ Download ZIP</button>
+        <button onclick="window.location.href='manga.html?id=' + mangaId">📖 Back to Manga</button>
+      </div>
     </div>
   </div>
 
   <div id="spinner" class="spinner"></div>
-  <div id="image-container" style="display:none;"></div>
-
-  <div class="end-buttons" id="end-buttons" style="display: none;">
-    <button class="btn-nav" id="prev-btn" style="display: none;">⬅️ Chapter <span id="prev-num"></span></button>
-    <button class="btn-nav" id="home-btn" style="display: none;">🏠 Home</button>
-    <button class="btn-nav" id="next-btn" style="display: none;">Chapter <span id="next-num"></span> ➡️</button>
-  </div>
+  <div id="imageContainer" style="display: none;"></div>
 
   <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const mangaId = urlParams.get('id');
-    const chapterNum = parseInt(urlParams.get('chapter'), 10);
-
-    const chapterNameEl = document.getElementById("chapter-name");
-    const imageContainer = document.getElementById('image-container');
-    const spinner = document.getElementById('spinner');
-    const prevBtn = document.getElementById('prev-btn');
-    const nextBtn = document.getElementById('next-btn');
-    const homeBtn = document.getElementById('home-btn');
-    const prevNum = document.getElementById('prev-num');
-    const nextNum = document.getElementById('next-num');
-    const dropdown = document.getElementById("dropdown-menu");
-    const toggle = document.getElementById("menu-toggle");
-    const downloadZip = document.getElementById("downloadZip");
+    const urlParams = new URLSearchParams(location.search);
+    const mangaId = urlParams.get("id");
+    const chapterNum = parseInt(urlParams.get("chapter"));
+    const chapterTitleElem = document.getElementById("chapterTitle");
+    const imageContainer = document.getElementById("imageContainer");
+    const spinner = document.getElementById("spinner");
 
     const userPlan = JSON.parse(localStorage.getItem("quadraPlan") || "{}");
     const isTier2 = userPlan?.plan === "Tier 2" || userPlan?.lifetime;
 
-    toggle.addEventListener("click", () => {
-      dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
-    });
+    function toggleMenu() {
+      const menu = document.getElementById("dropdownMenu");
+      menu.style.display = menu.style.display === "block" ? "none" : "block";
+    }
 
     document.addEventListener("click", (e) => {
-      if (!toggle.contains(e.target) && !dropdown.contains(e.target)) {
-        dropdown.style.display = "none";
+      const menu = document.getElementById("dropdownMenu");
+      if (!e.target.closest(".right")) {
+        menu.style.display = "none";
       }
     });
-
-    if (!isTier2) downloadZip.style.display = "none";
-    else {
-      downloadZip.onclick = () => {
-        const zipPath = `assets/data/${mangaId}/chapter-${chapterNum}/chapter-${chapterNum}.zip`;
-        const a = document.createElement("a");
-        a.href = zipPath;
-        a.download = `chapter-${chapterNum}.zip`;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-      };
-    }
 
     fetch(`assets/data/chapters/${mangaId}.json`)
       .then(res => res.json())
@@ -179,81 +150,44 @@
 
         const releaseDate = new Date(chapter.releaseDate);
         const today = new Date();
-        const diffDays = Math.floor((today - releaseDate) / (1000 * 60 * 60 * 24));
-        const isUnlocked = isTier2 || diffDays >= 3;
+        const isUnlocked = isTier2 || (today - releaseDate) / (1000 * 60 * 60 * 24) >= 3;
 
         if (!isUnlocked) {
           document.body.innerHTML = `
             <div style="padding:40px;text-align:center;">
               <h2>🔒 Tier 2 Only</h2>
-              <p>This chapter will unlock in ${3 - diffDays} day(s) for free users.</p>
+              <p>This chapter will unlock in ${Math.ceil(3 - (today - releaseDate) / (1000 * 60 * 60 * 24))} day(s) for free users.</p>
               <a href="subscription.html" style="color:orange;text-decoration:underline;">Upgrade to Tier 2</a>
-            </div>
-          `;
+            </div>`;
           return;
         }
 
-        // Set chapter title
-        chapterNameEl.textContent = chapter?.title
-          ? `Chapter ${chapterNum}: ${chapter.title}`
-          : `Chapter ${chapterNum}`;
+        chapterTitleElem.textContent = `Chapter ${chapterNum}`;
 
-        // Load images
+        // Enable download for Tier 2
+        if (isTier2) {
+          document.getElementById("downloadBtn").style.display = "block";
+          document.getElementById("downloadBtn").onclick = () => {
+            const zipPath = `assets/data/${mangaId}/chapter-${chapterNum}/chapter-${chapterNum}.zip`;
+            const link = document.createElement('a');
+            link.href = zipPath;
+            link.download = `chapter-${chapterNum}.zip`;
+            link.click();
+          };
+        }
+
         fetch(`assets/data/${mangaId}/chapter-${chapterNum}/${chapterNum}.json`)
           .then(res => res.json())
           .then(images => {
-            spinner.style.display = 'none';
-            imageContainer.style.display = 'block';
-            imageContainer.innerHTML = '';
-
-            images.forEach(filename => {
-              const img = document.createElement('img');
-              img.src = `assets/data/${mangaId}/chapter-${chapterNum}/${filename}`;
-              img.className = 'reader-img';
+            spinner.style.display = "none";
+            imageContainer.style.display = "block";
+            images.forEach(imgName => {
+              const img = document.createElement("img");
+              img.src = `assets/data/${mangaId}/chapter-${chapterNum}/${imgName}`;
+              img.className = "reader-img";
               imageContainer.appendChild(img);
             });
-
-            let reading = JSON.parse(localStorage.getItem("quadraReading") || "[]");
-            if (!reading.includes(mangaId)) {
-              reading.unshift(mangaId);
-              if (reading.length > 10) reading.pop();
-              localStorage.setItem("quadraReading", JSON.stringify(reading));
-            }
-
-            document.getElementById('end-buttons').style.display = 'flex';
-          })
-          .catch(() => {
-            spinner.style.display = 'none';
-            imageContainer.innerHTML = '<p>❌ Failed to load chapter images.</p>';
           });
-
-        const hasPrev = data.find(c => c.number === chapterNum - 1);
-        const hasNext = data.find(c => c.number === chapterNum + 1);
-
-        if (hasPrev) {
-          prevBtn.style.display = 'inline-flex';
-          prevNum.textContent = chapterNum - 1;
-          prevBtn.onclick = () => {
-            window.location.href = `reader.html?id=${mangaId}&chapter=${chapterNum - 1}`;
-          };
-        }
-
-        if (hasNext) {
-          nextBtn.style.display = 'inline-flex';
-          nextNum.textContent = chapterNum + 1;
-          nextBtn.onclick = () => {
-            window.location.href = `reader.html?id=${mangaId}&chapter=${chapterNum + 1}`;
-          };
-        }
-
-        homeBtn.style.display = 'inline-flex';
-        homeBtn.onclick = () => {
-          window.location.href = `manga.html?id=${mangaId}`;
-        };
-      })
-      .catch(() => {
-        spinner.style.display = 'none';
-        document.body.innerHTML = "<p style='padding:40px;text-align:center;'>❌ Could not load chapter data.</p>";
       });
   </script>
 </body>
