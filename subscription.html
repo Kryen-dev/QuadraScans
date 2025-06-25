@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -166,19 +165,19 @@
         justify-content: center;
       }
     }
-
-    /* Toast Styles */
     .toast {
       position: fixed;
       top: 20px;
-      right: 20px;
-      background-color: #ff4444;
-      color: white;
-      padding: 10px 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #333;
+      color: #fff;
+      padding: 12px 20px;
       border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.3);
-      z-index: 9999;
+      box-shadow: 0 0 10px rgba(255,255,255,0.1);
       display: none;
+      z-index: 1000;
+      font-size: 0.95rem;
     }
   </style>
 </head>
@@ -198,7 +197,7 @@
           <li><i class="fas fa-ad"></i> Ads are displayed</li>
           <li><i class="fas fa-ban"></i> No downloads / offline access</li>
         </ul>
-        <button class="btn-select" onclick="cannotBuyFree()">Current Plan</button>
+        <button class="btn-select" id="freeBtn" onclick="cannotBuyFree()">Default Plan</button>
       </div>
       <div class="card">
         <h2>💎 Tier 1: Ad-Free Reader</h2>
@@ -259,13 +258,13 @@
       document.getElementById('qrSection').style.display = 'block';
       document.getElementById('qrSection').scrollIntoView({ behavior: 'smooth' });
 
-      // Simulate setting plan (in real case: after payment)
       localStorage.setItem('quadraPlan', JSON.stringify({
         plan: plan,
         price: price,
         lifetime: false,
-        subscribedOn: new Date().toISOString()
+        joinedOn: new Date().toISOString()
       }));
+
       updatePlanUI();
     }
 
@@ -289,15 +288,15 @@
     }
 
     function cannotBuyFree() {
-      showToast("⚠️ This is a default free plan and cannot be purchased.");
+      showToast("⚠️ This is the default free plan and cannot be purchased.");
     }
 
-    function showToast(message) {
-      const toast = document.getElementById('toastMsg');
-      toast.innerText = message;
-      toast.style.display = 'block';
+    function showToast(msg) {
+      const toast = document.getElementById("toastMsg");
+      toast.innerText = msg;
+      toast.style.display = "block";
       setTimeout(() => {
-        toast.style.display = 'none';
+        toast.style.display = "none";
       }, 3000);
     }
 
@@ -310,7 +309,12 @@
         btn.style.opacity = 1;
       });
 
-      if (activePlan?.plan) {
+      const freeBtn = document.getElementById("freeBtn");
+      freeBtn.innerText = "Default Plan";
+      freeBtn.disabled = false;
+      freeBtn.style.opacity = 1;
+
+      if (activePlan?.plan && (activePlan.plan === 'Tier 1' || activePlan.plan === 'Tier 2')) {
         buttons.forEach(btn => {
           if (btn.onclick?.toString().includes(activePlan.plan)) {
             btn.innerText = "Current Plan";
@@ -318,15 +322,10 @@
             btn.style.opacity = 0.6;
           }
         });
-      } else {
-        // If no plan, mark Free as default
-        buttons[0].innerText = "Current Plan";
-        buttons[0].disabled = true;
-        buttons[0].style.opacity = 0.6;
       }
     }
 
-    window.addEventListener('DOMContentLoaded', updatePlanUI);
+    window.addEventListener("DOMContentLoaded", updatePlanUI);
   </script>
 </body>
 </html>
