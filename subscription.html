@@ -1,4 +1,4 @@
-<!-- ✅ Old-Style subscription.html with instant plan activation -->
+<!-- ✅ subscription.html (With FontAwesome icons, redirects to payment.html) -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,14 +10,16 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
     body {
-      background: #121212;
-      color: #fff;
       font-family: 'Poppins', sans-serif;
+      background-color: #121212;
+      color: #fff;
+      margin: 0;
       padding: 20px;
     }
     h1 {
       text-align: center;
       color: orange;
+      font-size: 2rem;
     }
     .plans {
       display: flex;
@@ -27,12 +29,15 @@
     }
     .card {
       background-color: #1e1e1e;
+      border: 1px solid #333;
       padding: 20px;
       border-radius: 12px;
-      border: 1px solid #333;
+      box-shadow: 0 0 8px rgba(255, 165, 0, 0.1);
     }
     .card h2 {
       color: orange;
+      font-size: 1.3rem;
+      margin-bottom: 10px;
     }
     .card ul {
       list-style: none;
@@ -40,9 +45,15 @@
       color: #ccc;
     }
     .card ul li {
-      padding: 5px 0;
+      padding: 6px 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
-    .card button {
+    .card ul li i {
+      width: 18px;
+    }
+    .btn-select {
       margin-top: 12px;
       background-color: transparent;
       color: orange;
@@ -50,119 +61,66 @@
       padding: 8px 14px;
       border-radius: 8px;
       cursor: pointer;
-      font-weight: bold;
+      font-weight: 600;
+      transition: 0.3s;
     }
-    .bill {
-      background-color: #1e1e1e;
-      padding: 20px;
-      border-radius: 10px;
-      margin-top: 30px;
-      max-width: 400px;
-      margin-left: auto;
-      margin-right: auto;
-      text-align: center;
-    }
-    .bill input {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid orange;
-      background: #121212;
-      color: white;
-      border-radius: 8px;
-    }
-    .bill button {
-      margin-top: 10px;
-      width: 100%;
-      padding: 10px;
-      border: none;
-      background-color: orange;
-      color: black;
-      font-weight: bold;
-      border-radius: 8px;
-      cursor: pointer;
+    .btn-select:hover {
+      background-color: rgba(255, 165, 0, 0.1);
     }
   </style>
 </head>
 <body>
-  <h1>🛡️ Choose Your Plan</h1>
+  <h1><i class="fas fa-shield-alt"></i> Choose Your Plan</h1>
   <div class="plans">
-    <div class="card" id="freePlan">
-      <h2>✅ Free Plan</h2>
+    <div class="card">
+      <h2><i class="fas fa-user"></i> Free Plan (Default)</h2>
       <ul>
-        <li>Access all manga (after delay)</li>
-        <li>Ads enabled</li>
-        <li>No downloads</li>
+        <li><i class="fas fa-book-open"></i> Access all manga (3–7 day delay)</li>
+        <li><i class="fas fa-ad"></i> Ads displayed</li>
+        <li><i class="fas fa-ban"></i> No downloads</li>
       </ul>
-      <button onclick="defaultMsg()">Default Plan</button>
+      <button class="btn-select" onclick="alert('ℹ️ This is the default free plan.')">Default Plan</button>
     </div>
-    <div class="card" id="tier1">
-      <h2>💎 Tier 1 - Ad-Free</h2>
+    <div class="card">
+      <h2><i class="fas fa-gem"></i> Tier 1: Ad-Free</h2>
       <ul>
-        <li>No ads</li>
-        <li>Priority support</li>
+        <li><i class="fas fa-check-circle"></i> No ads</li>
+        <li><i class="fas fa-headset"></i> Priority support</li>
       </ul>
-      <button onclick="selectPlan('Tier 1', 49)">Subscribe</button>
+      <button class="btn-select" onclick="subscribe('Tier 1', 49)">Subscribe</button>
     </div>
-    <div class="card" id="tier2">
-      <h2>🚀 Tier 2 - Early Access</h2>
+    <div class="card">
+      <h2><i class="fas fa-rocket"></i> Tier 2: Early Access</h2>
       <ul>
-        <li>No ads</li>
-        <li>Chapters 7 days early</li>
-        <li>Downloads enabled</li>
+        <li><i class="fas fa-check-circle"></i> No ads</li>
+        <li><i class="fas fa-hourglass-start"></i> 7-day early chapter access</li>
+        <li><i class="fas fa-download"></i> Download chapters</li>
       </ul>
-      <button onclick="selectPlan('Tier 2', 99)">Subscribe</button>
+      <button class="btn-select" onclick="subscribe('Tier 2', 99)">Subscribe</button>
     </div>
-  </div>
-
-  <div class="bill" id="bill" style="display:none;">
-    <h3 style="color:orange;">📄 Apply Redeem Code</h3>
-    <p id="selectedPlanText"></p>
-    <input type="text" id="code" placeholder="Enter code..." />
-    <button onclick="applyCode()">Apply</button>
   </div>
 
   <script>
-    let selectedPlan = '';
-    let selectedPrice = 0;
-
-    function selectPlan(plan, price) {
-      selectedPlan = plan;
-      selectedPrice = price;
-      document.getElementById('selectedPlanText').innerText = `${plan} - ₹${price}`;
-      document.getElementById('bill').style.display = 'block';
-    }
-
-    function applyCode() {
-      const input = document.getElementById('code').value.trim();
-      if (!input) return alert("Enter a redeem code!");
-
-      if (input === "QuadraIsNew") {
-        localStorage.setItem("quadraPlan", JSON.stringify({
-          plan: selectedPlan,
-          price: 0,
-          lifetime: true,
-          redeemedVia: input
-        }));
-        alert("✅ Lifetime access unlocked!");
-        location.reload();
-      } else {
-        alert("❌ Invalid code.");
-      }
-    }
-
-    function defaultMsg() {
-      alert("ℹ️ This is the default plan and cannot be purchased.");
+    function subscribe(plan, price) {
+      // Save selected plan to temp storage before redirecting
+      sessionStorage.setItem("selectedPlan", plan);
+      sessionStorage.setItem("selectedPrice", price);
+      window.location.href = "payment.html";
     }
 
     window.addEventListener("DOMContentLoaded", () => {
-      const plan = JSON.parse(localStorage.getItem("quadraPlan") || "{}");
-
-      if (plan?.plan === "Tier 1") {
-        document.querySelector("#tier1 button").innerText = "Current Plan";
-        document.querySelector("#tier1 button").disabled = true;
-      } else if (plan?.plan === "Tier 2") {
-        document.querySelector("#tier2 button").innerText = "Current Plan";
-        document.querySelector("#tier2 button").disabled = true;
+      const active = JSON.parse(localStorage.getItem("quadraPlan") || "{}");
+      if (active?.plan === "Tier 1") {
+        const btn = document.querySelectorAll(".btn-select")[1];
+        btn.innerText = "Current Plan";
+        btn.disabled = true;
+        btn.style.opacity = 0.6;
+      }
+      if (active?.plan === "Tier 2") {
+        const btn = document.querySelectorAll(".btn-select")[2];
+        btn.innerText = "Current Plan";
+        btn.disabled = true;
+        btn.style.opacity = 0.6;
       }
     });
   </script>
