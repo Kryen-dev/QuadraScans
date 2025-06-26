@@ -11,7 +11,6 @@
     * {
       box-sizing: border-box;
     }
-
     body {
       font-family: 'Poppins', sans-serif;
       background-color: #121212;
@@ -19,7 +18,6 @@
       margin: 0;
       padding: 0;
     }
-
     .container {
       max-width: 520px;
       margin: 80px auto;
@@ -28,25 +26,21 @@
       padding: 30px;
       box-shadow: 0 0 20px rgba(255,165,0,0.1);
     }
-
     .container h1 {
       font-size: 1.8rem;
       text-align: center;
       color: orange;
       margin-bottom: 30px;
     }
-
     .input-group {
       margin-bottom: 20px;
     }
-
     .input-group label {
       display: block;
       margin-bottom: 6px;
       color: #bbb;
       font-size: 0.95rem;
     }
-
     .input-group input, .input-group textarea {
       width: 100%;
       padding: 12px;
@@ -56,19 +50,16 @@
       color: #fff;
       font-size: 1rem;
     }
-
     .input-group textarea {
       resize: vertical;
       min-height: 100px;
     }
-
     .qr-display {
       display: flex;
       justify-content: space-between;
       gap: 20px;
       margin-bottom: 30px;
     }
-
     .qr-box {
       background-color: #181818;
       border: 1px solid #333;
@@ -77,19 +68,16 @@
       flex: 1;
       text-align: center;
     }
-
     .qr-box img {
       width: 100%;
       max-width: 150px;
       border-radius: 8px;
     }
-
     .qr-box h3 {
       color: orange;
       margin-bottom: 10px;
       font-size: 1rem;
     }
-
     button {
       width: 100%;
       padding: 14px;
@@ -102,18 +90,21 @@
       font-size: 1rem;
       transition: 0.3s ease;
     }
-
     button:hover {
       background-color: #ffaa00;
     }
-
     .note {
       margin-top: 20px;
       text-align: center;
       color: #aaa;
       font-size: 0.9rem;
     }
-
+    .readonly-input {
+      background-color: #181818;
+      color: orange;
+      font-weight: 600;
+      text-align: center;
+    }
     @media (max-width: 520px) {
       .qr-display {
         flex-direction: column;
@@ -142,13 +133,18 @@
     </div>
 
     <div class="input-group">
-      <label for="plan"><i class="fas fa-layer-group"></i> Selected Plan</label>
-      <input type="text" id="plan" placeholder="Tier 1 / Tier 2" required />
+      <label><i class="fas fa-layer-group"></i> Selected Plan</label>
+      <input type="text" id="selectedPlan" class="readonly-input" readonly />
+    </div>
+
+    <div class="input-group">
+      <label for="redeem"><i class="fas fa-gift"></i> Redeem Code (optional)</label>
+      <input type="text" id="redeem" placeholder="Enter code if you have one" />
     </div>
 
     <div class="input-group">
       <label for="proof"><i class="fas fa-upload"></i> Upload Payment Proof (Screenshot URL)</label>
-      <input type="text" id="proof" placeholder="Paste image link (e.g., Imgur, Google Drive)" />
+      <input type="text" id="proof" placeholder="Paste image link (e.g., Imgur, Drive)" />
     </div>
 
     <div class="input-group">
@@ -158,31 +154,35 @@
 
     <button onclick="submitProof()">Submit for Approval</button>
 
-    <div class="note">⚠️ Your subscription will be activated once admin verifies the payment.</div>
+    <div class="note">⚠️ Subscription will be activated once admin verifies the payment.</div>
   </div>
 
   <script>
+    const selectedPlan = localStorage.getItem("selectedPlan") || "No plan selected";
+    document.getElementById("selectedPlan").value = selectedPlan;
+
     function submitProof() {
       const name = document.getElementById("userName").value.trim();
-      const plan = document.getElementById("plan").value.trim();
+      const plan = document.getElementById("selectedPlan").value.trim();
       const proof = document.getElementById("proof").value.trim();
 
       if (!name || !plan || !proof) {
-        alert("Please fill in all required fields and add your payment proof.");
+        alert("Please fill in all required fields and upload your payment proof.");
         return;
       }
 
-      alert("✅ Proof submitted successfully! Admin will review your request.");
-      // Save to local storage to simulate backend process
-      localStorage.setItem("paymentSubmitted", JSON.stringify({
+      const data = {
         name,
         plan,
         proof,
+        redeemCode: document.getElementById("redeem").value.trim(),
         notes: document.getElementById("notes").value.trim(),
         submittedOn: new Date().toISOString()
-      }));
+      };
 
-      // Redirect or reload
+      localStorage.setItem("paymentSubmitted", JSON.stringify(data));
+      alert("✅ Proof submitted successfully! Admin will review your request.");
+
       setTimeout(() => {
         window.location.href = "subscription.html";
       }, 1500);
