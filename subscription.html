@@ -1,4 +1,4 @@
-<!-- ✅ subscription.html (updated to redirect to payment.html when user clicks Subscribe Now) -->
+<!-- ✅ Updated subscription.html -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -91,6 +91,10 @@
     .btn-select:hover {
       background-color: rgba(255, 165, 0, 0.1);
     }
+    .btn-select:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
     .toast {
       position: fixed;
       top: 20px;
@@ -133,7 +137,7 @@
           <li><i class="fas fa-headset"></i> Priority support</li>
           <li><i class="fas fa-ban"></i> No early access</li>
         </ul>
-        <button class="btn-select" onclick="goToPayment('Tier 1', 49)">Subscribe</button>
+        <button class="btn-select" data-plan="Tier 1" onclick="goToPayment('Tier 1', 49)">Subscribe</button>
       </div>
       <div class="card">
         <h2><i class="fas fa-rocket"></i> Tier 2: Early Access + No Ads</h2>
@@ -144,7 +148,7 @@
           <li><i class="fas fa-star"></i> Early Access Badge</li>
           <li><i class="fas fa-headset"></i> Priority support</li>
         </ul>
-        <button class="btn-select" onclick="goToPayment('Tier 2', 99)">Subscribe</button>
+        <button class="btn-select" data-plan="Tier 2" onclick="goToPayment('Tier 2', 99)">Subscribe</button>
       </div>
     </div>
   </div>
@@ -152,8 +156,9 @@
   <div class="toast" id="toast">⚠️ This is the default free plan and cannot be purchased.</div>
 
   <script>
-    function showToast() {
+    function showToast(message = "⚠️ This is the default free plan and cannot be purchased.") {
       const toast = document.getElementById("toast");
+      toast.innerText = message;
       toast.style.display = "block";
       setTimeout(() => {
         toast.style.display = "none";
@@ -170,21 +175,13 @@
       const buttons = document.querySelectorAll(".btn-select");
 
       buttons.forEach(btn => {
-        btn.disabled = false;
-        btn.innerText = "Subscribe";
-        btn.style.opacity = 1;
+        const btnPlan = btn.getAttribute("data-plan");
+        if (btnPlan && activePlan?.plan === btnPlan) {
+          btn.innerText = "Current Plan";
+          btn.disabled = true;
+        }
       });
-
-      if (activePlan?.plan === "Tier 1" || activePlan?.plan === "Tier 2") {
-        buttons.forEach(btn => {
-          if (btn.onclick?.toString().includes(activePlan.plan)) {
-            btn.innerText = "Current Plan";
-            btn.disabled = true;
-            btn.style.opacity = 0.6;
-          }
-        });
-      }
     });
   </script>
 </body>
-</html>
+  </html>
