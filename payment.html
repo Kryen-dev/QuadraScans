@@ -1,3 +1,5 @@
+<!-- ✅ Updated payment.html -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -99,12 +101,6 @@
       color: #aaa;
       font-size: 0.9rem;
     }
-    .readonly-input {
-      background-color: #181818;
-      color: orange;
-      font-weight: 600;
-      text-align: center;
-    }
     @media (max-width: 520px) {
       .qr-display {
         flex-direction: column;
@@ -133,18 +129,18 @@
     </div>
 
     <div class="input-group">
-      <label><i class="fas fa-layer-group"></i> Selected Plan</label>
-      <input type="text" id="selectedPlan" class="readonly-input" readonly />
-    </div>
-
-    <div class="input-group">
-      <label for="redeem"><i class="fas fa-gift"></i> Redeem Code (optional)</label>
-      <input type="text" id="redeem" placeholder="Enter code if you have one" />
+      <label for="plan"><i class="fas fa-layer-group"></i> Selected Plan</label>
+      <input type="text" id="plan" readonly />
     </div>
 
     <div class="input-group">
       <label for="proof"><i class="fas fa-upload"></i> Upload Payment Proof (Screenshot URL)</label>
-      <input type="text" id="proof" placeholder="Paste image link (e.g., Imgur, Drive)" />
+      <input type="text" id="proof" placeholder="Paste image link (e.g., Imgur, Google Drive)" />
+    </div>
+
+    <div class="input-group">
+      <label for="redeem"><i class="fas fa-ticket-alt"></i> Redeem Code (optional)</label>
+      <input type="text" id="redeem" placeholder="Enter coupon or redeem code">
     </div>
 
     <div class="input-group">
@@ -154,46 +150,45 @@
 
     <button onclick="submitProof()">Submit for Approval</button>
 
-    <div class="note">⚠️ Subscription will be activated once admin verifies the payment.</div>
+    <div class="note">⚠️ Your subscription will be activated once admin verifies the payment.</div>
   </div>
 
-<script>
-  // Auto-fill selected plan from localStorage
-  document.addEventListener("DOMContentLoaded", () => {
-    const selectedPlan = localStorage.getItem("selectedPlan");
-    const planInput = document.getElementById("plan");
-    planInput.value = selectedPlan ? selectedPlan : "No plan selected";
-  });
+  <script>
+    // Autofill selected plan
+    window.addEventListener("DOMContentLoaded", () => {
+      const selected = JSON.parse(localStorage.getItem("quadraSelectedPlan"));
+      const planInput = document.getElementById("plan");
+      planInput.value = selected ? `${selected.plan}, ₹${selected.price}/month` : "No plan selected";
+    });
 
-  function submitProof() {
-    const name = document.getElementById("userName").value.trim();
-    const plan = document.getElementById("plan").value.trim();
-    const proof = document.getElementById("proof").value.trim();
-    const redeem = document.getElementById("redeemCode")?.value.trim();
-    const notes = document.getElementById("notes").value.trim();
+    function submitProof() {
+      const name = document.getElementById("userName").value.trim();
+      const planText = document.getElementById("plan").value.trim();
+      const proof = document.getElementById("proof").value.trim();
+      const redeem = document.getElementById("redeem").value.trim();
+      const notes = document.getElementById("notes").value.trim();
 
-    if (!name || !plan || !proof) {
-      alert("Please fill in all required fields and upload payment proof.");
-      return;
+      if (!name || !planText || !proof) {
+        alert("Please fill in all required fields and upload payment proof.");
+        return;
+      }
+
+      // Save submission
+      localStorage.setItem("paymentSubmitted", JSON.stringify({
+        name,
+        plan: planText,
+        proof,
+        redeem,
+        notes,
+        submittedOn: new Date().toISOString()
+      }));
+
+      alert("✅ Proof submitted successfully! Admin will review your request.");
+
+      setTimeout(() => {
+        window.location.href = "subscription.html";
+      }, 1500);
     }
-
-    const paymentData = {
-      name,
-      plan,
-      proof,
-      redeemCode: redeem || "",
-      notes,
-      submittedOn: new Date().toISOString()
-    };
-
-    localStorage.setItem("paymentSubmitted", JSON.stringify(paymentData));
-
-    alert("✅ Proof submitted successfully! Admin will verify your request.");
-
-    setTimeout(() => {
-      window.location.href = "subscription.html";
-    }, 1500);
-  } 
-</script>
- </body>
-   </html>
+  </script>
+</body>
+</html>
