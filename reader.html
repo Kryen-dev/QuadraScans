@@ -1,5 +1,4 @@
-<!-- ✅ Fully Updated reader.html matching screenshot design -->
-
+<!-- ✅ reader.html WITH navigation buttons and admin-based early unlock logic -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -96,6 +95,26 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+    .nav-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      margin: 30px auto;
+      text-align: center;
+    }
+    .nav-buttons button {
+      background-color: #1e1e1e;
+      color: #fff;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: background 0.2s ease;
+    }
+    .nav-buttons button:hover {
+      background-color: #333;
+    }
   </style>
 </head>
 <body>
@@ -116,6 +135,12 @@
   <div id="spinner" class="spinner"></div>
   <div id="imageContainer" style="display: none;"></div>
 
+  <div class="nav-buttons" id="chapterNav" style="display:none;">
+    <button id="prevBtn">⬅️ Previous</button>
+    <button onclick="window.location.href='index.html'">🏠 Home</button>
+    <button id="nextBtn">Next ➡️</button>
+  </div>
+
   <script>
     const urlParams = new URLSearchParams(location.search);
     const mangaId = urlParams.get("id");
@@ -123,9 +148,15 @@
     const chapterTitleElem = document.getElementById("chapterTitle");
     const imageContainer = document.getElementById("imageContainer");
     const spinner = document.getElementById("spinner");
+    const nav = document.getElementById("chapterNav");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
 
-    const userPlan = JSON.parse(localStorage.getItem("quadraPlan") || "{}");
-    const isTier2 = userPlan?.plan === "Tier 2" || userPlan?.lifetime;
+    const loggedInUser = JSON.parse(localStorage.getItem("quadraCurrentUser") || "{}");
+    const users = JSON.parse(localStorage.getItem("quadraUsers") || "[]");
+    const currentUser = users.find(u => u.name === loggedInUser.name);
+    const userPlan = currentUser?.plan || "Free";
+    const isTier2 = userPlan === "Tier 2" || userPlan === "Lifetime";
 
     function toggleMenu() {
       const menu = document.getElementById("dropdownMenu");
@@ -142,21 +173,23 @@
     fetch(`assets/data/chapters/${mangaId}.json`)
       .then(res => res.json())
       .then(data => {
-        const chapter = data.find(c => c.number === chapterNum);
+        const chapters = data;
+        const chapter = chapters.find(c => c.number === chapterNum);
         if (!chapter) {
           document.body.innerHTML = "<p style='padding:40px;text-align:center;'>❌ Chapter not found.</p>";
           return;
         }
 
-        const releaseDate = new Date(chapter.releaseDate);
-        const today = new Date();
-        const isUnlocked = isTier2 || (today - releaseDate) / (1000 * 60 * 60 * 24) >= 3;
+        const releaseDate = new Date(chapter.releaseDate + "T00:00:00+05:30");
+        const now = new Date();
+        const isUnlocked = isTier2 || now >= releaseDate;
 
         if (!isUnlocked) {
+          const diff = Math.ceil((releaseDate - now) / (1000 * 60 * 60 * 24));
           document.body.innerHTML = `
             <div style="padding:40px;text-align:center;">
               <h2>🔒 Tier 2 Only</h2>
-              <p>This chapter will unlock in ${Math.ceil(3 - (today - releaseDate) / (1000 * 60 * 60 * 24))} day(s) for free users.</p>
+              <p>This chapter will unlock in ${diff} day(s) for Free users.</p>
               <a href="subscription.html" style="color:orange;text-decoration:underline;">Upgrade to Tier 2</a>
             </div>`;
           return;
@@ -164,15 +197,15 @@
 
         chapterTitleElem.textContent = `Chapter ${chapterNum}`;
 
-        // Enable download for Tier 2
         if (isTier2) {
-          document.getElementById("downloadBtn").style.display = "block";
-          document.getElementById("downloadBtn").onclick = () => {
+          const btn = document.getElementById("downloadBtn");
+          btn.style.display = "block";
+          btn.onclick = () => {
             const zipPath = `assets/data/${mangaId}/chapter-${chapterNum}/chapter-${chapterNum}.zip`;
-            const link = document.createElement('a');
-            link.href = zipPath;
-            link.download = `chapter-${chapterNum}.zip`;
-            link.click();
+            const a = document.createElement("a");
+            a.href = zipPath;
+            a.download = `chapter-${chapterNum}.zip`;
+            a.click();
           };
         }
 
@@ -181,12 +214,34 @@
           .then(images => {
             spinner.style.display = "none";
             imageContainer.style.display = "block";
+            nav.style.display = "flex";
+
             images.forEach(imgName => {
               const img = document.createElement("img");
               img.src = `assets/data/${mangaId}/chapter-${chapterNum}/${imgName}`;
               img.className = "reader-img";
               imageContainer.appendChild(img);
             });
+
+            // Prev/Next logic
+            const allNums = chapters.map(c => c.number).sort((a,b) => a - b);
+            const index = allNums.indexOf(chapterNum);
+            const prev = allNums[index - 1];
+            const next = allNums[index + 1];
+
+            if (prev !== undefined) {
+              prevBtn.onclick = () => window.location.href = `reader.html?id=${mangaId}&chapter=${prev}`;
+            } else {
+              prevBtn.disabled = true;
+              prevBtn.style.opacity = "0.5";
+            }
+
+            if (next !== undefined) {
+              nextBtn.onclick = () => window.location.href = `reader.html?id=${mangaId}&chapter=${next}`;
+            } else {
+              nextBtn.disabled = true;
+              nextBtn.style.opacity = "0.5";
+            }
           });
       });
   </script>
