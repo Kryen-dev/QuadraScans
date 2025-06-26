@@ -1,3 +1,5 @@
+<!-- ✅ Updated Profile - Plan shown below Username with FA icon -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -40,11 +42,6 @@
       color: white;
       font-size: 2rem;
     }
-    .profile-header .plan-tier {
-      color: orange;
-      font-size: 1.1rem;
-      margin-top: 5px;
-    }
     .profile-container {
       max-width: 900px;
       margin: 30px auto;
@@ -72,6 +69,12 @@
       color: #ccc;
     }
     .editable {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .editable-row {
       display: flex;
       align-items: center;
       gap: 10px;
@@ -134,6 +137,17 @@
       padding: 10px;
       background: #1e1e1e;
     }
+    .plan-label {
+      font-weight: bold;
+      color: #ccc;
+    }
+    .plan-value {
+      color: orange;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
     @media (max-width: 600px) {
       .info-list li {
         flex-direction: column;
@@ -143,14 +157,12 @@
   </style>
 </head>
 <body>
-  <!-- Back Button -->
   <div class="top-controls">
     <button onclick="window.location.href='index.html'"><i class="fas fa-arrow-left"></i> Back</button>
   </div>
 
   <div class="profile-header">
     <h1 id="welcomeHeading">Welcome to QuadraScans</h1>
-    <div class="plan-tier" id="headerPlanTier">Free</div>
   </div>
 
   <div class="profile-container">
@@ -161,8 +173,12 @@
         <li>
           <span>Username:</span>
           <span id="usernameContainer" class="editable">
-            <span id="usernameInfo">-</span>
-            <i class="fas fa-pencil-alt" onclick="editUsername()"></i>
+            <span class="editable-row">
+              <span id="usernameInfo">-</span>
+              <i class="fas fa-pencil-alt" onclick="editUsername()"></i>
+            </span>
+            <span class="plan-label">Plan:</span>
+            <span id="userPlan" class="plan-value"><i class="fas fa-user"></i> Free</span>
           </span>
         </li>
         <li><span>Member Since:</span> <span id="createdAtInfo">-</span></li>
@@ -203,14 +219,19 @@
       const username = localStorage.getItem("quadraUsername") || "Not set";
       const joined = localStorage.getItem("quadraJoined") || new Date().toLocaleDateString();
       const planData = JSON.parse(localStorage.getItem("quadraPlan"));
-
       const plan = planData?.plan || "Free";
 
       document.getElementById("welcomeHeading").textContent = `Welcome to QuadraScans, ${username}`;
       document.getElementById("emailInfo").textContent = email;
       document.getElementById("usernameInfo").textContent = username;
       document.getElementById("createdAtInfo").textContent = joined;
-      document.getElementById("headerPlanTier").textContent = plan;
+
+      const planIcon = {
+        "Free": `<i class="fas fa-user"></i> Free`,
+        "Tier 1": `<i class="fas fa-gem"></i> Tier 1`,
+        "Tier 2": `<i class="fas fa-rocket"></i> Tier 2`
+      };
+      document.getElementById("userPlan").innerHTML = planIcon[plan] || planIcon["Free"];
 
       const history = JSON.parse(localStorage.getItem("quadraReading") || "[]");
       const historyContainer = document.getElementById("historySection");
