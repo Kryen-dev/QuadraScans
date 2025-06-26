@@ -157,36 +157,43 @@
     <div class="note">⚠️ Subscription will be activated once admin verifies the payment.</div>
   </div>
 
-  <script>
-    const selectedPlan = localStorage.getItem("selectedPlan") || "No plan selected";
-    document.getElementById("selectedPlan").value = selectedPlan;
+<script>
+  // Auto-fill selected plan from localStorage
+  document.addEventListener("DOMContentLoaded", () => {
+    const selectedPlan = localStorage.getItem("selectedPlan");
+    const planInput = document.getElementById("plan");
+    planInput.value = selectedPlan ? selectedPlan : "No plan selected";
+  });
 
-    function submitProof() {
-      const name = document.getElementById("userName").value.trim();
-      const plan = document.getElementById("selectedPlan").value.trim();
-      const proof = document.getElementById("proof").value.trim();
+  function submitProof() {
+    const name = document.getElementById("userName").value.trim();
+    const plan = document.getElementById("plan").value.trim();
+    const proof = document.getElementById("proof").value.trim();
+    const redeem = document.getElementById("redeemCode")?.value.trim();
+    const notes = document.getElementById("notes").value.trim();
 
-      if (!name || !plan || !proof) {
-        alert("Please fill in all required fields and upload your payment proof.");
-        return;
-      }
-
-      const data = {
-        name,
-        plan,
-        proof,
-        redeemCode: document.getElementById("redeem").value.trim(),
-        notes: document.getElementById("notes").value.trim(),
-        submittedOn: new Date().toISOString()
-      };
-
-      localStorage.setItem("paymentSubmitted", JSON.stringify(data));
-      alert("✅ Proof submitted successfully! Admin will review your request.");
-
-      setTimeout(() => {
-        window.location.href = "subscription.html";
-      }, 1500);
+    if (!name || !plan || !proof) {
+      alert("Please fill in all required fields and upload payment proof.");
+      return;
     }
-  </script>
-</body>
-</html>
+
+    const paymentData = {
+      name,
+      plan,
+      proof,
+      redeemCode: redeem || "",
+      notes,
+      submittedOn: new Date().toISOString()
+    };
+
+    localStorage.setItem("paymentSubmitted", JSON.stringify(paymentData));
+
+    alert("✅ Proof submitted successfully! Admin will verify your request.");
+
+    setTimeout(() => {
+      window.location.href = "subscription.html";
+    }, 1500);
+  } 
+</script>
+ </body>
+   </html>
