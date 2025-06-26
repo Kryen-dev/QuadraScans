@@ -217,14 +217,16 @@
       const users = JSON.parse(localStorage.getItem("quadraUsers") || "[]");
 
       const existing = users.find(u => u.name === approved.name);
-      if (!existing) users.push({ name: approved.name, plan: approved.plan });
+      if (existing) {
+        existing.plan = approved.plan; // update plan
+      } else {
+        users.push({ name: approved.name, plan: approved.plan });
+      }
 
       localStorage.setItem("quadraUsers", JSON.stringify(users));
-      localStorage.setItem("quadraPlan", JSON.stringify({ plan: approved.plan }));
-
-      alert(`${approved.name} approved for ${approved.plan}`);
       requests.splice(index, 1);
       localStorage.setItem("paymentSubmitted", JSON.stringify(requests));
+      alert(`${approved.name} approved for ${approved.plan}`);
       location.reload();
     }
 
