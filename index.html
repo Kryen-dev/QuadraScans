@@ -14,66 +14,76 @@
       font-family: 'Poppins', sans-serif;
       background-color: #121212;
       color: #fff;
+      scroll-behavior: smooth;
     }
     header {
       background-color: #1c1c1c;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 14px 24px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+      padding: 10px 16px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.5);
     }
     .logo {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
     .logo img {
-      height: 40px;
+      height: 32px;
     }
     .site-title {
-      font-size: 1.4rem;
+      font-size: 1.1rem;
       color: orange;
     }
     .nav-icons button {
       background: none;
       border: none;
       color: #fff;
-      font-size: 1.2rem;
-      margin-left: 14px;
+      font-size: 1.1rem;
+      margin-left: 12px;
       cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    .nav-icons button:hover {
+      transform: scale(1.2);
+      color: orange;
     }
     main {
       max-width: 1200px;
-      margin: 40px auto;
-      padding: 0 20px;
+      margin: 20px auto 80px;
+      padding: 0 16px;
     }
     h2 {
       color: orange;
-      margin-bottom: 16px;
-      font-size: 1.4rem;
+      margin-bottom: 14px;
+      font-size: 1.2rem;
     }
     .manga-section {
-      margin-bottom: 50px;
+      margin-bottom: 40px;
     }
     .manga-scroll {
       display: flex;
       overflow-x: auto;
-      gap: 20px;
-      padding-bottom: 10px;
+      gap: 18px;
+      padding-bottom: 8px;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
     }
     .manga-card {
       flex: 0 0 auto;
-      width: 160px;
+      width: 150px;
       text-align: center;
       background: #1e1e1e;
       border-radius: 12px;
       padding: 10px;
-      box-shadow: 0 4px 10px rgba(255,165,0,0.1);
-      transition: transform 0.2s ease;
+      scroll-snap-align: start;
+      box-shadow: 0 4px 10px rgba(255,165,0,0.08);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
     .manga-card:hover {
       transform: scale(1.05);
+      box-shadow: 0 6px 16px rgba(255,165,0,0.2);
     }
     .manga-card img {
       width: 100%;
@@ -92,6 +102,7 @@
       margin-bottom: 30px;
       border-radius: 8px;
       color: #ccc;
+      animation: fadeIn 0.8s ease-in-out;
     }
     .notice a {
       color: orange;
@@ -103,6 +114,42 @@
       font-size: 0.9rem;
       margin-top: 40px;
       padding: 20px;
+      opacity: 0.6;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: #1c1c1c;
+      display: flex;
+      justify-content: space-around;
+      border-top: 1px solid #333;
+      padding: 8px 0;
+      z-index: 99;
+    }
+    .bottom-nav button {
+      background: none;
+      border: none;
+      color: #aaa;
+      font-size: 1.1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: color 0.2s ease;
+    }
+    .bottom-nav button.active,
+    .bottom-nav button:hover {
+      color: orange;
+    }
+    .bottom-nav i {
+      margin-bottom: 2px;
     }
   </style>
 </head>
@@ -146,14 +193,24 @@
     </section>
   </main>
 
-  <footer>
-    © 2025 QuadraScans. All rights reserved.
-  </footer>
+  <nav class="bottom-nav">
+    <button class="active" onclick="scrollToSection('continueReadingContainer')"><i class="fas fa-home"></i><span style="font-size: 0.7rem;">Home</span></button>
+    <button onclick="scrollToSection('newMangasContainer')"><i class="fas fa-book"></i><span style="font-size: 0.7rem;">Manga</span></button>
+    <button onclick="scrollToSection('newChaptersContainer')"><i class="fas fa-clock"></i><span style="font-size: 0.7rem;">Chapters</span></button>
+    <button onclick="handleUser()"><i class="fas fa-user"></i><span style="font-size: 0.7rem;">Profile</span></button>
+  </nav>
 
   <script>
     function handleUser() {
       const loggedIn = localStorage.getItem("quadraUser");
       window.location.href = loggedIn ? "profile.html" : "signup.html";
+    }
+
+    function scrollToSection(id) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     }
 
     const readingHistory = JSON.parse(localStorage.getItem("quadraReading") || "[]");
