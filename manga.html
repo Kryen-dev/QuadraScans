@@ -1,4 +1,4 @@
-<!-- ✅ Fully Updated: manga.html -->
+<!-- ✅ Fully Updated: manga.html with Admin Logic Plan Check -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -205,8 +205,9 @@
     let filteredChapters = [];
     const chaptersPerPage = 10;
 
-    const userPlan = JSON.parse(localStorage.getItem("quadraPlan") || "{}");
-    const isTier2 = userPlan?.plan === "Tier 2" || userPlan?.lifetime;
+    // ✅ Use admin.html logic: fetch currentUser from quadraCurrentUser
+    const currentUser = JSON.parse(localStorage.getItem("quadraCurrentUser") || "{}");
+    const isTier2 = currentUser?.plan === "Tier 2" || currentUser?.lifetime;
 
     function toggleDesc() {
       expanded = !expanded;
@@ -293,7 +294,6 @@
         renderChapters();
       });
 
-    // ❤️ Favorite Button Logic
     const favBtn = document.getElementById("favBtn");
     const favs = JSON.parse(localStorage.getItem("quadraFavs") || "[]");
 
