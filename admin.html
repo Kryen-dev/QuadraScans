@@ -122,8 +122,6 @@
   <header>🛡️ Admin Dashboard – QuadraScans</header>
 
   <div class="container">
-
-    <!-- Analytics -->
     <div class="dashboard">
       <div class="card">
         <h3><i class="fas fa-users"></i> Total Users</h3>
@@ -143,7 +141,6 @@
       </div>
     </div>
 
-    <!-- Subscription Requests -->
     <h2 style="color: orange; margin-bottom: 10px;">📥 Subscription Requests</h2>
     <table>
       <thead>
@@ -160,7 +157,6 @@
       </tbody>
     </table>
 
-    <!-- Add Redeem Code -->
     <div class="form-section">
       <h3><i class="fas fa-plus"></i> Add New Redeem Code</h3>
       <input type="text" id="codeInput" placeholder="Enter code (e.g., WELCOME50)" />
@@ -171,19 +167,16 @@
       <div class="note">Codes will be saved in localStorage under <code>quadraRedeems</code>.</div>
     </div>
 
-    <!-- Redeem List -->
     <div class="form-section">
       <h3><i class="fas fa-list"></i> Existing Redeem Codes</h3>
       <div id="redeemList" style="color:#ccc;"></div>
     </div>
 
-    <!-- Export Users -->
     <div class="form-section">
       <h3><i class="fas fa-download"></i> Export User Data</h3>
       <button onclick="exportUsers()">Export as JSON</button>
       <div class="note">Downloads a .json file of all users and plans.</div>
     </div>
-
   </div>
 
   <script>
@@ -222,9 +215,13 @@
     function approveUser(index) {
       const approved = requests[index];
       const users = JSON.parse(localStorage.getItem("quadraUsers") || "[]");
-      users.push({ name: approved.name, plan: approved.plan });
+
+      const existing = users.find(u => u.name === approved.name);
+      if (!existing) users.push({ name: approved.name, plan: approved.plan });
+
       localStorage.setItem("quadraUsers", JSON.stringify(users));
       localStorage.setItem("quadraPlan", JSON.stringify({ plan: approved.plan }));
+
       alert(`${approved.name} approved for ${approved.plan}`);
       requests.splice(index, 1);
       localStorage.setItem("paymentSubmitted", JSON.stringify(requests));
@@ -291,8 +288,7 @@
       URL.revokeObjectURL(url);
     }
 
-    // Render redeem list on load
     renderRedeems();
   </script>
 </body>
-  </html>
+</html>
