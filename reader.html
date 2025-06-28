@@ -1,4 +1,4 @@
-<!-- ✅ reader.html with Manga Cover in Topbar -->
+<!-- ✅ reader.html with Circular Manga Cover Thumbnail -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -35,13 +35,13 @@
     .topbar .right {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 12px;
       position: relative;
     }
     .cover-thumb {
-      height: 32px;
-      width: 32px;
-      border-radius: 6px;
+      height: 36px;
+      width: 36px;
+      border-radius: 50%;
       object-fit: cover;
     }
     .dots-btn {
@@ -153,7 +153,7 @@
     const nextBtn = document.getElementById("nextBtn");
     const coverThumb = document.getElementById("coverThumb");
 
-    // Set manga cover
+    // Set circular manga cover image
     coverThumb.src = `assets/images/${mangaId}/cover-image.jpg`;
 
     function toggleMenu() {
