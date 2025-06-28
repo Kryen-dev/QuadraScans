@@ -1,4 +1,4 @@
-<!-- ✅ reader.html WITH navigation buttons and admin-based early unlock logic -->
+<!-- ✅ READER.HTML - Free access + Download for All -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -126,7 +126,7 @@
       <img src="assets/images/profile.png" class="profile" alt="User" />
       <button class="dots-btn" onclick="toggleMenu()">⋮</button>
       <div class="menu-dropdown" id="dropdownMenu">
-        <button id="downloadBtn" style="display: none;">⬇️ Download ZIP</button>
+        <button id="downloadBtn">⬇️ Download ZIP</button>
         <button onclick="window.location.href='manga.html?id=' + mangaId">📖 Back to Manga</button>
       </div>
     </div>
@@ -152,12 +152,6 @@
     const prevBtn = document.getElementById("prevBtn");
     const nextBtn = document.getElementById("nextBtn");
 
-    const loggedInUser = JSON.parse(localStorage.getItem("quadraCurrentUser") || "{}");
-    const users = JSON.parse(localStorage.getItem("quadraUsers") || "[]");
-    const currentUser = users.find(u => u.name === loggedInUser.name);
-    const userPlan = currentUser?.plan || "Free";
-    const isTier2 = userPlan === "Tier 2" || userPlan === "Lifetime";
-
     function toggleMenu() {
       const menu = document.getElementById("dropdownMenu");
       menu.style.display = menu.style.display === "block" ? "none" : "block";
@@ -180,34 +174,17 @@
           return;
         }
 
-        const releaseDate = new Date(chapter.releaseDate + "T00:00:00+05:30");
-        const now = new Date();
-        const isUnlocked = isTier2 || now >= releaseDate;
-
-        if (!isUnlocked) {
-          const diff = Math.ceil((releaseDate - now) / (1000 * 60 * 60 * 24));
-          document.body.innerHTML = `
-            <div style="padding:40px;text-align:center;">
-              <h2>🔒 Tier 2 Only</h2>
-              <p>This chapter will unlock in ${diff} day(s) for Free users.</p>
-              <a href="subscription.html" style="color:orange;text-decoration:underline;">Upgrade to Tier 2</a>
-            </div>`;
-          return;
-        }
-
         chapterTitleElem.textContent = `Chapter ${chapterNum}`;
 
-        if (isTier2) {
-          const btn = document.getElementById("downloadBtn");
-          btn.style.display = "block";
-          btn.onclick = () => {
-            const zipPath = `assets/data/${mangaId}/chapter-${chapterNum}/chapter-${chapterNum}.zip`;
-            const a = document.createElement("a");
-            a.href = zipPath;
-            a.download = `chapter-${chapterNum}.zip`;
-            a.click();
-          };
-        }
+        // Download button always visible
+        const btn = document.getElementById("downloadBtn");
+        btn.onclick = () => {
+          const zipPath = `assets/data/${mangaId}/chapter-${chapterNum}/chapter-${chapterNum}.zip`;
+          const a = document.createElement("a");
+          a.href = zipPath;
+          a.download = `chapter-${chapterNum}.zip`;
+          a.click();
+        };
 
         fetch(`assets/data/${mangaId}/chapter-${chapterNum}/${chapterNum}.json`)
           .then(res => res.json())
