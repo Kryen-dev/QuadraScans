@@ -1,4 +1,4 @@
-<!-- ✅ READER.HTML - Free access + Download for All -->
+<!-- ✅ reader.html with Manga Cover in Topbar -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -35,13 +35,13 @@
     .topbar .right {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 14px;
       position: relative;
     }
-    .topbar .profile {
+    .cover-thumb {
       height: 32px;
       width: 32px;
-      border-radius: 50%;
+      border-radius: 6px;
       object-fit: cover;
     }
     .dots-btn {
@@ -123,7 +123,7 @@
     <img src="assets/images/logo.png" alt="Logo" class="logo" />
     <div class="chapter-title" id="chapterTitle">Chapter</div>
     <div class="right">
-      <img src="assets/images/profile.png" class="profile" alt="User" />
+      <img id="coverThumb" src="" alt="Cover" class="cover-thumb" />
       <button class="dots-btn" onclick="toggleMenu()">⋮</button>
       <div class="menu-dropdown" id="dropdownMenu">
         <button id="downloadBtn">⬇️ Download ZIP</button>
@@ -151,6 +151,10 @@
     const nav = document.getElementById("chapterNav");
     const prevBtn = document.getElementById("prevBtn");
     const nextBtn = document.getElementById("nextBtn");
+    const coverThumb = document.getElementById("coverThumb");
+
+    // Set manga cover
+    coverThumb.src = `assets/images/${mangaId}/cover-image.jpg`;
 
     function toggleMenu() {
       const menu = document.getElementById("dropdownMenu");
@@ -176,7 +180,7 @@
 
         chapterTitleElem.textContent = `Chapter ${chapterNum}`;
 
-        // Download button always visible
+        // Download button
         const btn = document.getElementById("downloadBtn");
         btn.onclick = () => {
           const zipPath = `assets/data/${mangaId}/chapter-${chapterNum}/chapter-${chapterNum}.zip`;
