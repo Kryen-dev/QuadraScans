@@ -247,58 +247,132 @@
   </nav>
 
   <script>
-    const tabs = document.querySelectorAll(".tab-page");
-    const buttons = document.querySelectorAll(".tab-btn");
+  const tabs = document.querySelectorAll(".tab-page");
+  const buttons = document.querySelectorAll(".tab-btn");
 
-    function showTab(name) {
-      tabs.forEach(tab => {
-        tab.classList.toggle("active", tab.id === `tab-${name}`);
-      });
-      buttons.forEach(btn => {
-        btn.classList.toggle("active", btn.dataset.tab === name);
-      });
-      localStorage.setItem("activeTab", name);
-    }
-
+  function showTab(name) {
+    tabs.forEach(tab => {
+      tab.classList.toggle("active", tab.id === `tab-${name}`);
+    });
     buttons.forEach(btn => {
-      btn.addEventListener("click", () => {
-        showTab(btn.dataset.tab);
-      });
+      btn.classList.toggle("active", btn.dataset.tab === name);
     });
+    localStorage.setItem("activeTab", name);
+    if (name === 'favorites') renderFavorites();
+  }
 
-    showTab(localStorage.getItem("activeTab") || "home");
+  buttons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      showTab(btn.dataset.tab);
+    });
+  });
 
-    // Light/Dark Theme
-    const themeToggle = document.getElementById("themeToggle");
-    const userTheme = localStorage.getItem("quadraTheme");
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  showTab(localStorage.getItem("activeTab") || "home");
 
-    function setTheme(mode) {
-      document.body.classList.toggle("light-theme", mode === "light");
-      localStorage.setItem("quadraTheme", mode);
-      if (themeToggle) themeToggle.checked = mode === "light";
+  // Theme Toggle
+  const themeToggle = document.getElementById("themeToggle");
+  const userTheme = localStorage.getItem("quadraTheme");
+  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+  function setTheme(mode) {
+    document.body.classList.toggle("light-theme", mode === "light");
+    localStorage.setItem("quadraTheme", mode);
+    if (themeToggle) themeToggle.checked = mode === "light";
+  }
+
+  setTheme(userTheme || (prefersDark ? "dark" : "light"));
+
+  if (themeToggle) {
+    themeToggle.addEventListener("change", () => {
+      setTheme(themeToggle.checked ? "light" : "dark");
+    });
+  }
+
+  // Manga containers
+  const continueReadingContainer = document.getElementById("continueReadingContainer");
+  const newChaptersContainer = document.getElementById("newChaptersContainer");
+  const newMangasContainer = document.getElementById("newMangasContainer");
+  const favoritesContainer = document.getElementById("favoritesContainer");
+
+  const readingHistory = JSON.parse(localStorage.getItem("quadraReading") || "[]");
+  const favoriteIds = JSON.parse(localStorage.getItem("quadraFavs") || "[]");
+
+  function renderFavorites() {
+    favoritesContainer.innerHTML = '';
+    if (favoriteIds.length === 0) {
+      favoritesContainer.innerHTML = '<p class="no-results">No favorites yet.</p>';
+      return;
     }
 
-    setTheme(userTheme || (prefersDark ? "dark" : "light"));
+    fetch("assets/data/mangas.json")
+      .then(res => res.json())
+      .then(mangas => {
+        const favs = mangas.filter(m => favoriteIds.includes(m.id));
+        if (favs.length === 0) {
+          favoritesContainer.innerHTML = '<p class="no-results">No favorites yet.</p>';
+          return;
+        }
 
-    if (themeToggle) {
-      themeToggle.addEventListener("change", () => {
-        setTheme(themeToggle.checked ? "light" : "dark");
+        favs.forEach(manga => {
+          const a = document.createElement("a");
+          a.href = `manga.html?id=${manga.id}`;
+          a.className = "manga-card";
+          a.innerHTML = `<img src="${manga.cover}" alt="${manga.title}" /><span>${manga.title}</span>`;
+          favoritesContainer.appendChild(a);
+        });
       });
-    }
-  </script>
+  }
 
-  <script type="module">
-    import { createClient } from 'https://esm.sh/@supabase/supabase-js'
-    const supabase = createClient(
-      'https://qanielcwwcfbffyucytk.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
-    );
-    const userIcon = document.getElementById("userIcon");
-    userIcon.addEventListener("click", async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      window.location.href = session ? "profile.html" : "signup.html";
+  fetch("assets/data/mangas.json")
+    .then(res => res.json())
+    .then(mangas => {
+      const historyMangas = readingHistory.map(id => mangas.find(m => m.id === id)).filter(Boolean);
+      if (historyMangas.length > 0) {
+        continueReadingContainer.innerHTML = '';
+        historyMangas.forEach(manga => {
+          const a = document.createElement("a");
+          a.href = `manga.html?id=${manga.id}`;
+          a.className = "manga-card";
+          a.innerHTML = `<img src="${manga.cover}" alt="${manga.title}" /><span>${manga.title}</span>`;
+          continueReadingContainer.appendChild(a);
+        });
+      }
+
+      mangas.forEach(manga => {
+        const a = document.createElement("a");
+        a.href = `manga.html?id=${manga.id}`;
+        a.className = "manga-card";
+        a.innerHTML = `<img src="${manga.cover}" alt="${manga.title}" /><span>${manga.title}</span>`;
+        newMangasContainer.appendChild(a);
+      });
+      newMangasContainer.querySelector('.no-results')?.remove();
+
+      let foundNew = false;
+      mangas.forEach(manga => {
+        if (manga.latestChapter) {
+          foundNew = true;
+          const a = document.createElement("a");
+          a.href = `reader.html?id=${manga.id}&chapter=${manga.latestChapter}`;
+          a.className = "manga-card";
+          a.innerHTML = `<img src="${manga.cover}" alt="${manga.title}" /><span>${manga.title} – Chapter ${manga.latestChapter}</span>`;
+          newChaptersContainer.appendChild(a);
+        }
+      });
+      if (foundNew) newChaptersContainer.querySelector('.no-results')?.remove();
     });
-  </script>
+</script>
+
+<script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js';
+  const supabase = createClient(
+    'https://qanielcwwcfbffyucytk.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+  );
+  const userIcon = document.getElementById("userIcon");
+  userIcon.addEventListener("click", async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    window.location.href = session ? "profile.html" : "signup.html";
+  });
+</script>
 </body>
 </html>
