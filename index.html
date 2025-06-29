@@ -33,7 +33,7 @@
       color: #fff;
       margin: 0;
       padding: 0;
-      transition: background 0.3s ease;
+      transition: background 0.3s ease, color 0.3s ease;
     }
     .top-header {
       display: flex;
@@ -148,9 +148,32 @@
     .tab-btn.active {
       color: orange;
     }
+
+    /* 🌞 Light Theme Overrides */
+    body.light-theme {
+      background-color: #f4f4f4;
+      color: #111;
+    }
+    body.light-theme .top-header,
+    body.light-theme .bottom-nav {
+      background-color: #e1e1e1;
+      color: #000;
+    }
+    body.light-theme .manga-card {
+      background-color: #fff;
+      color: #000;
+    }
+    body.light-theme .manga-card span {
+      color: #333;
+    }
+    body.light-theme .notice {
+      background-color: #fff8e1;
+      color: #444;
+      border-left-color: orange;
+    }
   </style>
 </head>
-<body class="dark-theme">
+<body>
 
   <header class="top-header">
     <div class="logo-section">
@@ -199,7 +222,12 @@
 
     <section class="tab-page" id="tab-settings">
       <h3>⚙️ Settings</h3>
-      <p>Settings section coming soon...</p>
+      <div style="margin: 20px 0;">
+        <label style="display:flex;align-items:center;gap:10px;font-size:0.95rem;">
+          <input type="checkbox" id="themeToggle" />
+          Toggle Dark Mode 🌙 / Light Mode ☀️
+        </label>
+      </div>
     </section>
   </main>
 
@@ -215,20 +243,13 @@
     const buttons = document.querySelectorAll('.tab-btn');
 
     function showTab(name) {
-      tabs.forEach(tab => {
-        tab.classList.toggle('active', tab.id === `tab-${name}`);
-      });
-      buttons.forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.tab === name);
-      });
+      tabs.forEach(tab => tab.classList.toggle('active', tab.id === `tab-${name}`));
+      buttons.forEach(btn => btn.classList.toggle('active', btn.dataset.tab === name));
       localStorage.setItem('activeTab', name);
       if (name === 'favorites') renderFavorites();
     }
 
-    buttons.forEach(btn => {
-      btn.addEventListener('click', () => showTab(btn.dataset.tab));
-    });
-
+    buttons.forEach(btn => btn.addEventListener('click', () => showTab(btn.dataset.tab)));
     showTab(localStorage.getItem('activeTab') || 'home');
 
     const continueReadingContainer = document.getElementById("continueReadingContainer");
@@ -302,23 +323,38 @@
         });
         if (foundNew) newChaptersContainer.querySelector('.no-results')?.remove();
       });
+
+    // Dark/Light Theme Setup
+    const userTheme = localStorage.getItem("quadraTheme");
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const themeToggle = document.getElementById("themeToggle");
+
+    const setTheme = (mode) => {
+      document.body.classList.toggle("light-theme", mode === "light");
+      localStorage.setItem("quadraTheme", mode);
+      if (themeToggle) themeToggle.checked = (mode === "light");
+    };
+
+    setTheme(userTheme || (prefersDark ? "dark" : "light"));
+
+    if (themeToggle) {
+      themeToggle.addEventListener("change", () => {
+        setTheme(themeToggle.checked ? "light" : "dark");
+      });
+    }
   </script>
 
   <script type="module">
     import { createClient } from 'https://esm.sh/@supabase/supabase-js';
     const supabase = createClient(
       'https://qanielcwwcfbffyucytk.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhbmllbGN3d2NmYmZmeXVjeXRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1MjU0MDgsImV4cCI6MjA2NjEwMTQwOH0.7PIncqpt4KnPJv4EH00BRtPNE8ckLACo_DFNM40WCMo'
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
     );
 
     const userIcon = document.getElementById("userIcon");
     userIcon.addEventListener("click", async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        window.location.href = "profile.html";
-      } else {
-        window.location.href = "signup.html";
-      }
+      window.location.href = session ? "profile.html" : "signup.html";
     });
   </script>
 </body>
