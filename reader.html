@@ -142,89 +142,112 @@
   </div>
 
   <script>
-    const urlParams = new URLSearchParams(location.search);
-    const mangaId = urlParams.get("id");
-    const chapterNum = parseInt(urlParams.get("chapter"));
-    const chapterTitleElem = document.getElementById("chapterTitle");
-    const imageContainer = document.getElementById("imageContainer");
-    const spinner = document.getElementById("spinner");
-    const nav = document.getElementById("chapterNav");
-    const prevBtn = document.getElementById("prevBtn");
-    const nextBtn = document.getElementById("nextBtn");
-    const coverThumb = document.getElementById("coverThumb");
+  const urlParams = new URLSearchParams(location.search);
+  const mangaId = urlParams.get("id");
+  const chapterNum = parseInt(urlParams.get("chapter"));
+  const chapterTitleElem = document.getElementById("chapterTitle");
+  const imageContainer = document.getElementById("imageContainer");
+  const spinner = document.getElementById("spinner");
+  const nav = document.getElementById("chapterNav");
+  const prevBtn = document.getElementById("prevBtn");
+  const nextBtn = document.getElementById("nextBtn");
+  const coverThumb = document.getElementById("coverThumb");
 
-    // Set circular manga cover image
-    coverThumb.src = `assets/images/${mangaId}/cover-image.jpg`;
+  // ✅ Set circular manga cover image
+  coverThumb.src = `assets/images/${mangaId}/cover-image.jpg`;
 
-    function toggleMenu() {
-      const menu = document.getElementById("dropdownMenu");
-      menu.style.display = menu.style.display === "block" ? "none" : "block";
+  // ✅ Dropdown toggle
+  function toggleMenu() {
+    const menu = document.getElementById("dropdownMenu");
+    menu.style.display = menu.style.display === "block" ? "none" : "block";
+  }
+
+  // ✅ Close dropdown if clicked outside
+  document.addEventListener("click", (e) => {
+    const menu = document.getElementById("dropdownMenu");
+    if (!e.target.closest(".right")) {
+      menu.style.display = "none";
     }
+  });
 
-    document.addEventListener("click", (e) => {
-      const menu = document.getElementById("dropdownMenu");
-      if (!e.target.closest(".right")) {
-        menu.style.display = "none";
+  // ✅ Save reading history and resume data
+  function saveReadingProgress(mangaId, chapterNum) {
+    let history = JSON.parse(localStorage.getItem("quadraReading") || "[]");
+    history = history.filter(id => id !== mangaId);
+    history.unshift(mangaId);
+    if (history.length > 15) history = history.slice(0, 15);
+    localStorage.setItem("quadraReading", JSON.stringify(history));
+    localStorage.setItem(`resume_${mangaId}`, chapterNum);
+  }
+
+  // ✅ Fetch chapters list and current chapter content
+  fetch(`assets/data/chapters/${mangaId}.json`)
+    .then(res => res.json())
+    .then(data => {
+      const chapters = data;
+      const chapter = chapters.find(c => c.number === chapterNum);
+      if (!chapter) {
+        document.body.innerHTML = "<p style='padding:40px;text-align:center;'>❌ Chapter not found.</p>";
+        return;
       }
+
+      chapterTitleElem.textContent = `Chapter ${chapterNum}`;
+      saveReadingProgress(mangaId, chapterNum); // ✅ Save progress
+
+      // ✅ Download ZIP
+      const btn = document.getElementById("downloadBtn");
+      btn.onclick = () => {
+        const zipPath = `assets/data/${mangaId}/chapter-${chapterNum}/chapter-${chapterNum}.zip`;
+        const a = document.createElement("a");
+        a.href = zipPath;
+        a.download = `chapter-${chapterNum}.zip`;
+        a.click();
+      };
+
+      // ✅ Load all images from the chapter
+      fetch(`assets/data/${mangaId}/chapter-${chapterNum}/${chapterNum}.json`)
+        .then(res => res.json())
+        .then(images => {
+          spinner.style.display = "none";
+          imageContainer.style.display = "block";
+          nav.style.display = "flex";
+
+          images.forEach(imgName => {
+            const img = document.createElement("img");
+            img.src = `assets/data/${mangaId}/chapter-${chapterNum}/${imgName}`;
+            img.className = "reader-img";
+            imageContainer.appendChild(img);
+          });
+
+          // ✅ Prev / Next logic
+          const allNums = chapters.map(c => c.number).sort((a, b) => a - b);
+          const index = allNums.indexOf(chapterNum);
+          const prev = allNums[index - 1];
+          const next = allNums[index + 1];
+
+          if (prev !== undefined) {
+            prevBtn.onclick = () => window.location.href = `reader.html?id=${mangaId}&chapter=${prev}`;
+          } else {
+            prevBtn.disabled = true;
+            prevBtn.style.opacity = "0.5";
+          }
+
+          if (next !== undefined) {
+            nextBtn.onclick = () => window.location.href = `reader.html?id=${mangaId}&chapter=${next}`;
+          } else {
+            nextBtn.disabled = true;
+            nextBtn.style.opacity = "0.5";
+          }
+        });
     });
 
-    fetch(`assets/data/chapters/${mangaId}.json`)
-      .then(res => res.json())
-      .then(data => {
-        const chapters = data;
-        const chapter = chapters.find(c => c.number === chapterNum);
-        if (!chapter) {
-          document.body.innerHTML = "<p style='padding:40px;text-align:center;'>❌ Chapter not found.</p>";
-          return;
-        }
-
-        chapterTitleElem.textContent = `Chapter ${chapterNum}`;
-
-        // Download button
-        const btn = document.getElementById("downloadBtn");
-        btn.onclick = () => {
-          const zipPath = `assets/data/${mangaId}/chapter-${chapterNum}/chapter-${chapterNum}.zip`;
-          const a = document.createElement("a");
-          a.href = zipPath;
-          a.download = `chapter-${chapterNum}.zip`;
-          a.click();
-        };
-
-        fetch(`assets/data/${mangaId}/chapter-${chapterNum}/${chapterNum}.json`)
-          .then(res => res.json())
-          .then(images => {
-            spinner.style.display = "none";
-            imageContainer.style.display = "block";
-            nav.style.display = "flex";
-
-            images.forEach(imgName => {
-              const img = document.createElement("img");
-              img.src = `assets/data/${mangaId}/chapter-${chapterNum}/${imgName}`;
-              img.className = "reader-img";
-              imageContainer.appendChild(img);
-            });
-
-            // Prev/Next logic
-            const allNums = chapters.map(c => c.number).sort((a,b) => a - b);
-            const index = allNums.indexOf(chapterNum);
-            const prev = allNums[index - 1];
-            const next = allNums[index + 1];
-
-            if (prev !== undefined) {
-              prevBtn.onclick = () => window.location.href = `reader.html?id=${mangaId}&chapter=${prev}`;
-            } else {
-              prevBtn.disabled = true;
-              prevBtn.style.opacity = "0.5";
-            }
-
-            if (next !== undefined) {
-              nextBtn.onclick = () => window.location.href = `reader.html?id=${mangaId}&chapter=${next}`;
-            } else {
-              nextBtn.disabled = true;
-              nextBtn.style.opacity = "0.5";
-            }
-          });
-      });
+  // ✅ Home button keeps working as before (go to manga page)
+  const homeBtn = document.querySelector('.nav-buttons button:nth-child(2)');
+  if (homeBtn) {
+    homeBtn.onclick = () => {
+      window.location.href = `manga.html?id=${mangaId}`;
+    };
+  }
   </script>
 </body>
 </html>
