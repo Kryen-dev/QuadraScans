@@ -4,24 +4,19 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-  <!-- ✅ SEO Optimized Title & Description -->
   <title>QuadraScans - Read Hindi Manga & Manhwa Online</title>
   <meta name="description" content="QuadraScans is the top Hindi manga and manhwa reading website. Read Solo Leveling, One Piece, and more in Hindi with high-quality scans and daily updates." />
   <meta name="keywords" content="QuadraScans, Hindi manga, Hindi manhwa, Read manga in Hindi, Solo Leveling Hindi, Manga website, Manga reader in Hindi" />
   <link rel="canonical" href="https://quadrascans.com/" />
 
-  <!-- ✅ Social Preview (Open Graph) -->
   <meta property="og:title" content="QuadraScans - Read Hindi Manga & Manhwa Online" />
   <meta property="og:description" content="Read Solo Leveling, One Piece and other top manga in Hindi. Smooth, clean, ad-free reading experience!" />
   <meta property="og:image" content="https://quadrascans.com/assets/images/logo.png" />
   <meta property="og:url" content="https://quadrascans.com/" />
   <meta property="og:type" content="website" />
 
-  <!-- ✅ Branding and UI Enhancers -->
   <link rel="icon" href="assets/images/logo.svg" />
   <meta name="theme-color" content="#121212">
-
-  <!-- ✅ Fonts & Styles -->
   <link rel="stylesheet" href="assets/css/style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
@@ -149,7 +144,6 @@
       color: orange;
     }
 
-    /* 🌞 Light Theme Overrides */
     body.light-theme {
       background-color: #f4f4f4;
       color: #111;
@@ -191,42 +185,44 @@
 
     <section class="tab-page active" id="tab-home">
       <section class="notice"><p>Join <a href="https://images.app.goo.gl/jPSehUxUnPKV7aWQA">Discord</a> for updates.</p></section>
-
-      <section class="reading-history">
-        <h3>📖 Continue Reading</h3>
-        <div class="manga-scroll" id="continueReadingContainer"><p class="no-results">No reading history yet.</p></div>
-      </section>
-
-      <section class="new-mangas">
-        <h3>🆕 New Mangas</h3>
-        <div class="manga-scroll" id="newMangasContainer"><p class="no-results">No new mangas found.</p></div>
-      </section>
-
-      <section class="new-chapters">
-        <h3>📅 New Chapters</h3>
-        <div class="manga-scroll" id="newChaptersContainer"><p class="no-results">No new chapters found.</p></div>
-      </section>
+      <section class="reading-history"><h3>📖 Continue Reading</h3><div class="manga-scroll" id="continueReadingContainer"><p class="no-results">No reading history yet.</p></div></section>
+      <section class="new-mangas"><h3>🆕 New Mangas</h3><div class="manga-scroll" id="newMangasContainer"><p class="no-results">No new mangas found.</p></div></section>
+      <section class="new-chapters"><h3>📅 New Chapters</h3><div class="manga-scroll" id="newChaptersContainer"><p class="no-results">No new chapters found.</p></div></section>
     </section>
 
-    <section class="tab-page" id="tab-favorites">
-      <h3>❤️ Favorites</h3>
-      <div class="manga-scroll" id="favoritesContainer"><p class="no-results">No favorites yet.</p></div>
-    </section>
+    <section class="tab-page" id="tab-favorites"><h3>❤️ Favorites</h3><div class="manga-scroll" id="favoritesContainer"><p class="no-results">No favorites yet.</p></div></section>
 
-    <section class="tab-page" id="tab-badges">
-      <h3>🏅 Badges</h3>
-      <div class="badge-placeholder" style="text-align:center; padding: 40px 20px; color: #999; font-size: 1rem; background-color: #1e1e1e; border-radius: 12px;">
-        Badges system coming soon...
-      </div>
-    </section>
+    <section class="tab-page" id="tab-badges"><h3>🏅 Badges</h3><div class="badge-placeholder" style="text-align:center; padding: 40px 20px; color: #999; font-size: 1rem; background-color: #1e1e1e; border-radius: 12px;">Badges system coming soon...</div></section>
 
     <section class="tab-page" id="tab-settings">
       <h3>⚙️ Settings</h3>
-      <div style="margin: 20px 0;">
-        <label style="display:flex;align-items:center;gap:10px;font-size:0.95rem;">
-          <input type="checkbox" id="themeToggle" />
-          Toggle Dark Mode 🌙 / Light Mode ☀️
-        </label>
+      <div style="display: flex; flex-direction: column; gap: 20px; margin-top: 20px;">
+        <div style="background: #1e1e1e; padding: 20px; border-radius: 14px; box-shadow: 0 2px 10px rgba(0,0,0,0.3); display: flex; justify-content: space-between; align-items: center;">
+          <div><h4 style="margin: 0; color: orange;">🌓 Appearance</h4><p style="font-size: 0.85rem; color: #aaa;">Switch between Light and Dark mode</p></div>
+          <label style="position: relative; display: inline-block; width: 50px; height: 24px;">
+            <input type="checkbox" id="themeToggle" style="opacity: 0; width: 0; height: 0;">
+            <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #444; transition: .4s; border-radius: 24px;"></span>
+            <span style="position: absolute; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%;"></span>
+          </label>
+        </div>
+
+        <div style="background: #1e1e1e; padding: 20px; border-radius: 14px; box-shadow: 0 2px 10px rgba(0,0,0,0.3);">
+          <h4 style="margin: 0 0 8px; color: orange;">📅 Daily Login</h4>
+          <p style="color: #aaa; font-size: 0.85rem;">Login daily to earn XP and rewards!</p>
+          <div id="dailyLoginInfo" style="margin-top: 10px; font-weight: 600; color: #fff;">Checking login streak...</div>
+        </div>
+
+        <div style="background: #1e1e1e; padding: 20px; border-radius: 14px; box-shadow: 0 2px 10px rgba(0,0,0,0.3);">
+          <h4 style="margin: 0 0 8px; color: orange;">💎 Subscription</h4>
+          <p style="color: #aaa; font-size: 0.85rem;">Your current plan: <span id="userPlan" style="font-weight: 600; color: #fff;">Free</span></p>
+          <a href="subscription.html" style="margin-top: 10px; display: inline-block; background: orange; color: #000; padding: 8px 14px; border-radius: 8px; font-weight: 600; text-decoration: none;">Upgrade Plan</a>
+        </div>
+
+        <div style="background: #1e1e1e; padding: 20px; border-radius: 14px; box-shadow: 0 2px 10px rgba(0,0,0,0.3);">
+          <h4 style="margin: 0 0 8px; color: orange;">🧹 Clear Local Data</h4>
+          <p style="color: #aaa; font-size: 0.85rem;">Reset your history, favorites, and XP</p>
+          <button onclick="clearData()" style="margin-top: 10px; background: red; color: #fff; padding: 8px 14px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Clear All</button>
+        </div>
       </div>
     </section>
   </main>
@@ -241,106 +237,48 @@
   <script>
     const tabs = document.querySelectorAll('.tab-page');
     const buttons = document.querySelectorAll('.tab-btn');
+    buttons.forEach(btn => btn.addEventListener('click', () => {
+      tabs.forEach(tab => tab.classList.toggle('active', tab.id === `tab-${btn.dataset.tab}`));
+      buttons.forEach(b => b.classList.toggle('active', b === btn));
+      localStorage.setItem('activeTab', btn.dataset.tab);
+      if (btn.dataset.tab === 'favorites') renderFavorites();
+    });
+    tabs.forEach(tab => tab.classList.toggle('active', tab.id === `tab-${localStorage.getItem('activeTab') || 'home'}`));
 
-    function showTab(name) {
-      tabs.forEach(tab => tab.classList.toggle('active', tab.id === `tab-${name}`));
-      buttons.forEach(btn => btn.classList.toggle('active', btn.dataset.tab === name));
-      localStorage.setItem('activeTab', name);
-      if (name === 'favorites') renderFavorites();
-    }
-
-    buttons.forEach(btn => btn.addEventListener('click', () => showTab(btn.dataset.tab)));
-    showTab(localStorage.getItem('activeTab') || 'home');
-
-    const continueReadingContainer = document.getElementById("continueReadingContainer");
-    const newChaptersContainer = document.getElementById("newChaptersContainer");
-    const newMangasContainer = document.getElementById("newMangasContainer");
-    const favoritesContainer = document.getElementById("favoritesContainer");
-
-    const readingHistory = JSON.parse(localStorage.getItem("quadraReading") || "[]");
-    const favoriteIds = JSON.parse(localStorage.getItem("quadraFavs") || "[]");
-
-    function renderFavorites() {
-      favoritesContainer.innerHTML = '';
-      if (favoriteIds.length === 0) {
-        favoritesContainer.innerHTML = '<p class="no-results">No favorites yet.</p>';
-        return;
-      }
-
-      fetch("assets/data/mangas.json")
-        .then(res => res.json())
-        .then(mangas => {
-          const favs = mangas.filter(m => favoriteIds.includes(m.id));
-          if (favs.length === 0) {
-            favoritesContainer.innerHTML = '<p class="no-results">No favorites yet.</p>';
-            return;
-          }
-
-          favs.forEach(manga => {
-            const a = document.createElement("a");
-            a.href = `manga.html?id=${manga.id}`;
-            a.className = "manga-card";
-            a.innerHTML = `<img src="${manga.cover}" alt="${manga.title}" /><span>${manga.title}</span>`;
-            favoritesContainer.appendChild(a);
-          });
-        });
-    }
-
-    fetch("assets/data/mangas.json")
-      .then(res => res.json())
-      .then(mangas => {
-        const historyMangas = readingHistory.map(id => mangas.find(m => m.id === id)).filter(Boolean);
-        if (historyMangas.length > 0) {
-          continueReadingContainer.innerHTML = '';
-          historyMangas.forEach(manga => {
-            const a = document.createElement("a");
-            a.href = `manga.html?id=${manga.id}`;
-            a.className = "manga-card";
-            a.innerHTML = `<img src="${manga.cover}" alt="${manga.title}" /><span>${manga.title}</span>`;
-            continueReadingContainer.appendChild(a);
-          });
-        }
-
-        mangas.forEach(manga => {
-          const a = document.createElement("a");
-          a.href = `manga.html?id=${manga.id}`;
-          a.className = "manga-card";
-          a.innerHTML = `<img src="${manga.cover}" alt="${manga.title}" /><span>${manga.title}</span>`;
-          newMangasContainer.appendChild(a);
-        });
-        newMangasContainer.querySelector('.no-results')?.remove();
-
-        let foundNew = false;
-        mangas.forEach(manga => {
-          if (manga.latestChapter) {
-            foundNew = true;
-            const a = document.createElement("a");
-            a.href = `reader.html?id=${manga.id}&chapter=${manga.latestChapter}`;
-            a.className = "manga-card";
-            a.innerHTML = `<img src="${manga.cover}" alt="${manga.title}" /><span>${manga.title} – Chapter ${manga.latestChapter}</span>`;
-            newChaptersContainer.appendChild(a);
-          }
-        });
-        if (foundNew) newChaptersContainer.querySelector('.no-results')?.remove();
-      });
-
-    // Dark/Light Theme Setup
-    const userTheme = localStorage.getItem("quadraTheme");
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     const themeToggle = document.getElementById("themeToggle");
-
     const setTheme = (mode) => {
       document.body.classList.toggle("light-theme", mode === "light");
       localStorage.setItem("quadraTheme", mode);
       if (themeToggle) themeToggle.checked = (mode === "light");
     };
+    setTheme(localStorage.getItem("quadraTheme") || (window.matchMedia('(prefers-color-scheme: dark)').matches ? "dark" : "light"));
+    themeToggle.addEventListener("change", () => {
+      setTheme(themeToggle.checked ? "light" : "dark");
+    });
 
-    setTheme(userTheme || (prefersDark ? "dark" : "light"));
+    const dailyInfo = document.getElementById("dailyLoginInfo");
+    const today = new Date().toLocaleDateString();
+    const lastLogin = localStorage.getItem("quadraLastLogin");
+    const currentXP = parseInt(localStorage.getItem("quadraXP") || "0");
+    let streak = parseInt(localStorage.getItem("quadraStreak") || "0");
+    if (lastLogin !== today) {
+      if (new Date(lastLogin).getDate() === new Date(Date.now() - 86400000).getDate()) streak++;
+      else streak = 1;
+      localStorage.setItem("quadraLastLogin", today);
+      localStorage.setItem("quadraStreak", streak);
+      localStorage.setItem("quadraXP", currentXP + 10);
+      dailyInfo.innerText = `🎉 You earned 10 XP! Streak: ${streak} days`;
+    } else {
+      dailyInfo.innerText = `✅ Already claimed today. Streak: ${streak} days`;
+    }
 
-    if (themeToggle) {
-      themeToggle.addEventListener("change", () => {
-        setTheme(themeToggle.checked ? "light" : "dark");
-      });
+    document.getElementById("userPlan").innerText = localStorage.getItem("quadraPlan") || "Free";
+
+    function clearData() {
+      if (confirm("Are you sure you want to clear all local data?")) {
+        localStorage.clear();
+        location.reload();
+      }
     }
   </script>
 
@@ -350,12 +288,11 @@
       'https://qanielcwwcfbffyucytk.supabase.co',
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
     );
-
-    const userIcon = document.getElementById("userIcon");
-    userIcon.addEventListener("click", async () => {
+    document.getElementById("userIcon").addEventListener("click", async () => {
       const { data: { session } } = await supabase.auth.getSession();
       window.location.href = session ? "profile.html" : "signup.html";
     });
   </script>
+
 </body>
 </html>
