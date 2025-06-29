@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,6 +18,7 @@
 
   <link rel="icon" href="assets/images/logo.svg" />
   <meta name="theme-color" content="#121212">
+
   <link rel="stylesheet" href="assets/css/style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
@@ -44,7 +46,10 @@
       gap: 10px;
     }
     .logo-img {
-      height: 36px;
+      height: 40px;
+      width: 40px;
+      border-radius: 50%;
+      object-fit: cover;
     }
     .site-title {
       font-size: 1.2rem;
@@ -62,9 +67,12 @@
     .icon-section button:hover {
       transform: scale(1.1);
     }
+
     .main-content {
       padding: 16px;
+      padding-bottom: 80px;
     }
+
     h3 {
       color: orange;
       margin-bottom: 12px;
@@ -99,6 +107,7 @@
       color: #ccc;
       text-align: center;
     }
+
     .notice {
       background: #222;
       border-left: 4px solid orange;
@@ -111,6 +120,7 @@
     .notice a {
       color: orange;
     }
+
     .tab-page {
       display: none;
     }
@@ -122,6 +132,7 @@
       from { opacity: 0; transform: translateY(5px); }
       to { opacity: 1; transform: translateY(0); }
     }
+
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -132,7 +143,9 @@
       justify-content: space-around;
       padding: 10px 0;
       box-shadow: 0 -2px 5px rgba(0,0,0,0.3);
+      z-index: 999;
     }
+
     .tab-btn {
       background: none;
       border: none;
@@ -140,6 +153,7 @@
       font-size: 1.2rem;
       transition: color 0.3s ease;
     }
+
     .tab-btn.active {
       color: orange;
     }
@@ -184,115 +198,107 @@
     <h1 style="display: none;">Read Hindi Manga & Manhwa Online - QuadraScans</h1>
 
     <section class="tab-page active" id="tab-home">
-      <section class="notice"><p>Join <a href="https://images.app.goo.gl/jPSehUxUnPKV7aWQA">Discord</a> for updates.</p></section>
-      <section class="reading-history"><h3>📖 Continue Reading</h3><div class="manga-scroll" id="continueReadingContainer"><p class="no-results">No reading history yet.</p></div></section>
-      <section class="new-mangas"><h3>🆕 New Mangas</h3><div class="manga-scroll" id="newMangasContainer"><p class="no-results">No new mangas found.</p></div></section>
-      <section class="new-chapters"><h3>📅 New Chapters</h3><div class="manga-scroll" id="newChaptersContainer"><p class="no-results">No new chapters found.</p></div></section>
+      <section class="notice"><p>Join <a href="#">Discord</a> for updates.</p></section>
+
+      <section class="reading-history">
+        <h3>📖 Continue Reading</h3>
+        <div class="manga-scroll" id="continueReadingContainer"><p class="no-results">No reading history yet.</p></div>
+      </section>
+
+      <section class="new-mangas">
+        <h3>🆕 New Mangas</h3>
+        <div class="manga-scroll" id="newMangasContainer"><p class="no-results">No new mangas found.</p></div>
+      </section>
+
+      <section class="new-chapters">
+        <h3>📅 New Chapters</h3>
+        <div class="manga-scroll" id="newChaptersContainer"><p class="no-results">No new chapters found.</p></div>
+      </section>
     </section>
 
-    <section class="tab-page" id="tab-favorites"><h3>❤️ Favorites</h3><div class="manga-scroll" id="favoritesContainer"><p class="no-results">No favorites yet.</p></div></section>
+    <section class="tab-page" id="tab-badges">
+      <h3>🏅 Badges</h3>
+      <div class="badge-placeholder" style="text-align:center; padding: 40px 20px; color: #999; font-size: 1rem; background-color: #1e1e1e; border-radius: 12px;">
+        Badges system coming soon...
+      </div>
+    </section>
 
-    <section class="tab-page" id="tab-badges"><h3>🏅 Badges</h3><div class="badge-placeholder" style="text-align:center; padding: 40px 20px; color: #999; font-size: 1rem; background-color: #1e1e1e; border-radius: 12px;">Badges system coming soon...</div></section>
+    <section class="tab-page" id="tab-favorites">
+      <h3>❤️ Favorites</h3>
+      <div class="manga-scroll" id="favoritesContainer"><p class="no-results">No favorites yet.</p></div>
+    </section>
 
     <section class="tab-page" id="tab-settings">
       <h3>⚙️ Settings</h3>
-      <div style="display: flex; flex-direction: column; gap: 20px; margin-top: 20px;">
-        <div style="background: #1e1e1e; padding: 20px; border-radius: 14px; box-shadow: 0 2px 10px rgba(0,0,0,0.3); display: flex; justify-content: space-between; align-items: center;">
-          <div><h4 style="margin: 0; color: orange;">🌓 Appearance</h4><p style="font-size: 0.85rem; color: #aaa;">Switch between Light and Dark mode</p></div>
-          <label style="position: relative; display: inline-block; width: 50px; height: 24px;">
-            <input type="checkbox" id="themeToggle" style="opacity: 0; width: 0; height: 0;">
-            <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #444; transition: .4s; border-radius: 24px;"></span>
-            <span style="position: absolute; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%;"></span>
-          </label>
-        </div>
-
-        <div style="background: #1e1e1e; padding: 20px; border-radius: 14px; box-shadow: 0 2px 10px rgba(0,0,0,0.3);">
-          <h4 style="margin: 0 0 8px; color: orange;">📅 Daily Login</h4>
-          <p style="color: #aaa; font-size: 0.85rem;">Login daily to earn XP and rewards!</p>
-          <div id="dailyLoginInfo" style="margin-top: 10px; font-weight: 600; color: #fff;">Checking login streak...</div>
-        </div>
-
-        <div style="background: #1e1e1e; padding: 20px; border-radius: 14px; box-shadow: 0 2px 10px rgba(0,0,0,0.3);">
-          <h4 style="margin: 0 0 8px; color: orange;">💎 Subscription</h4>
-          <p style="color: #aaa; font-size: 0.85rem;">Your current plan: <span id="userPlan" style="font-weight: 600; color: #fff;">Free</span></p>
-          <a href="subscription.html" style="margin-top: 10px; display: inline-block; background: orange; color: #000; padding: 8px 14px; border-radius: 8px; font-weight: 600; text-decoration: none;">Upgrade Plan</a>
-        </div>
-
-        <div style="background: #1e1e1e; padding: 20px; border-radius: 14px; box-shadow: 0 2px 10px rgba(0,0,0,0.3);">
-          <h4 style="margin: 0 0 8px; color: orange;">🧹 Clear Local Data</h4>
-          <p style="color: #aaa; font-size: 0.85rem;">Reset your history, favorites, and XP</p>
-          <button onclick="clearData()" style="margin-top: 10px; background: red; color: #fff; padding: 8px 14px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Clear All</button>
-        </div>
+      <div style="margin: 20px 0;">
+        <label style="display:flex;align-items:center;gap:10px;font-size:0.95rem;">
+          <input type="checkbox" id="themeToggle" />
+          Toggle Dark Mode 🌙 / Light Mode ☀️
+        </label>
       </div>
     </section>
   </main>
 
   <nav class="bottom-nav">
-    <button data-tab="home" class="tab-btn active"><i class="fas fa-home"></i></button>
-    <button data-tab="badges" class="tab-btn"><i class="fas fa-award"></i></button>
-    <button data-tab="favorites" class="tab-btn"><i class="fas fa-heart"></i></button>
-    <button data-tab="settings" class="tab-btn"><i class="fas fa-cog"></i></button>
+    <button class="tab-btn active" data-tab="home"><i class="fas fa-home"></i></button>
+    <button class="tab-btn" data-tab="badges"><i class="fas fa-award"></i></button>
+    <button class="tab-btn" data-tab="favorites"><i class="fas fa-heart"></i></button>
+    <button class="tab-btn" data-tab="settings"><i class="fas fa-cog"></i></button>
   </nav>
 
   <script>
-    const tabs = document.querySelectorAll('.tab-page');
-    const buttons = document.querySelectorAll('.tab-btn');
-    buttons.forEach(btn => btn.addEventListener('click', () => {
-      tabs.forEach(tab => tab.classList.toggle('active', tab.id === `tab-${btn.dataset.tab}`));
-      buttons.forEach(b => b.classList.toggle('active', b === btn));
-      localStorage.setItem('activeTab', btn.dataset.tab);
-      if (btn.dataset.tab === 'favorites') renderFavorites();
-    });
-    tabs.forEach(tab => tab.classList.toggle('active', tab.id === `tab-${localStorage.getItem('activeTab') || 'home'}`));
+    const tabs = document.querySelectorAll(".tab-page");
+    const buttons = document.querySelectorAll(".tab-btn");
 
-    const themeToggle = document.getElementById("themeToggle");
-    const setTheme = (mode) => {
-      document.body.classList.toggle("light-theme", mode === "light");
-      localStorage.setItem("quadraTheme", mode);
-      if (themeToggle) themeToggle.checked = (mode === "light");
-    };
-    setTheme(localStorage.getItem("quadraTheme") || (window.matchMedia('(prefers-color-scheme: dark)').matches ? "dark" : "light"));
-    themeToggle.addEventListener("change", () => {
-      setTheme(themeToggle.checked ? "light" : "dark");
-    });
-
-    const dailyInfo = document.getElementById("dailyLoginInfo");
-    const today = new Date().toLocaleDateString();
-    const lastLogin = localStorage.getItem("quadraLastLogin");
-    const currentXP = parseInt(localStorage.getItem("quadraXP") || "0");
-    let streak = parseInt(localStorage.getItem("quadraStreak") || "0");
-    if (lastLogin !== today) {
-      if (new Date(lastLogin).getDate() === new Date(Date.now() - 86400000).getDate()) streak++;
-      else streak = 1;
-      localStorage.setItem("quadraLastLogin", today);
-      localStorage.setItem("quadraStreak", streak);
-      localStorage.setItem("quadraXP", currentXP + 10);
-      dailyInfo.innerText = `🎉 You earned 10 XP! Streak: ${streak} days`;
-    } else {
-      dailyInfo.innerText = `✅ Already claimed today. Streak: ${streak} days`;
+    function showTab(name) {
+      tabs.forEach(tab => {
+        tab.classList.toggle("active", tab.id === `tab-${name}`);
+      });
+      buttons.forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.tab === name);
+      });
+      localStorage.setItem("activeTab", name);
     }
 
-    document.getElementById("userPlan").innerText = localStorage.getItem("quadraPlan") || "Free";
+    buttons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        showTab(btn.dataset.tab);
+      });
+    });
 
-    function clearData() {
-      if (confirm("Are you sure you want to clear all local data?")) {
-        localStorage.clear();
-        location.reload();
-      }
+    showTab(localStorage.getItem("activeTab") || "home");
+
+    // Light/Dark Theme
+    const themeToggle = document.getElementById("themeToggle");
+    const userTheme = localStorage.getItem("quadraTheme");
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+    function setTheme(mode) {
+      document.body.classList.toggle("light-theme", mode === "light");
+      localStorage.setItem("quadraTheme", mode);
+      if (themeToggle) themeToggle.checked = mode === "light";
+    }
+
+    setTheme(userTheme || (prefersDark ? "dark" : "light"));
+
+    if (themeToggle) {
+      themeToggle.addEventListener("change", () => {
+        setTheme(themeToggle.checked ? "light" : "dark");
+      });
     }
   </script>
 
   <script type="module">
-    import { createClient } from 'https://esm.sh/@supabase/supabase-js';
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js'
     const supabase = createClient(
       'https://qanielcwwcfbffyucytk.supabase.co',
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
     );
-    document.getElementById("userIcon").addEventListener("click", async () => {
+    const userIcon = document.getElementById("userIcon");
+    userIcon.addEventListener("click", async () => {
       const { data: { session } } = await supabase.auth.getSession();
       window.location.href = session ? "profile.html" : "signup.html";
     });
   </script>
-
 </body>
 </html>
