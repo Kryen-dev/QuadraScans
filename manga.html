@@ -1,3 +1,4 @@
+<!-- ✅ Updated manga.html with "Read from Start" & "Last Read" buttons -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -149,6 +150,21 @@
       font-weight: bold;
       text-decoration: underline;
     }
+    .read-controls {
+      margin-top: 15px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .read-controls button {
+      background-color: #2d2d2d;
+      color: #fff;
+      border: none;
+      padding: 10px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
   </style>
 </head>
 <body>
@@ -177,6 +193,12 @@
           <p><strong>Description:</strong></p>
           <p id="mangaDesc" style="max-height: 90px; overflow: hidden;"></p>
           <p class="desc-toggle" onclick="toggleDesc()">Show more</p>
+
+          <!-- ✅ Read Buttons -->
+          <div class="read-controls">
+            <button id="startBtn"><i class="fas fa-play"></i> Read from Start</button>
+            <button id="resumeBtn" style="display: none;"><i class="fas fa-forward"></i> Last Read: Chapter <span id="lastReadNum">-</span></button>
+          </div>
         </div>
       </div>
     </div>
@@ -291,6 +313,25 @@
     });
 
     updateFavBtn();
+
+    // ✅ Read Buttons Functionality
+    const startBtn = document.getElementById("startBtn");
+    const resumeBtn = document.getElementById("resumeBtn");
+    const lastReadNum = document.getElementById("lastReadNum");
+    const readingData = JSON.parse(localStorage.getItem("quadraReading") || "{}");
+    const lastRead = readingData[mangaId];
+
+    if (lastRead) {
+      lastReadNum.textContent = lastRead;
+      resumeBtn.style.display = "inline-block";
+      resumeBtn.onclick = () => {
+        window.location.href = `reader.html?id=${mangaId}&chapter=${lastRead}`;
+      };
+    }
+
+    startBtn.onclick = () => {
+      window.location.href = `reader.html?id=${mangaId}&chapter=1`;
+    };
   </script>
 </body>
 </html>
