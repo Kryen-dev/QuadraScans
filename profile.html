@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Profile - QuadraScans</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="icon" href="assets/images/logo.svg" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #121212;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+    }
+    .top-controls {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      z-index: 999;
+    }
+    .top-controls button {
+      background-color: #1e1e1e;
+      color: #fff;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    .profile-header {
+      padding: 60px 20px 10px;
+      text-align: center;
+      border-bottom: 1px solid #333;
+    }
+    .profile-header h1 {
+      color: white;
+      font-size: 2rem;
+    }
+    .profile-container {
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 20px;
+    }
+    .info-block {
+      margin-bottom: 30px;
+    }
+    .info-block h2 {
+      color: orange;
+      font-size: 1.3rem;
+      margin-bottom: 12px;
+    }
+    .info-list {
+      list-style: none;
+      padding: 0;
+    }
+    .info-list li {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #333;
+    }
+    .info-list li span:first-child {
+      color: #ccc;
+    }
+    .editable {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .editable input {
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid orange;
+      color: #fff;
+      padding: 4px;
+      width: 140px;
+    }
+    .editable i {
+      cursor: pointer;
+      color: orange;
+    }
+    .btn, .logout-btn {
+      display: inline-block;
+      padding: 10px 16px;
+      background: transparent;
+      border: 2px solid orange;
+      color: orange;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 10px;
+      text-decoration: none;
+    }
+    .btn:hover, .logout-btn:hover {
+      background: rgba(255,165,0,0.1);
+    }
+    .section {
+      margin-top: 40px;
+    }
+    .badges {
+      padding: 16px;
+      border: 1px dashed orange;
+      border-radius: 12px;
+      text-align: center;
+      color: #aaa;
+    }
+    .history-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px;
+      border-bottom: 1px solid #333;
+      color: #ddd;
+    }
+    @media (max-width: 600px) {
+      .info-list li {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Back Button -->
+  <div class="top-controls">
+    <button onclick="window.location.href='index.html'"><i class="fas fa-arrow-left"></i> Back</button>
+  </div>
+
+  <div class="profile-header">
+    <h1 id="welcomeHeading">Welcome to QuadraScans</h1>
+  </div>
+
+  <div class="profile-container">
+    <div class="info-block">
+      <h2>Account Info</h2>
+      <ul class="info-list">
+        <li><span>Email:</span> <span id="emailInfo">-</span></li>
+        <li>
+          <span>Username:</span>
+          <span id="usernameContainer" class="editable">
+            <span id="usernameInfo">-</span>
+            <i class="fas fa-pencil-alt" onclick="editUsername()"></i>
+          </span>
+        </li>
+        <li><span>Member Since:</span> <span id="createdAtInfo">-</span></li>
+      </ul>
+    </div>
+
+    <div class="info-block section">
+      <h2>Badges</h2>
+      <div class="badges">🏅 Badges system coming soon...</div>
+    </div>
+
+    <div class="info-block section">
+      <h2>Reading History</h2>
+      <div class="history" id="historySection">
+        <div class="history-item"><span>No history yet.</span></div>
+      </div>
+    </div>
+
+    <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+  </div>
+
+  <script>
+    function loadProfile() {
+      const email = localStorage.getItem("quadraEmail") || "user@email.com";
+      const username = localStorage.getItem("quadraUsername") || "Not set";
+      const joined = localStorage.getItem("quadraJoined") || new Date().toLocaleDateString();
+
+      const usersList = JSON.parse(localStorage.getItem("quadraUsers") || "[]");
+      const userRecord = usersList.find(u => u.name === username);
+      const plan = userRecord?.plan || "Free";
+
+      document.getElementById("welcomeHeading").textContent = `Welcome to QuadraScans, ${username}`;
+      document.getElementById("emailInfo").textContent = email;
+      document.getElementById("usernameInfo").textContent = username;
+      document.getElementById("createdAtInfo").textContent = joined;
+      document.getElementById("planInfo").textContent = plan;
+
+      const history = JSON.parse(localStorage.getItem("quadraReading") || "[]");
+      const historyContainer = document.getElementById("historySection");
+
+      if (history.length === 0) {
+        historyContainer.innerHTML = '<div class="history-item"><span>No history yet.</span></div>';
+      } else {
+        fetch("assets/data/mangas.json")
+          .then(res => res.json())
+          .then(mangas => {
+            historyContainer.innerHTML = "";
+            history.forEach(id => {
+              const manga = mangas.find(m => m.id === id);
+              if (manga) {
+                const item = document.createElement("div");
+                item.className = "history-item";
+                item.innerHTML = `<span>${manga.title}</span><span><a href="manga.html?id=${manga.id}" style="color:orange;text-decoration:none;">View</a></span>`;
+                historyContainer.appendChild(item);
+              }
+            });
+          });
+      }
+    }
+
+    function editUsername() {
+      const current = localStorage.getItem("quadraUsername") || "";
+      const container = document.getElementById("usernameContainer");
+
+      container.innerHTML = `
+        <input id="newUsername" value="${current}" />
+        <i class="fas fa-check" onclick="saveUsername()"></i>
+      `;
+
+      document.getElementById("newUsername").focus();
+    }
+
+    function saveUsername() {
+      const newUsername = document.getElementById("newUsername").value.trim();
+      if (!newUsername) return;
+
+      localStorage.setItem("quadraUsername", newUsername);
+      location.reload();
+    }
+
+    function logout() {
+      localStorage.clear();
+      window.location.href = "index.html";
+    }
+
+    loadProfile();
+  </script>
+</body>
+</html>

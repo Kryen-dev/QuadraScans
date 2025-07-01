@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Search Manga | QuadraScans</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      background: #121212;
+      color: #eee;
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .search-bar {
+      display: flex;
+      align-items: center;
+      padding: 14px 12px;
+      gap: 8px;
+      background-color: #121212;
+    }
+
+    .search-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      background-color: #1e1e1e;
+      border-radius: 10px;
+      padding: 10px 14px;
+      border: 2px solid orange;
+    }
+
+    .search-container i {
+      color: orange;
+      font-size: 1rem;
+      margin-right: 10px;
+    }
+
+    .search-container input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      font-size: 1rem;
+      color: #fff;
+    }
+
+    .cancel-btn {
+      font-size: 0.88rem;
+      color: orange;
+      cursor: pointer;
+      font-weight: 600;
+      white-space: nowrap;
+      margin-left: -4px; /* shifted slightly left */
+    }
+
+    #searchResults {
+      padding: 10px 14px;
+    }
+
+    .result-item {
+      padding: 12px 10px;
+      border-bottom: 1px solid #2d2d2d;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: background 0.2s ease;
+    }
+
+    .result-item:hover {
+      background-color: #292929;
+    }
+
+    .no-results {
+      text-align: center;
+      margin-top: 30px;
+      font-style: italic;
+      color: #888;
+    }
+
+    @media (min-width: 600px) {
+      .search-bar {
+        padding: 20px 40px;
+      }
+
+      .cancel-btn {
+        font-size: 1.05rem;
+        margin-left: 0;
+      }
+
+      .search-container input {
+        font-size: 1.1rem;
+      }
+
+      #searchResults {
+        padding: 20px 40px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="search-bar">
+    <div class="search-container">
+      <i class="fas fa-search"></i>
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="Search manga..."
+        autocomplete="off"
+        autofocus
+      />
+    </div>
+    <div class="cancel-btn" onclick="history.back()">Cancel</div>
+  </div>
+
+  <div id="searchResults"></div>
+
+  <script>
+    const searchInput = document.getElementById('searchInput');
+    const searchResults = document.getElementById('searchResults');
+
+    let mangas = [];
+    let pastSearches = JSON.parse(localStorage.getItem('quadraPastSearches') || '[]');
+
+    function renderResults(results, isPast = false) {
+      searchResults.innerHTML = '';
+      if (results.length === 0) {
+        searchResults.innerHTML = `<p class="no-results">${isPast ? 'No past searches' : 'No manga found'}</p>`;
+        return;
+      }
+      results.forEach(manga => {
+        const div = document.createElement('div');
+        div.className = 'result-item';
+        div.textContent = manga.title;
+        div.addEventListener('click', () => {
+          if (!pastSearches.includes(manga.title)) {
+            pastSearches.unshift(manga.title);
+            if (pastSearches.length > 10) pastSearches.pop();
+            localStorage.setItem('quadraPastSearches', JSON.stringify(pastSearches));
+          }
+          window.location.href = `manga.html?id=${encodeURIComponent(manga.id)}`;
+        });
+        searchResults.appendChild(div);
+      });
+    }
+
+    fetch('assets/data/mangas.json')
+      .then(res => res.json())
+      .then(data => {
+        mangas = data;
+        const pastSearchResults = pastSearches
+          .map(title => mangas.find(m => m.title.toLowerCase() === title.toLowerCase()))
+          .filter(Boolean);
+        if (pastSearchResults.length > 0) {
+          renderResults(pastSearchResults, true);
+        } else {
+          searchResults.innerHTML = `<p class="no-results">No past searches</p>`;
+        }
+      })
+      .catch(() => {
+        searchResults.innerHTML = '<p class="no-results">Failed to load manga list.</p>';
+      });
+
+    searchInput.addEventListener('input', () => {
+      const query = searchInput.value.trim().toLowerCase();
+      if (query === '') {
+        const pastSearchResults = pastSearches
+          .map(title => mangas.find(m => m.title.toLowerCase() === title.toLowerCase()))
+          .filter(Boolean);
+        renderResults(pastSearchResults, true);
+        return;
+      }
+      const filtered = mangas.filter(m =>
+        m.title.toLowerCase().includes(query)
+      );
+      renderResults(filtered, false);
+    });
+  </script>
+</body>
+</html>

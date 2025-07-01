@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Panel - QuadraScans</title>
+  <link rel="icon" href="assets/images/logo.svg" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background-color: #121212;
+      color: #fff;
+    }
+    header {
+      padding: 20px;
+      background-color: #1e1e1e;
+      text-align: center;
+      color: orange;
+      font-size: 1.6rem;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    .card {
+      background-color: #1e1e1e;
+      border-radius: 10px;
+      padding: 20px;
+      border: 1px solid #333;
+      box-shadow: 0 0 10px rgba(255,165,0,0.05);
+    }
+    .card h3 {
+      color: orange;
+      margin-bottom: 10px;
+      font-size: 1.2rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: #1e1e1e;
+      border: 1px solid #333;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #333;
+      text-align: left;
+      font-size: 0.95rem;
+    }
+    th {
+      background-color: #222;
+      color: orange;
+    }
+    .btn {
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+    }
+    .approve-btn {
+      background: limegreen;
+      color: #000;
+    }
+    .reject-btn {
+      background: crimson;
+      color: #fff;
+    }
+    .delete-btn {
+      background: #444;
+      color: orange;
+      padding: 6px 10px;
+      margin-left: 10px;
+      border: 1px solid orange;
+    }
+    .form-section {
+      margin-top: 40px;
+    }
+    .form-section h3 {
+      color: orange;
+      margin-bottom: 12px;
+    }
+    .form-section input {
+      padding: 10px;
+      width: 60%;
+      max-width: 400px;
+      margin: 6px 0;
+      border-radius: 8px;
+      border: 1px solid #444;
+      background-color: #121212;
+      color: #fff;
+    }
+    .form-section button {
+      padding: 10px 16px;
+      margin-top: 10px;
+      background: orange;
+      border: none;
+      color: #000;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .note {
+      color: #aaa;
+      font-size: 0.9rem;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <header>🛡️ Admin Dashboard – QuadraScans</header>
+
+  <div class="container">
+    <div class="dashboard">
+      <div class="card">
+        <h3><i class="fas fa-users"></i> Total Users</h3>
+        <p id="totalUsers">Loading...</p>
+      </div>
+      <div class="card">
+        <h3><i class="fas fa-crown"></i> Active Subscribers</h3>
+        <p id="activeSubs">Loading...</p>
+      </div>
+      <div class="card">
+        <h3><i class="fas fa-wallet"></i> Payments Submitted</h3>
+        <p id="totalPayments">Loading...</p>
+      </div>
+      <div class="card">
+        <h3><i class="fas fa-tag"></i> Redeem Codes</h3>
+        <p id="totalCodes">Loading...</p>
+      </div>
+    </div>
+
+    <h2 style="color: orange; margin-bottom: 10px;">📥 Subscription Requests</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Plan</th>
+          <th>Proof</th>
+          <th>Notes</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="paymentTable">
+        <tr><td colspan="5" style="color:#aaa;">Loading requests...</td></tr>
+      </tbody>
+    </table>
+
+    <div class="form-section">
+      <h3><i class="fas fa-plus"></i> Add New Redeem Code</h3>
+      <input type="text" id="codeInput" placeholder="Enter code (e.g., WELCOME50)" />
+      <br />
+      <input type="number" id="discountInput" placeholder="Discount (%) e.g. 50" />
+      <br />
+      <button onclick="addRedeemCode()">Add Code</button>
+      <div class="note">Codes will be saved in localStorage under <code>quadraRedeems</code>.</div>
+    </div>
+
+    <div class="form-section">
+      <h3><i class="fas fa-list"></i> Existing Redeem Codes</h3>
+      <div id="redeemList" style="color:#ccc;"></div>
+    </div>
+
+    <div class="form-section">
+      <h3><i class="fas fa-download"></i> Export User Data</h3>
+      <button onclick="exportUsers()">Export as JSON</button>
+      <div class="note">Downloads a .json file of all users and plans.</div>
+    </div>
+  </div>
+
+  <script>
+    const users = JSON.parse(localStorage.getItem("quadraUsers") || "[]");
+    const payments = JSON.parse(localStorage.getItem("paymentSubmitted") || "[]");
+    const redeems = JSON.parse(localStorage.getItem("quadraRedeems") || "[]");
+
+    document.getElementById("totalUsers").innerText = users.length;
+    document.getElementById("activeSubs").innerText = users.filter(u => u.plan !== "Free").length;
+    document.getElementById("totalPayments").innerText = Array.isArray(payments) ? payments.length : 1;
+    document.getElementById("totalCodes").innerText = redeems.length;
+
+    const requests = Array.isArray(payments) ? payments : [payments];
+    const table = document.getElementById("paymentTable");
+    table.innerHTML = "";
+
+    if (requests.length === 0 || !requests[0]) {
+      table.innerHTML = `<tr><td colspan="5" style="color:#aaa;">No pending requests.</td></tr>`;
+    } else {
+      requests.forEach((req, idx) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${req.name}</td>
+          <td>${req.plan}</td>
+          <td><a href="${req.proof}" target="_blank">View</a></td>
+          <td>${req.notes || "—"}</td>
+          <td>
+            <button class="btn approve-btn" onclick="approveUser(${idx})">Approve</button>
+            <button class="btn reject-btn" onclick="rejectUser(${idx})">Reject</button>
+          </td>
+        `;
+        table.appendChild(tr);
+      });
+    }
+
+    function approveUser(index) {
+      const approved = requests[index];
+      const users = JSON.parse(localStorage.getItem("quadraUsers") || "[]");
+
+      const existing = users.find(u => u.name === approved.name);
+      if (existing) {
+        existing.plan = approved.plan; // update plan
+      } else {
+        users.push({ name: approved.name, plan: approved.plan });
+      }
+
+      localStorage.setItem("quadraUsers", JSON.stringify(users));
+      requests.splice(index, 1);
+      localStorage.setItem("paymentSubmitted", JSON.stringify(requests));
+      alert(`${approved.name} approved for ${approved.plan}`);
+      location.reload();
+    }
+
+    function rejectUser(index) {
+      if (!confirm("Are you sure to reject this payment?")) return;
+      requests.splice(index, 1);
+      localStorage.setItem("paymentSubmitted", JSON.stringify(requests));
+      location.reload();
+    }
+
+    function addRedeemCode() {
+      const code = document.getElementById("codeInput").value.trim();
+      const discount = parseInt(document.getElementById("discountInput").value.trim());
+
+      if (!code || isNaN(discount) || discount <= 0 || discount > 100) {
+        alert("Enter valid code and discount (1–100)");
+        return;
+      }
+
+      const current = JSON.parse(localStorage.getItem("quadraRedeems") || "[]");
+      current.push({ code: code.toUpperCase(), discount });
+      localStorage.setItem("quadraRedeems", JSON.stringify(current));
+      alert(`Redeem "${code}" added with ${discount}% off.`);
+      document.getElementById("codeInput").value = "";
+      document.getElementById("discountInput").value = "";
+      renderRedeems();
+    }
+
+    function renderRedeems() {
+      const container = document.getElementById("redeemList");
+      const list = JSON.parse(localStorage.getItem("quadraRedeems") || "[]");
+      if (list.length === 0) {
+        container.innerHTML = "<p style='color:#777;'>No codes yet.</p>";
+        return;
+      }
+
+      container.innerHTML = list.map((r, i) =>
+        `<div>
+          <b>${r.code}</b> – ${r.discount}% 
+          <button class="delete-btn" onclick="deleteRedeem(${i})">Delete</button>
+        </div>`
+      ).join("");
+    }
+
+    function deleteRedeem(index) {
+      const list = JSON.parse(localStorage.getItem("quadraRedeems") || "[]");
+      if (!confirm(`Delete code "${list[index].code}"?`)) return;
+      list.splice(index, 1);
+      localStorage.setItem("quadraRedeems", JSON.stringify(list));
+      renderRedeems();
+    }
+
+    function exportUsers() {
+      const data = JSON.stringify(users, null, 2);
+      const blob = new Blob([data], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "quadra_users.json";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    renderRedeems();
+  </script>
+</body>
+</html>

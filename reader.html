@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Reader | QuadraScans</title>
+  <link rel="icon" href="assets/images/logo.png" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    body {
+      background-color: #121212;
+      color: white;
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+    }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      background-color: #1f1f1f;
+      position: sticky;
+      top: 0;
+      z-index: 999;
+    }
+    .topbar img.logo {
+      height: 28px;
+    }
+    .topbar .chapter-title {
+      font-size: 1rem;
+      font-weight: 500;
+      color: #fff;
+    }
+    .topbar .right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      position: relative;
+    }
+    .cover-thumb {
+      height: 36px;
+      width: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .dots-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.4rem;
+      cursor: pointer;
+    }
+    .menu-dropdown {
+      position: absolute;
+      top: 38px;
+      right: 0;
+      background: #2a2a2a;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+      display: none;
+      min-width: 160px;
+      z-index: 1000;
+    }
+    .menu-dropdown button {
+      background: none;
+      border: none;
+      color: white;
+      padding: 12px 16px;
+      width: 100%;
+      text-align: left;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+    .menu-dropdown button:hover {
+      background: #3a3a3a;
+    }
+    .reader-img {
+      width: 100%;
+      max-width: 800px;
+      display: block;
+      margin: 20px auto;
+    }
+    .spinner {
+      border: 4px solid #444;
+      border-top: 4px solid #00b7ff;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 40px auto;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .nav-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      margin: 30px auto;
+      text-align: center;
+    }
+    .nav-buttons button {
+      background-color: #1e1e1e;
+      color: #fff;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: background 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .nav-buttons button:hover {
+      background-color: #333;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <img src="assets/images/logo.png" alt="Logo" class="logo" />
+    <div class="chapter-title" id="chapterTitle">Chapter</div>
+    <div class="right">
+      <img id="coverThumb" src="" alt="Cover" class="cover-thumb" />
+      <button class="dots-btn" onclick="toggleMenu()"><i class="fas fa-ellipsis-v"></i></button>
+      <div class="menu-dropdown" id="dropdownMenu">
+        <button id="downloadBtn"><i class="fas fa-download"></i> Download ZIP</button>
+        <button onclick="window.location.href='manga.html?id=' + mangaId"><i class="fas fa-book"></i> Back to Manga</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="spinner" class="spinner"></div>
+  <div id="imageContainer" style="display: none;"></div>
+
+  <div class="nav-buttons" id="chapterNav" style="display:none;">
+    <button id="prevBtn"><i class="fas fa-chevron-left"></i> Previous</button>
+    <button id="homeBtn"><i class="fas fa-home"></i> Home</button>
+    <button id="nextBtn">Next <i class="fas fa-chevron-right"></i></button>
+  </div>
+
+  <script>
+    const urlParams = new URLSearchParams(location.search);
+    const mangaId = urlParams.get("id");
+    const chapterNum = parseInt(urlParams.get("chapter"));
+    const chapterTitleElem = document.getElementById("chapterTitle");
+    const imageContainer = document.getElementById("imageContainer");
+    const spinner = document.getElementById("spinner");
+    const nav = document.getElementById("chapterNav");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const coverThumb = document.getElementById("coverThumb");
+    const homeBtn = document.getElementById("homeBtn");
+
+    // Set circular manga cover image
+    coverThumb.src = `assets/images/${mangaId}/cover-image.jpg`;
+
+    function toggleMenu() {
+      const menu = document.getElementById("dropdownMenu");
+      menu.style.display = menu.style.display === "block" ? "none" : "block";
+    }
+
+    document.addEventListener("click", (e) => {
+      const menu = document.getElementById("dropdownMenu");
+      if (!e.target.closest(".right")) {
+        menu.style.display = "none";
+      }
+    });
+
+    function saveReadingProgress(mangaId, chapterNum) {
+      let history = JSON.parse(localStorage.getItem("quadraReading") || "[]");
+      history = history.filter(id => id !== mangaId);
+      history.unshift(mangaId);
+      if (history.length > 15) history = history.slice(0, 15);
+      localStorage.setItem("quadraReading", JSON.stringify(history));
+      localStorage.setItem(`resume_${mangaId}`, chapterNum);
+    }
+
+    fetch(`assets/data/chapters/${mangaId}.json`)
+      .then(res => res.json())
+      .then(data => {
+        const chapters = data;
+        const chapter = chapters.find(c => c.number === chapterNum);
+        if (!chapter) {
+          document.body.innerHTML = "<p style='padding:40px;text-align:center;'>❌ Chapter not found.</p>";
+          return;
+        }
+
+        chapterTitleElem.textContent = `Chapter ${chapterNum}`;
+        saveReadingProgress(mangaId, chapterNum);
+
+        document.getElementById("downloadBtn").onclick = () => {
+          const zipPath = `assets/data/${mangaId}/chapter-${chapterNum}/chapter-${chapterNum}.zip`;
+          const a = document.createElement("a");
+          a.href = zipPath;
+          a.download = `chapter-${chapterNum}.zip`;
+          a.click();
+        };
+
+        fetch(`assets/data/${mangaId}/chapter-${chapterNum}/${chapterNum}.json`)
+          .then(res => res.json())
+          .then(images => {
+            spinner.style.display = "none";
+            imageContainer.style.display = "block";
+            nav.style.display = "flex";
+
+            images.forEach(imgName => {
+              const img = document.createElement("img");
+              img.src = `assets/data/${mangaId}/chapter-${chapterNum}/${imgName}`;
+              img.className = "reader-img";
+              imageContainer.appendChild(img);
+            });
+
+            const allNums = chapters.map(c => c.number).sort((a, b) => a - b);
+            const index = allNums.indexOf(chapterNum);
+            const prev = allNums[index - 1];
+            const next = allNums[index + 1];
+
+            if (prev !== undefined) {
+              prevBtn.onclick = () => window.location.href = `reader.html?id=${mangaId}&chapter=${prev}`;
+            } else {
+              prevBtn.disabled = true;
+              prevBtn.style.opacity = "0.5";
+            }
+
+            if (next !== undefined) {
+              nextBtn.onclick = () => window.location.href = `reader.html?id=${mangaId}&chapter=${next}`;
+            } else {
+              nextBtn.disabled = true;
+              nextBtn.style.opacity = "0.5";
+            }
+          });
+      });
+
+    homeBtn.onclick = () => {
+      window.location.href = `manga.html?id=${mangaId}`;
+    };
+  </script>
+</body>
+    </html>
