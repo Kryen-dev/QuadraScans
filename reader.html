@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -81,6 +82,11 @@
       max-width: 800px;
       display: block;
       margin: 20px auto;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .reader-img.loaded {
+      opacity: 1;
     }
     .spinner {
       border: 4px solid #444;
@@ -157,7 +163,6 @@
     const coverThumb = document.getElementById("coverThumb");
     const homeBtn = document.getElementById("homeBtn");
 
-    // Set circular manga cover image
     coverThumb.src = `assets/images/${mangaId}/cover-image.jpg`;
 
     function toggleMenu() {
@@ -167,9 +172,7 @@
 
     document.addEventListener("click", (e) => {
       const menu = document.getElementById("dropdownMenu");
-      if (!e.target.closest(".right")) {
-        menu.style.display = "none";
-      }
+      if (!e.target.closest(".right")) menu.style.display = "none";
     });
 
     function saveReadingProgress(mangaId, chapterNum) {
@@ -183,8 +186,7 @@
 
     fetch(`assets/data/chapters/${mangaId}.json`)
       .then(res => res.json())
-      .then(data => {
-        const chapters = data;
+      .then(chapters => {
         const chapter = chapters.find(c => c.number === chapterNum);
         if (!chapter) {
           document.body.innerHTML = "<p style='padding:40px;text-align:center;'>❌ Chapter not found.</p>";
@@ -210,9 +212,13 @@
             nav.style.display = "flex";
 
             images.forEach(imgName => {
-              const img = document.createElement("img");
+              const img = new Image();
               img.src = `assets/data/${mangaId}/chapter-${chapterNum}/${imgName}`;
+              img.loading = "lazy";
               img.className = "reader-img";
+
+              img.onload = () => img.classList.add("loaded");
+
               imageContainer.appendChild(img);
             });
 
@@ -242,4 +248,5 @@
     };
   </script>
 </body>
-    </html>
+</html>
+```
