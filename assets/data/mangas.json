@@ -1,0 +1,36 @@
+[
+  {
+    "id": "solo-leveling",
+    "title": "Solo Leveling",
+    "cover": "assets/images/solo-leveling/cover-image.jpg",
+    "description": "10 years ago, after “the Gate” that connected the real world with the monster world opened, some of the ordinary, everyday people received the power to hunt monsters within the Gate. They are known as “Hunters”. However, not all Hunters are powerful. My name is Sung Jin-Woo, an E-rank Hunter. I’m someone who has to risk his life in the lowliest of dungeons, the “World’s Weakest”. Having no skills whatsoever to display, I barely earned the required money by fighting in low-leveled dungeons… at least until I found a hidden dungeon with the hardest difficulty within the D-rank dungeons! In the end, as I was accepting death, I suddenly received a strange power, a quest log that only I could see, a secret to leveling up that only I know about! If I trained in accordance with my quests and hunted monsters, my level would rise. Changing from the weakest Hunter to the strongest S-rank Hunter!",
+    "status": "Completed",
+    "genres": ["Action", "Fantasy", "Adventure"],
+    "altNames": [
+      "나 혼자만 레벨업",
+      "Only I Level Up",
+      "I Alone Level-Up"
+    ],
+    "published": "2018",
+    "originalLanguage": "Korean",
+    "finalChapter": "200.5",
+    "latestChapter": 4
+  },
+  {
+  "id": "player-reborn",
+  "title": "Player Reborn",
+  "cover": "assets/images/player-reborn/cover-image.jpg",
+  "description": "Wan Jia was betrayed by one of his own teammates in the virtual reality game, \"King of Gamers\" (KOG) and lost his qualification. However, in his final moments before being removed from the game, he was transported back one year earlier to the day that \"King of Gamers\" launched. Already a master of the game and possessing in-depth knowledge of the content of the game, Wan Jia orchestrates his return to the \"King of Gamers\" not only to punish the traitorous teammate, but also to achieve victory!",
+  "status": "Completed",
+  "genres": ["Action", "Fantasy", "Reincarnation", "Adventure"],
+  "altNames": [
+    "玩家重生",
+    "The Player Rebirth",
+    "Rebirth of the Player"
+  ],
+  "published": "2023",
+  "originalLanguage": "Chinese",
+  "finalChapter": "1",
+  "latestChapter": 1
+  }
+]
