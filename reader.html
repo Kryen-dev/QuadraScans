@@ -184,15 +184,18 @@
 <body>
 
   <div class="topbar">
-    <img src="assets/images/logo.png" alt="Logo" class="logo" />
-    <div class="chapter-title" id="chapterTitle">Chapter</div>
-      <button class="dots-btn" onclick="toggleMenu()"><i class="fas fa-ellipsis-v"></i></button>
-      <div class="menu-dropdown" id="dropdownMenu">
-        <button id="downloadBtn"><i class="fas fa-download"></i> Download ZIP</button>
-        <button onclick="window.location.href='manga.html?id=' + mangaId"><i class="fas fa-book"></i> Back to Manga</button>
-      </div>
+  <!-- Removed: <img src="assets/images/logo.png" alt="Logo" class="logo" /> -->
+  <div class="chapter-title" id="chapterTitle">Chapter</div>
+  <div class="right">
+    <img id="coverThumb" src="" alt="Cover" class="cover-thumb" />
+    <button class="dots-btn" onclick="toggleMenu()"><i class="fas fa-ellipsis-v"></i></button>
+    <div class="menu-dropdown" id="dropdownMenu">
+      <button id="downloadBtn"><i class="fas fa-download"></i> Download ZIP</button>
+      <button onclick="window.location.href='manga.html?id=' + mangaId"><i class="fas fa-book"></i> Back to Manga</button>
     </div>
   </div>
+</div>
+
 
   <div id="spinner" class="spinner"></div>
   <div id="imageContainer" style="display: none;"></div>
