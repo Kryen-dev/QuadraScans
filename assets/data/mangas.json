@@ -24,18 +24,5 @@
     "originalLanguage": "Chinese",
     "finalChapter": "1",
     "latestChapter": 1
-  },
-  {
-    "id": "liv",
-    "title": "LIV",
-    "cover": "assets/images/liv/cover-image.jpg",
-    "description": "In a post-apocalyptic world overrun by grotesque creatures, a young girl named Liv fights for survival with extraordinary powers. As secrets from the past begin to unravel, she discovers her own dark origins and the fate of humanity may lie in her hands.",
-    "status": "Ongoing",
-    "genres": ["Action", "Sci-Fi", "Post-Apocalyptic", "Drama"],
-    "altNames": ["LIV - 리브", "리브"],
-    "published": "2022",
-    "originalLanguage": "Japanese",
-    "finalChapter": "N/A",
-    "latestChapter": 1
   }
 ]
