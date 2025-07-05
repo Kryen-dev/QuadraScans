@@ -54,14 +54,6 @@
       position: relative;
     }
 
-    .cover-thumb {
-      height: 38px;
-      width: 38px;
-      border-radius: 50%;
-      object-fit: cover;
-      box-shadow: 0 0 8px rgba(255,163,26,0.5);
-    }
-
     .dots-btn {
       font-size: 1.4rem;
       background: none;
@@ -184,16 +176,15 @@
 <body>
 
   <div class="topbar">
-  <!-- Removed: <img src="assets/images/logo.png" alt="Logo" class="logo" /> -->
-  <div class="chapter-title" id="chapterTitle">Chapter</div>
-  <div class="right">
-    <img id="coverThumb" src="" alt="Cover" class="cover-thumb" />
-    <button class="dots-btn" onclick="toggleMenu()"><i class="fas fa-ellipsis-v"></i></button>
-    <div class="menu-dropdown" id="dropdownMenu">
-      <button id="downloadBtn"><i class="fas fa-download"></i> Download ZIP</button>
-      <button onclick="window.location.href='manga.html?id=' + mangaId"><i class="fas fa-book"></i> Back to Manga</button>
+   <img src="assets/images/logo.png" alt="Logo" class="logo" />
+    <div class="chapter-title" id="chapterTitle">Chapter</div>
+    <div class="right">
+      <button class="dots-btn" onclick="toggleMenu()"><i class="fas fa-ellipsis-v"></i></button>
+      <div class="menu-dropdown" id="dropdownMenu">
+        <button id="downloadBtn"><i class="fas fa-download"></i> Download ZIP</button>
+        <button onclick="window.location.href='manga.html?id=' + mangaId"><i class="fas fa-book"></i> Back to Manga</button>
+      </div>
     </div>
-  </div>
 </div>
 
 
@@ -219,8 +210,7 @@
     const coverThumb = document.getElementById("coverThumb");
     const homeBtn = document.getElementById("homeBtn");
 
-    // Set circular manga cover image
-    coverThumb.src = `assets/images/${mangaId}/cover-image.jpg`;
+    
 
     function toggleMenu() {
       const menu = document.getElementById("dropdownMenu");
