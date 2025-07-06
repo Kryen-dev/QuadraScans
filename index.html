@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,11 +9,6 @@
   <meta name="description" content="Read free Hindi Manga and Manhwa on QuadraScans. Updated daily with a premium reader experience.">
   <meta name="keywords" content="quadrascans, hindi manga, manhwa in hindi, manga reader, free manga hindi">
   <meta name="author" content="QuadraScans Team">
-  <meta property="og:title" content="QuadraScans – Hindi Manga Reader" />
-  <meta property="og:description" content="Read Hindi Manga and Manhwa in high quality. Free and updated daily." />
-  <meta property="og:image" content="https://quadrascans.netlify.app/assets/images/logo.png" />
-  <meta property="og:url" content="https://quadrascans.netlify.app/" />
-  <meta name="twitter:card" content="summary_large_image" />
 
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXX"></script>
@@ -30,8 +24,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="assets/images/logo.png">
-  <link rel="stylesheet" href="assets/css/style.css" />
 
+  <!-- CSS (merged and improved) -->
   <style>
     * { box-sizing: border-box; }
     body {
@@ -79,7 +73,6 @@
     .header-icons button:hover {
       transform: scale(1.1);
     }
-
     main {
       padding: 16px;
       padding-bottom: 80px;
@@ -121,7 +114,6 @@
       font-size: 0.85rem;
       color: #ddd;
     }
-
     .notice-bar {
       background: #222;
       border-left: 4px solid #ffa31a;
@@ -131,7 +123,6 @@
       font-size: 0.9rem;
       color: #ccc;
     }
-
     .tab-page { display: none; }
     .tab-page.active {
       display: block;
@@ -141,7 +132,6 @@
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
-
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -164,14 +154,12 @@
     .tab-btn.active {
       color: #ffa31a;
     }
-
     .settings-list {
       display: flex;
       flex-direction: column;
       gap: 16px;
       margin: 20px 0;
     }
-
     .setting-item {
       display: flex;
       align-items: center;
@@ -182,16 +170,13 @@
       color: #ddd;
       box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
-
     .setting-item i {
       margin-right: 10px;
       color: #ffa31a;
     }
-
     .setting-item span {
       flex: 1;
     }
-
     .setting-item button,
     .setting-item .link-btn {
       background: #ffa31a;
@@ -204,24 +189,16 @@
       cursor: pointer;
       text-decoration: none;
     }
-
     .switch {
       position: relative;
       display: inline-block;
       width: 50px;
       height: 24px;
     }
-    .switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
+    .switch input { opacity: 0; width: 0; height: 0; }
     .slider {
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
+      top: 0; left: 0; right: 0; bottom: 0;
       background-color: #555;
       border-radius: 24px;
       cursor: pointer;
@@ -244,24 +221,14 @@
     .switch input:checked + .slider:before {
       transform: translateX(26px);
     }
-
     .no-results {
       color: #777;
       font-size: 0.95rem;
       padding: 10px;
     }
   </style>
-
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js');
-      });
-    }
-  </script>
 </head>
 <body>
-
 <header>
   <div class="logo">
     <img src="assets/images/logo.png" alt="QuadraScans" />
@@ -277,7 +244,10 @@
   <section class="tab-page active" id="tab-home">
     <div class="notice-bar"><i class="fas fa-bullhorn"></i> Join <a href="https://linktr.ee/YOUR_SOCIALS" target="_blank">our socials</a> for updates, perks & events!</div>
 
-    <h2 class="section-title">🎯 Hot Picks</h2>
+    <h2 class="section-title">📈 Trending</h2>
+    <div class="manga-list" id="trendingMangasContainer"></div>
+
+    <h2 class="section-title">🔥 Hot Picks</h2>
     <div class="manga-list" id="hotMangasContainer"></div>
 
     <h2 class="section-title">Continue Reading</h2>
@@ -295,10 +265,14 @@
     <div class="manga-list" id="favoritesContainer"><p class="no-results">No favorites added.</p></div>
   </section>
 
+  <section class="tab-page" id="tab-badges">
+    <h2 class="section-title">🏅 Badges</h2>
+    <div style="color: #ccc; padding: 10px;">Your earned badges will show here soon!</div>
+  </section>
+
   <section class="tab-page" id="tab-settings">
     <h2 class="section-title">Settings</h2>
     <div class="settings-list">
-
       <div class="setting-item">
         <i class="fas fa-moon"></i>
         <span>Theme</span>
@@ -325,13 +299,6 @@
         <span>Clear Favorites</span>
         <button onclick="localStorage.removeItem('quadraFavs'); location.reload();">Clear</button>
       </div>
-
-      <div class="setting-item">
-        <i class="fas fa-share-alt"></i>
-        <span>Share QuadraScans</span>
-        <button onclick="navigator.share({ title: 'QuadraScans', text: 'Check out Hindi Manga on QuadraScans!', url: location.href })">Share</button>
-      </div>
-
     </div>
   </section>
 </main>
@@ -339,6 +306,7 @@
 <nav class="bottom-nav">
   <button class="tab-btn active" data-tab="home"><i class="fas fa-home"></i></button>
   <button class="tab-btn" data-tab="favorites"><i class="fas fa-heart"></i></button>
+  <button class="tab-btn" data-tab="badges"><i class="fas fa-medal"></i></button>
   <button class="tab-btn" data-tab="settings"><i class="fas fa-cog"></i></button>
 </nav>
 
@@ -368,6 +336,7 @@ function showTab(name) {
 buttons.forEach(btn => btn.addEventListener("click", () => showTab(btn.dataset.tab)));
 showTab(localStorage.getItem("activeTab") || "home");
 
+// Theme Toggle Logic
 const themeToggle = document.getElementById("themeToggle");
 const savedTheme = localStorage.getItem("quadraTheme") || "dark";
 themeToggle.checked = savedTheme === "light";
@@ -382,13 +351,14 @@ function applyTheme(mode) {
   localStorage.setItem("quadraTheme", mode);
 }
 
-// 🎁 Daily Login XP Bonus
+// Daily XP Bonus (One-time per day)
 const today = new Date().toDateString();
 if (localStorage.getItem("quadraLoginBonus") !== today) {
   alert("🎉 Daily XP Claimed!");
   localStorage.setItem("quadraLoginBonus", today);
 }
 
+// Containers
 const readingHistory = JSON.parse(localStorage.getItem("quadraReading") || "[]");
 const favoriteIds = JSON.parse(localStorage.getItem("quadraFavs") || "[]");
 
@@ -399,6 +369,7 @@ const hotMangasContainer = document.getElementById("hotMangasContainer");
 const newMangasContainer = document.getElementById("newMangasContainer");
 const favoritesContainer = document.getElementById("favoritesContainer");
 
+// Render Favorites
 function renderFavorites() {
   favoritesContainer.innerHTML = '';
   if (!favoriteIds.length) {
@@ -419,10 +390,11 @@ function renderFavorites() {
     });
 }
 
+// Main Fetch & Render
 fetch("assets/data/mangas.json")
   .then(res => res.json())
   .then(mangas => {
-    // 🌟 Latest Chapters
+    // Latest Chapters
     mangas.forEach(manga => {
       if (manga.latestChapter) {
         const a = document.createElement("a");
@@ -433,7 +405,7 @@ fetch("assets/data/mangas.json")
       }
     });
 
-    // 🔥 Trending Mangas – sorted by "updatedAt" field
+    // Trending (by latest update)
     const trending = mangas
       .filter(m => m.updatedAt)
       .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
@@ -446,8 +418,8 @@ fetch("assets/data/mangas.json")
       trendingMangasContainer.appendChild(a);
     });
 
-    // 🔥 Hot Picks – by views
-    const hot = mangas.filter(m => m.views && m.views > 1000).slice(0, 5);
+    // Hot Picks (by views)
+    const hot = mangas.filter(m => m.views && m.views > 1000).slice(0, 6);
     hot.forEach(manga => {
       const a = document.createElement("a");
       a.href = `manga.html?id=${manga.id}`;
@@ -456,7 +428,7 @@ fetch("assets/data/mangas.json")
       hotMangasContainer.appendChild(a);
     });
 
-    // 📚 New Mangas (show all)
+    // New Mangas (all)
     mangas.forEach(manga => {
       const a = document.createElement("a");
       a.href = `manga.html?id=${manga.id}`;
@@ -465,7 +437,7 @@ fetch("assets/data/mangas.json")
       newMangasContainer.appendChild(a);
     });
 
-    // 📖 Continue Reading
+    // Continue Reading
     const history = readingHistory.map(id => mangas.find(m => m.id === id)).filter(Boolean);
     if (history.length) {
       continueReadingContainer.innerHTML = '';
@@ -479,6 +451,7 @@ fetch("assets/data/mangas.json")
     }
   });
 
+// Profile Redirect
 const userIcon = document.getElementById("userIcon");
 userIcon.addEventListener("click", () => {
   try {
