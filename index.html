@@ -1,5 +1,4 @@
-
-<!-- QuadraScans - Premium Hindi Manga Website [450+ lines] -->
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,8 +10,6 @@
   <meta name="description" content="Read free Hindi Manga and Manhwa on QuadraScans. Updated daily with a premium reader experience.">
   <meta name="keywords" content="quadrascans, hindi manga, manhwa in hindi, manga reader, free manga hindi">
   <meta name="author" content="QuadraScans Team">
-
-  <!-- SEO Social Preview -->
   <meta property="og:title" content="QuadraScans – Hindi Manga Reader" />
   <meta property="og:description" content="Read Hindi Manga and Manhwa in high quality. Free and updated daily." />
   <meta property="og:image" content="https://quadrascans.netlify.app/assets/images/logo.png" />
@@ -28,14 +25,233 @@
     gtag('config', 'G-XXXXXXXXX');
   </script>
 
-  <!-- Fonts and Icons -->
+  <!-- Fonts & Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="assets/images/logo.png">
   <link rel="stylesheet" href="assets/css/style.css" />
 
-  <!-- Service Worker -->
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Outfit', sans-serif;
+      background-color: #0f0f0f;
+      color: #fff;
+      transition: background 0.3s ease;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #1c1c1c;
+      padding: 14px 18px;
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo img {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+    }
+    .logo span {
+      font-weight: 600;
+      font-size: 1.2rem;
+      color: #ffa31a;
+    }
+    .header-icons button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.2rem;
+      margin-left: 16px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .header-icons button:hover {
+      transform: scale(1.1);
+    }
+
+    main {
+      padding: 16px;
+      padding-bottom: 80px;
+    }
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #ffa31a;
+    }
+    .manga-list {
+      display: flex;
+      gap: 14px;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      padding-bottom: 16px;
+    }
+    .manga-card {
+      min-width: 140px;
+      background: #1e1e1e;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 6px 12px rgba(255,165,0,0.07);
+      transition: transform 0.25s ease;
+      cursor: pointer;
+    }
+    .manga-card:hover {
+      transform: scale(1.04);
+    }
+    .manga-card img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .manga-card span {
+      display: block;
+      padding: 8px;
+      text-align: center;
+      font-size: 0.85rem;
+      color: #ddd;
+    }
+
+    .notice-bar {
+      background: #222;
+      border-left: 4px solid #ffa31a;
+      padding: 12px 16px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      font-size: 0.9rem;
+      color: #ccc;
+    }
+
+    .tab-page { display: none; }
+    .tab-page.active {
+      display: block;
+      animation: fadein 0.3s ease-in-out;
+    }
+    @keyframes fadein {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #1a1a1a;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+      box-shadow: 0 -2px 6px rgba(0,0,0,0.3);
+      z-index: 999;
+    }
+    .tab-btn {
+      background: none;
+      border: none;
+      color: #aaa;
+      font-size: 1.3rem;
+      transition: color 0.3s ease;
+    }
+    .tab-btn.active {
+      color: #ffa31a;
+    }
+
+    .settings-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin: 20px 0;
+    }
+
+    .setting-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #1e1e1e;
+      padding: 12px 16px;
+      border-radius: 12px;
+      color: #ddd;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    .setting-item i {
+      margin-right: 10px;
+      color: #ffa31a;
+    }
+
+    .setting-item span {
+      flex: 1;
+    }
+
+    .setting-item button,
+    .setting-item .link-btn {
+      background: #ffa31a;
+      color: #000;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 0.85rem;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #555;
+      border-radius: 24px;
+      cursor: pointer;
+      transition: 0.4s;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 4px;
+      bottom: 3px;
+      background-color: white;
+      border-radius: 50%;
+      transition: 0.4s;
+    }
+    .switch input:checked + .slider {
+      background-color: #ffa31a;
+    }
+    .switch input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+
+    .no-results {
+      color: #777;
+      font-size: 0.95rem;
+      padding: 10px;
+    }
+  </style>
+
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
@@ -61,27 +277,28 @@
   <section class="tab-page active" id="tab-home">
     <div class="notice-bar"><i class="fas fa-bullhorn"></i> Join <a href="https://linktr.ee/YOUR_SOCIALS" target="_blank">our socials</a> for updates, perks & events!</div>
 
-    <h2 class="section-title">🔥 Hot Picks</h2>
+    <h2 class="section-title">🎯 Hot Picks</h2>
     <div class="manga-list" id="hotMangasContainer"></div>
 
-    <h2 class="section-title">📖 Continue Reading</h2>
+    <h2 class="section-title">Continue Reading</h2>
     <div class="manga-list" id="continueReadingContainer"><p class="no-results">No reading history yet.</p></div>
 
-    <h2 class="section-title">🆕 New Mangas</h2>
+    <h2 class="section-title">New Mangas</h2>
     <div class="manga-list" id="newMangasContainer"></div>
 
-    <h2 class="section-title">📢 Latest Chapters</h2>
+    <h2 class="section-title">Latest Chapters</h2>
     <div class="manga-list" id="newChaptersContainer"></div>
   </section>
 
   <section class="tab-page" id="tab-favorites">
-    <h2 class="section-title">❤️ Favorites</h2>
+    <h2 class="section-title">Favorites</h2>
     <div class="manga-list" id="favoritesContainer"><p class="no-results">No favorites added.</p></div>
   </section>
 
   <section class="tab-page" id="tab-settings">
-    <h2 class="section-title">⚙️ Settings</h2>
+    <h2 class="section-title">Settings</h2>
     <div class="settings-list">
+
       <div class="setting-item">
         <i class="fas fa-moon"></i>
         <span>Theme</span>
@@ -114,6 +331,7 @@
         <span>Share QuadraScans</span>
         <button onclick="navigator.share({ title: 'QuadraScans', text: 'Check out Hindi Manga on QuadraScans!', url: location.href })">Share</button>
       </div>
+
     </div>
   </section>
 </main>
@@ -125,7 +343,6 @@
 </nav>
 
 <script>
-// PWA Install Logic
 let deferredPrompt;
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
@@ -139,9 +356,9 @@ document.getElementById("installBtn").addEventListener("click", () => {
   }
 });
 
-// Tabs
 const tabs = document.querySelectorAll(".tab-page");
 const buttons = document.querySelectorAll(".tab-btn");
+
 function showTab(name) {
   tabs.forEach(tab => tab.classList.toggle("active", tab.id === `tab-${name}`));
   buttons.forEach(btn => btn.classList.toggle("active", btn.dataset.tab === name));
@@ -151,7 +368,7 @@ function showTab(name) {
 buttons.forEach(btn => btn.addEventListener("click", () => showTab(btn.dataset.tab)));
 showTab(localStorage.getItem("activeTab") || "home");
 
-// Theme Toggle
+// Theme toggle logic
 const themeToggle = document.getElementById("themeToggle");
 const savedTheme = localStorage.getItem("quadraTheme") || "dark";
 themeToggle.checked = savedTheme === "light";
@@ -166,11 +383,12 @@ function applyTheme(mode) {
   localStorage.setItem("quadraTheme", mode);
 }
 
-// Daily Login Bonus
+// Daily XP Bonus
 const today = new Date().toDateString();
 if (localStorage.getItem("quadraLoginBonus") !== today) {
   alert("🎉 Daily XP Claimed!");
   localStorage.setItem("quadraLoginBonus", today);
+  // XP system logic can be added here
 }
 
 const continueReadingContainer = document.getElementById("continueReadingContainer");
@@ -188,28 +406,28 @@ function renderFavorites() {
     favoritesContainer.innerHTML = '<p class="no-results">No favorites added.</p>';
     return;
   }
-  fetch(\"assets/data/mangas.json\").then(res => res.json()).then(mangas => {
+  fetch("assets/data/mangas.json").then(res => res.json()).then(mangas => {
     const favs = mangas.filter(m => favoriteIds.includes(m.id));
     favs.forEach(manga => {
-      const a = document.createElement(\"a\");
+      const a = document.createElement("a");
       a.href = `manga.html?id=${manga.id}`;
-      a.className = \"manga-card\";
-      a.innerHTML = `<img src=\"${manga.cover}\" alt=\"${manga.title}\" /><span>${manga.title}</span>`;
+      a.className = "manga-card";
+      a.innerHTML = `<img src="${manga.cover}" alt="${manga.title}" /><span>${manga.title}</span>`;
       favoritesContainer.appendChild(a);
     });
   });
 }
 
-fetch(\"assets/data/mangas.json\")
+fetch("assets/data/mangas.json")
   .then(res => res.json())
   .then(mangas => {
-    // Hot Picks
+    // Hot Picks: Top 5 by views
     const hot = mangas.filter(m => m.views && m.views > 1000).slice(0, 5);
     hot.forEach(manga => {
-      const a = document.createElement(\"a\");
+      const a = document.createElement("a");
       a.href = `manga.html?id=${manga.id}`;
-      a.className = \"manga-card\";
-      a.innerHTML = `<img src=\"${manga.cover}\" alt=\"${manga.title}\" /><span>🔥 ${manga.title}</span>`;
+      a.className = "manga-card";
+      a.innerHTML = `<img src="${manga.cover}" alt="${manga.title}" /><span>🔥 ${manga.title}</span>`;
       hotMangasContainer.appendChild(a);
     });
 
@@ -218,46 +436,48 @@ fetch(\"assets/data/mangas.json\")
     if (history.length) {
       continueReadingContainer.innerHTML = '';
       history.forEach(manga => {
-        const a = document.createElement(\"a\");
+        const a = document.createElement("a");
         a.href = `manga.html?id=${manga.id}`;
-        a.className = \"manga-card\";
-        a.innerHTML = `<img src=\"${manga.cover}\" alt=\"${manga.title}\" /><span>${manga.title}</span>`;
+        a.className = "manga-card";
+        a.innerHTML = `<img src="${manga.cover}" alt="${manga.title}" /><span>${manga.title}</span>`;
         continueReadingContainer.appendChild(a);
       });
     }
 
-    // New Mangas & Chapters
+    // New Mangas
     mangas.forEach(manga => {
-      const a = document.createElement(\"a\");
+      const a = document.createElement("a");
       a.href = `manga.html?id=${manga.id}`;
-      a.className = \"manga-card\";
-      a.innerHTML = `<img src=\"${manga.cover}\" alt=\"${manga.title}\" /><span>${manga.title}</span>`;
+      a.className = "manga-card";
+      a.innerHTML = `<img src="${manga.cover}" alt="${manga.title}" /><span>${manga.title}</span>`;
       newMangasContainer.appendChild(a);
+    });
 
+    // Latest Chapters
+    mangas.forEach(manga => {
       if (manga.latestChapter) {
-        const c = document.createElement(\"a\");
-        c.href = `reader.html?id=${manga.id}&chapter=${manga.latestChapter}`;
-        c.className = \"manga-card\";
-        c.innerHTML = `<img src=\"${manga.cover}\" alt=\"${manga.title}\" /><span>${manga.title} – Chapter ${manga.latestChapter}</span>`;
-        newChaptersContainer.appendChild(c);
+        const a = document.createElement("a");
+        a.href = `reader.html?id=${manga.id}&chapter=${manga.latestChapter}`;
+        a.className = "manga-card";
+        a.innerHTML = `<img src="${manga.cover}" alt="${manga.title}" /><span>${manga.title} – Chapter ${manga.latestChapter}</span>`;
+        newChaptersContainer.appendChild(a);
       }
     });
   });
 
-const userIcon = document.getElementById(\"userIcon\");
-userIcon.addEventListener(\"click\", () => {
+const userIcon = document.getElementById("userIcon");
+userIcon.addEventListener("click", () => {
   try {
-    const userData = JSON.parse(localStorage.getItem(\"quadraUser\"));
-    if (userData && typeof userData === \"object\") {
-      window.location.href = \"profile.html\";
+    const userData = JSON.parse(localStorage.getItem("quadraUser"));
+    if (userData && typeof userData === "object") {
+      window.location.href = "profile.html";
     } else {
-      window.location.href = \"signup.html\";
+      window.location.href = "signup.html";
     }
   } catch (e) {
-    window.location.href = \"signup.html\";
+    window.location.href = "signup.html";
   }
 });
 </script>
-
 </body>
 </html>
