@@ -368,7 +368,6 @@ function showTab(name) {
 buttons.forEach(btn => btn.addEventListener("click", () => showTab(btn.dataset.tab)));
 showTab(localStorage.getItem("activeTab") || "home");
 
-// Theme toggle logic
 const themeToggle = document.getElementById("themeToggle");
 const savedTheme = localStorage.getItem("quadraTheme") || "dark";
 themeToggle.checked = savedTheme === "light";
@@ -383,22 +382,22 @@ function applyTheme(mode) {
   localStorage.setItem("quadraTheme", mode);
 }
 
-// Daily XP Bonus
+// 🎁 Daily Login XP Bonus
 const today = new Date().toDateString();
 if (localStorage.getItem("quadraLoginBonus") !== today) {
   alert("🎉 Daily XP Claimed!");
   localStorage.setItem("quadraLoginBonus", today);
-  // XP system logic can be added here
 }
-
-const continueReadingContainer = document.getElementById("continueReadingContainer");
-const newChaptersContainer = document.getElementById("newChaptersContainer");
-const newMangasContainer = document.getElementById("newMangasContainer");
-const favoritesContainer = document.getElementById("favoritesContainer");
-const hotMangasContainer = document.getElementById("hotMangasContainer");
 
 const readingHistory = JSON.parse(localStorage.getItem("quadraReading") || "[]");
 const favoriteIds = JSON.parse(localStorage.getItem("quadraFavs") || "[]");
+
+const continueReadingContainer = document.getElementById("continueReadingContainer");
+const newChaptersContainer = document.getElementById("newChaptersContainer");
+const trendingMangasContainer = document.getElementById("trendingMangasContainer");
+const hotMangasContainer = document.getElementById("hotMangasContainer");
+const newMangasContainer = document.getElementById("newMangasContainer");
+const favoritesContainer = document.getElementById("favoritesContainer");
 
 function renderFavorites() {
   favoritesContainer.innerHTML = '';
@@ -406,22 +405,48 @@ function renderFavorites() {
     favoritesContainer.innerHTML = '<p class="no-results">No favorites added.</p>';
     return;
   }
-  fetch("assets/data/mangas.json").then(res => res.json()).then(mangas => {
-    const favs = mangas.filter(m => favoriteIds.includes(m.id));
-    favs.forEach(manga => {
-      const a = document.createElement("a");
-      a.href = `manga.html?id=${manga.id}`;
-      a.className = "manga-card";
-      a.innerHTML = `<img src="${manga.cover}" alt="${manga.title}" /><span>${manga.title}</span>`;
-      favoritesContainer.appendChild(a);
+  fetch("assets/data/mangas.json")
+    .then(res => res.json())
+    .then(mangas => {
+      const favs = mangas.filter(m => favoriteIds.includes(m.id));
+      favs.forEach(manga => {
+        const a = document.createElement("a");
+        a.href = `manga.html?id=${manga.id}`;
+        a.className = "manga-card";
+        a.innerHTML = `<img src="${manga.cover}" alt="${manga.title}" /><span>${manga.title}</span>`;
+        favoritesContainer.appendChild(a);
+      });
     });
-  });
 }
 
 fetch("assets/data/mangas.json")
   .then(res => res.json())
   .then(mangas => {
-    // Hot Picks: Top 5 by views
+    // 🌟 Latest Chapters
+    mangas.forEach(manga => {
+      if (manga.latestChapter) {
+        const a = document.createElement("a");
+        a.href = `reader.html?id=${manga.id}&chapter=${manga.latestChapter}`;
+        a.className = "manga-card";
+        a.innerHTML = `<img src="${manga.cover}" alt="${manga.title}" /><span>${manga.title} – Chapter ${manga.latestChapter}</span>`;
+        newChaptersContainer.appendChild(a);
+      }
+    });
+
+    // 🔥 Trending Mangas – sorted by "updatedAt" field
+    const trending = mangas
+      .filter(m => m.updatedAt)
+      .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
+      .slice(0, 6);
+    trending.forEach(manga => {
+      const a = document.createElement("a");
+      a.href = `manga.html?id=${manga.id}`;
+      a.className = "manga-card";
+      a.innerHTML = `<img src="${manga.cover}" alt="${manga.title}" /><span>📈 ${manga.title}</span>`;
+      trendingMangasContainer.appendChild(a);
+    });
+
+    // 🔥 Hot Picks – by views
     const hot = mangas.filter(m => m.views && m.views > 1000).slice(0, 5);
     hot.forEach(manga => {
       const a = document.createElement("a");
@@ -431,7 +456,16 @@ fetch("assets/data/mangas.json")
       hotMangasContainer.appendChild(a);
     });
 
-    // Continue Reading
+    // 📚 New Mangas (show all)
+    mangas.forEach(manga => {
+      const a = document.createElement("a");
+      a.href = `manga.html?id=${manga.id}`;
+      a.className = "manga-card";
+      a.innerHTML = `<img src="${manga.cover}" alt="${manga.title}" /><span>${manga.title}</span>`;
+      newMangasContainer.appendChild(a);
+    });
+
+    // 📖 Continue Reading
     const history = readingHistory.map(id => mangas.find(m => m.id === id)).filter(Boolean);
     if (history.length) {
       continueReadingContainer.innerHTML = '';
@@ -443,26 +477,6 @@ fetch("assets/data/mangas.json")
         continueReadingContainer.appendChild(a);
       });
     }
-
-    // New Mangas
-    mangas.forEach(manga => {
-      const a = document.createElement("a");
-      a.href = `manga.html?id=${manga.id}`;
-      a.className = "manga-card";
-      a.innerHTML = `<img src="${manga.cover}" alt="${manga.title}" /><span>${manga.title}</span>`;
-      newMangasContainer.appendChild(a);
-    });
-
-    // Latest Chapters
-    mangas.forEach(manga => {
-      if (manga.latestChapter) {
-        const a = document.createElement("a");
-        a.href = `reader.html?id=${manga.id}&chapter=${manga.latestChapter}`;
-        a.className = "manga-card";
-        a.innerHTML = `<img src="${manga.cover}" alt="${manga.title}" /><span>${manga.title} – Chapter ${manga.latestChapter}</span>`;
-        newChaptersContainer.appendChild(a);
-      }
-    });
   });
 
 const userIcon = document.getElementById("userIcon");
