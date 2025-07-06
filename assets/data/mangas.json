@@ -24,5 +24,18 @@
     "originalLanguage": "Chinese",
     "finalChapter": "1",
     "latestChapter": 1
+  },
+  {
+    "id": "nan-hao-shang-feng",
+    "title": "Nan Hao & Shang Feng",
+    "cover": "assets/images/nan-hao-shang-feng/cover-image.jpg",
+    "description": "A comedy about two ordinary high school boys.",
+    "status": "Ongoing",
+    "genres": ["Comedy", "School Life", "Slice of Life"],
+    "altNames": ["南号尚风", "Nan Hao and Shang Feng"],
+    "published": "2018",
+    "originalLanguage": "Chinese",
+    "finalChapter": "N/A",
+    "latestChapter": 2
   }
 ]
