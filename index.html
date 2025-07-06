@@ -11,12 +11,12 @@
   <meta name="author" content="QuadraScans Team">
 
   <!-- Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXX"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-245L63HSWG"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-    gtag('config', 'G-XXXXXXXXX');
+    gtag('config', 'G-245L63HSWG);
   </script>
 
   <!-- Fonts & Icons -->
@@ -242,13 +242,8 @@
 
 <main>
   <section class="tab-page active" id="tab-home">
-    <div class="notice-bar"><i class="fas fa-bullhorn"></i> Join <a href="https://linktr.ee/YOUR_SOCIALS" target="_blank">our socials</a> for updates, perks & events!</div>
+    <div class="notice-bar"><i class="fas fa-bullhorn"></i> Join <a href="https://linktr.ee/quadrascans" target="_blank">our socials</a> for updates, perks & events!</div>
 
-    <h2 class="section-title">📈 Trending</h2>
-    <div class="manga-list" id="trendingMangasContainer"></div>
-
-    <h2 class="section-title">🔥 Hot Picks</h2>
-    <div class="manga-list" id="hotMangasContainer"></div>
 
     <h2 class="section-title">Continue Reading</h2>
     <div class="manga-list" id="continueReadingContainer"><p class="no-results">No reading history yet.</p></div>
@@ -405,29 +400,8 @@ fetch("assets/data/mangas.json")
       }
     });
 
-    // Trending (by latest update)
-    const trending = mangas
-      .filter(m => m.updatedAt)
-      .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
-      .slice(0, 6);
-    trending.forEach(manga => {
-      const a = document.createElement("a");
-      a.href = `manga.html?id=${manga.id}`;
-      a.className = "manga-card";
-      a.innerHTML = `<img src="${manga.cover}" alt="${manga.title}" /><span>📈 ${manga.title}</span>`;
-      trendingMangasContainer.appendChild(a);
-    });
-
-    // Hot Picks (by views)
-    const hot = mangas.filter(m => m.views && m.views > 1000).slice(0, 6);
-    hot.forEach(manga => {
-      const a = document.createElement("a");
-      a.href = `manga.html?id=${manga.id}`;
-      a.className = "manga-card";
-      a.innerHTML = `<img src="${manga.cover}" alt="${manga.title}" /><span>🔥 ${manga.title}</span>`;
-      hotMangasContainer.appendChild(a);
-    });
-
+   
+   
     // New Mangas (all)
     mangas.forEach(manga => {
       const a = document.createElement("a");
