@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://quadrascans.netlify.app/sitemap.xml
